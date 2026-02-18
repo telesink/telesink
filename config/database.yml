@@ -91,8 +91,7 @@ production:
   primary: &primary_production
     <<: *default
     database: telesink_production
-    username: telesink
-    password: <%= ENV["TELESINK_DATABASE_PASSWORD"] %>
+    password: <%= ENV["POSTGRES_PASSWORD"] %>
   cache:
     <<: *primary_production
     database: telesink_production_cache

@@ -1,0 +1,4 @@
+CREATE DATABASE telesink_production;
+CREATE DATABASE telesink_production_cache;
+CREATE DATABASE telesink_production_queue;
+CREATE DATABASE telesink_production_cable;

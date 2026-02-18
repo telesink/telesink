@@ -1,0 +1,50 @@
+service: telesink
+image: telesink
+
+servers:
+  web:
+    - telesink.example.com
+
+proxy:
+  ssl: true
+  host: telesink.example.com
+
+registry:
+  server: localhost:5555
+
+env:
+  secret:
+    - SECRET_KEY_BASE
+    - POSTGRES_HOST
+    - POSTGRES_PORT
+    - POSTGRES_USER
+    - POSTGRES_PASSWORD
+  clear:
+    SOLID_QUEUE_IN_PUMA: true
+
+aliases:
+  console: app exec --interactive --reuse "bin/rails console"
+  shell: app exec --interactive --reuse "bash"
+  logs: app logs -f
+  dbc: app exec --interactive --reuse "bin/rails dbconsole --include-password"
+
+volumes:
+  - "telesink-storage:/rails/storage"
+
+asset_path: /rails/public/assets
+
+builder:
+  arch: amd64
+
+accessories:
+  db:
+    image: postgres:18.2
+    host: telesink.example.com
+    env:
+      secret:
+        - POSTGRES_USER
+        - POSTGRES_PASSWORD
+    files:
+      - db/production.sql:/docker-entrypoint-initdb.d/setup.sql
+    directories:
+      - telesink_pgdata:/var/lib/postgresql
