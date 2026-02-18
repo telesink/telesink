@@ -22,7 +22,6 @@ gem "propshaft"
 gem "importmap-rails"
 gem "turbo-rails"
 gem "stimulus-rails"
-gem "tailwindcss-rails"
 
 # Other
 gem "bcrypt", "~> 3.1.7"
