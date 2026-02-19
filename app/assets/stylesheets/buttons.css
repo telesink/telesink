@@ -1,0 +1,40 @@
+.btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  padding: 0.25em 2em 0.15em 0.5em;
+  font: inherit;
+
+  &:after {
+    content: "›";
+    position: absolute;
+    right: 0.5em;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 1.35em;
+    line-height: 1;
+    color: currentColor;
+  }
+}
+
+.btn--primary {
+  background-color: light-dark(var(--color-blue-600), var(--color-blue-500));
+  color: light-dark(var(--color-white), var(--color-white));
+  border: 1px solid light-dark(var(--color-blue-900), var(--color-blue-800));
+
+  &:hover {
+    background-color: light-dark(var(--color-blue-700), var(--color-blue-600));
+    border-color: light-dark(var(--color-blue-950), var(--color-blue-700));
+  }
+
+  &:active {
+    background-color: light-dark(var(--color-blue-800), var(--color-blue-700));
+    outline: 3px solid light-dark(var(--color-blue-200), var(--color-blue-800));
+    border-color: light-dark(var(--color-blue-950), var(--color-blue-900));
+  }
+
+  &:focus {
+    outline: 3px solid light-dark(var(--color-blue-200), var(--color-blue-800));
+    border-color: light-dark(var(--color-blue-800), var(--color-blue-950));
+  }
+}

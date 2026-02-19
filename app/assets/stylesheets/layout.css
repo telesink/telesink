@@ -1,0 +1,38 @@
+body {
+  font: clamp(0.75rem, 0.2rem + 1vw, 0.9rem) monospace;
+  line-height: 1.5;
+  background-color: light-dark(var(--color-white), var(--color-black));
+}
+
+.layout {
+  margin: 0 auto;
+  padding: 0 clamp(0.5rem, 4vw, 1.25rem);
+}
+
+.logo {
+  filter: var(--logo-filter-default);
+
+  &:hover {
+    filter: var(--logo-filter-hover);
+  }
+
+  &:active {
+    filter: var(--logo-filter-active);
+  }
+}
+
+.logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: 1.25rem;
+
+  svg {
+    height: 1.5rem;
+    width: 1.5rem;
+  }
+}
+
+header {
+  padding: 1rem 0;
+}

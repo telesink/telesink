@@ -1,0 +1,9 @@
+.banner {
+  padding: 0.25rem;
+}
+
+.banner--danger {
+  border: 1px solid light-dark(var(--color-red-200), var(--color-red-900));
+  background-color: light-dark(var(--color-red-100), var(--color-red-300));
+  color: light-dark(var(--color-red-800), var(--color-black));
+}

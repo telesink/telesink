@@ -1,0 +1,6 @@
+.page-title {
+  font-weight: 700;
+  font-size: var(--text-3xl);
+  line-height: 2rem;
+  color: light-dark(var(--color-gray-800), var(--color-gray-200));
+}

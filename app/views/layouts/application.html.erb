@@ -3,6 +3,7 @@
   <head>
     <title><%= content_for(:title) || "Telesink" %></title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="color-scheme" content="light dark">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="application-name" content="Telesink">
     <meta name="mobile-web-app-capable" content="yes">
@@ -23,8 +24,8 @@
     <%= javascript_importmap_tags %>
   </head>
 
-  <body>
-    <main class="container mx-auto mt-28 px-5 flex">
+  <body class="layout">
+    <main>
       <%= yield %>
     </main>
   </body>
