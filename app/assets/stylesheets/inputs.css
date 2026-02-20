@@ -29,6 +29,6 @@
     outline: none;
     border-color: light-dark(var(--color-blue-400), var(--color-blue-400));
     box-shadow: 0 0 0 3px
-      light-dark(var(--color-blue-100), var(--color-blue-900));
+      light-dark(var(--color-blue-100), var(--color-blue-600));
   }
 }
