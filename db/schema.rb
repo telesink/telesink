@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_02_18_070603) do
+ActiveRecord::Schema[8.1].define(version: 2026_02_19_111637) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -23,6 +23,23 @@ ActiveRecord::Schema[8.1].define(version: 2026_02_18_070603) do
     t.index ["user_id"], name: "index_sessions_on_user_id"
   end
 
+  create_table "sink_memberships", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.bigint "sink_id", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
+    t.index ["sink_id"], name: "index_sink_memberships_on_sink_id"
+    t.index ["user_id", "sink_id"], name: "index_sink_memberships_on_user_id_and_sink_id", unique: true
+    t.index ["user_id"], name: "index_sink_memberships_on_user_id"
+  end
+
+  create_table "sinks", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.string "name", null: false
+    t.datetime "updated_at", null: false
+    t.index ["name"], name: "index_sinks_on_name"
+  end
+
   create_table "users", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.string "email_address", null: false
@@ -32,4 +49,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_02_18_070603) do
   end
 
   add_foreign_key "sessions", "users"
+  add_foreign_key "sink_memberships", "sinks"
+  add_foreign_key "sink_memberships", "users"
 end
