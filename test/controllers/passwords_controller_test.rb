@@ -46,7 +46,7 @@ class PasswordsControllerTest < ActionDispatch::IntegrationTest
     end
 
     follow_redirect!
-    assert_notice "Password has been reset"
+    assert_notice "password has been reset"
   end
 
   test "update with non matching passwords" do
@@ -57,11 +57,12 @@ class PasswordsControllerTest < ActionDispatch::IntegrationTest
     end
 
     follow_redirect!
-    assert_notice "Passwords did not match"
+    assert_notice "passwords did not match"
   end
 
   private
-    def assert_notice(text)
-      assert_select "div", /#{text}/
-    end
+
+  def assert_notice(text)
+    assert_select "div", /#{text}/
+  end
 end

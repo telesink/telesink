@@ -40,7 +40,7 @@ class RegistrationsControllerTest < ActionDispatch::IntegrationTest
 
     assert_redirected_to new_registration_path
     assert_nil cookies[:session_id]
-    assert_match(/registration failed/, flash[:alert])
+    assert_equal "registration failed. please try a different email address.", flash[:alert]
   end
 
   test "create redirects if already authenticated" do
