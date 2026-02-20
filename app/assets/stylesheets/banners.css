@@ -7,3 +7,9 @@
   background-color: light-dark(var(--color-red-100), var(--color-red-300));
   color: light-dark(var(--color-red-800), var(--color-black));
 }
+
+.banner--success {
+  border: 1px solid light-dark(var(--color-green-200), var(--color-green-900));
+  background-color: light-dark(var(--color-green-100), var(--color-green-300));
+  color: light-dark(var(--color-green-800), var(--color-black));
+}
