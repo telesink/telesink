@@ -10,9 +10,23 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_02_19_111637) do
+ActiveRecord::Schema[8.1].define(version: 2026_02_21_041249) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
+
+  create_table "events", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.string "event_type", null: false
+    t.datetime "occurred_at", null: false
+    t.jsonb "payload", default: {}, null: false
+    t.bigint "sink_id", null: false
+    t.text "text"
+    t.datetime "updated_at", null: false
+    t.index ["event_type"], name: "index_events_on_event_type"
+    t.index ["payload"], name: "index_events_on_payload", using: :gin
+    t.index ["sink_id", "occurred_at"], name: "index_events_on_sink_id_and_occurred_at", order: { occurred_at: :desc }
+    t.index ["sink_id"], name: "index_events_on_sink_id"
+  end
 
   create_table "sessions", force: :cascade do |t|
     t.datetime "created_at", null: false
@@ -36,8 +50,10 @@ ActiveRecord::Schema[8.1].define(version: 2026_02_19_111637) do
   create_table "sinks", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.string "name", null: false
+    t.string "token"
     t.datetime "updated_at", null: false
     t.index ["name"], name: "index_sinks_on_name"
+    t.index ["token"], name: "index_sinks_on_token", unique: true
   end
 
   create_table "users", force: :cascade do |t|
@@ -48,6 +64,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_02_19_111637) do
     t.index ["email_address"], name: "index_users_on_email_address", unique: true
   end
 
+  add_foreign_key "events", "sinks"
   add_foreign_key "sessions", "users"
   add_foreign_key "sink_memberships", "sinks"
   add_foreign_key "sink_memberships", "users"
