@@ -4,6 +4,7 @@
   align-items: center;
   padding: 0.25em 2em 0.15em 0.5em;
   font: inherit;
+  text-decoration: none;
 
   &:after {
     content: "›";
@@ -20,7 +21,7 @@
 .btn--primary {
   background-color: light-dark(var(--color-blue-600), var(--color-blue-500));
   color: light-dark(var(--color-white), var(--color-white));
-  border: 1px solid light-dark(var(--color-blue-900), var(--color-blue-800));
+  border: 1px solid light-dark(var(--color-blue-900), var(--color-blue-400));
 
   &:hover {
     background-color: light-dark(var(--color-blue-700), var(--color-blue-600));
@@ -36,5 +37,27 @@
   &:focus {
     outline: 3px solid light-dark(var(--color-blue-200), var(--color-blue-800));
     border-color: light-dark(var(--color-blue-800), var(--color-blue-950));
+  }
+}
+
+.btn--secondary {
+  background-color: transparent;
+  color: light-dark(var(--color-blue-700), var(--color-blue-400));
+  border: 1px solid light-dark(var(--color-blue-700), var(--color-blue-400));
+
+  &:hover {
+    background-color: light-dark(var(--color-blue-50), var(--color-blue-950));
+    border-color: light-dark(var(--color-blue-800), var(--color-blue-300));
+  }
+
+  &:active {
+    background-color: light-dark(var(--color-blue-100), var(--color-blue-900));
+    border-color: light-dark(var(--color-blue-900), var(--color-blue-200));
+    outline: 3px solid light-dark(var(--color-blue-200), var(--color-blue-800));
+  }
+
+  &:focus {
+    outline: 3px solid light-dark(var(--color-blue-200), var(--color-blue-800));
+    border-color: light-dark(var(--color-blue-800), var(--color-blue-300));
   }
 }
