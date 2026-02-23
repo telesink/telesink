@@ -1,0 +1,23 @@
+.footer {
+  display: flex;
+  flex: 0 0 8.5rem;
+  flex-direction: column;
+
+  margin-left: auto;
+  padding: 0.5rem;
+
+  min-width: 8.5rem;
+  height: 100vh;
+
+  border-left: 1px solid
+    light-dark(var(--color-gray-200), var(--color-zinc-800));
+
+  overflow-y: auto;
+  box-sizing: border-box;
+  font-size: var(--text-xs);
+}
+
+.footer__inner {
+  margin-top: auto;
+  text-align: center;
+}

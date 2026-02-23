@@ -22,9 +22,13 @@
     <%= javascript_importmap_tags %>
   </head>
 
-  <body class="layout">
-    <main>
+  <body class="app">
+    <%= render "layouts/nav" %>
+
+    <main class="main">
       <%= yield %>
+
+      <%= render "layouts/footer" %>
     </main>
   </body>
 </html>
