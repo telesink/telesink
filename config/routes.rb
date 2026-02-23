@@ -5,7 +5,7 @@ Rails.application.routes.draw do
   resources :passwords, param: :token
   resource :registration, only: %i[new create]
 
-  resources :sinks, except: %i[index]
+  resources :sinks
 
   get "up" => "rails/health#show", as: :rails_health_check
 
