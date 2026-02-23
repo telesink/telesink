@@ -266,13 +266,13 @@
   --color-stone-900: oklch(21.6% 0.006 56.043);
   --color-stone-950: oklch(14.7% 0.004 49.25);
 
-  --text-xs: 0.75rem;
-  --text-sm: 0.875rem;
-  --text-base: 1rem;
-  --text-lg: 1.125rem;
-  --text-xl: 1.25rem;
-  --text-2xl: 1.5rem;
-  --text-3xl: 1.875rem;
+  --text-xs: clamp(0.56rem, 0.15rem + 0.75vw, 0.68rem);
+  --text-sm: clamp(0.66rem, 0.18rem + 0.88vw, 0.79rem);
+  --text-base: clamp(0.75rem, 0.2rem + 1vw, 0.9rem);
+  --text-lg: clamp(0.84rem, 0.23rem + 1.13vw, 1.01rem);
+  --text-xl: clamp(0.94rem, 0.25rem + 1.25vw, 1.13rem);
+  --text-2xl: clamp(1.13rem, 0.3rem + 1.5vw, 1.35rem);
+  --text-3xl: clamp(1.41rem, 0.38rem + 1.88vw, 1.69rem);
 
   --logo-filter-default: none;
   --logo-filter-hover: saturate(2);
