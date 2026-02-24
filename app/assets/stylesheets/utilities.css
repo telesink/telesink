@@ -1,3 +1,13 @@
-.max-w-sm {
-  max-width: 24rem;
+.truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.mt-4 {
+  margin-top: 1rem;
+}
+
+.text-xs {
+  font-size: var(--text-xs);
 }

@@ -2,43 +2,39 @@
   title = "update your password"
   content_for(:title, title)
 %>
-<header>
-  <a href="/" class="logo link">
-    <%= inline_svg_tag "logo.svg" %>
-    telesink
-  </a>
-</header>
 
-<h1 class="page-title"><%= title %></h1>
+<div class="column">
+  <h1 class="column__header"><%= title %></h1>
 
+  <div class="column-data">
+    <%= form_with url: password_path(params[:token]), method: :put, class: "form" do |form| %>
+      <div class="form-field">
+        <%= form.label :password, "new password", class: "form-field__label" %>
+        <%= form.password_field(
+          :password,
+          required: true,
+          autocomplete: "new-password",
+          maxlength: 72,
+          class: "text-field",
+        ) %>
+      </div>
 
-<%= form_with url: password_path(params[:token]), method: :put, class: "form max-w-sm" do |form| %>
-  <div class="form-field">
-    <%= form.label :password, "new password", class: "form-field__label" %>
-    <%= form.password_field(
-      :password,
-      required: true,
-      autocomplete: "new-password",
-      maxlength: 72,
-      class: "text-field",
-    ) %>
+      <div class="form-field">
+        <%= form.label :password, "confirmation password", class: "form-field__label" %>
+        <%= form.password_field(
+          :password_confirmation,
+          required: true,
+          autocomplete: "new-password",
+          maxlength: 72,
+          class: "text-field",
+        ) %>
+      </div>
+
+      <%= render "shared/banners" %>
+
+      <div>
+        <%= form.button "save new password", type: :submit, class: "btn btn--primary" %>
+      </div>
+    <% end %>
   </div>
-
-  <div class="form-field">
-    <%= form.label :password, "confirmation password", class: "form-field__label" %>
-    <%= form.password_field(
-      :password_confirmation,
-      required: true,
-      autocomplete: "new-password",
-      maxlength: 72,
-      class: "text-field",
-    ) %>
-  </div>
-
-  <%= render "shared/banners" %>
-
-  <div>
-    <%= form.button "save new password", type: :submit, class: "btn btn--primary" %>
-  </div>
-<% end %>
-
+</div>

@@ -1,6 +1,7 @@
-.page-title {
-  font-weight: 700;
-  font-size: var(--text-3xl);
-  line-height: 2rem;
-  color: light-dark(var(--color-gray-800), var(--color-gray-200));
+.font-primary {
+  color: light-dark(var(--color-black), var(--color-white));
+}
+
+.font-secondary {
+  color: light-dark(var(--color-gray-800), var(--color-zinc-400));
 }

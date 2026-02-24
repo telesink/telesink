@@ -2,58 +2,55 @@
   title = "sign up for an account"
   content_for(:title, title)
 %>
-<header>
-  <a href="/" class="logo link">
-    <%= inline_svg_tag "logo.svg" %>
-    telesink
-  </a>
-</header>
 
-<h1 class="page-title"><%= title %></h1>
+<div class="column">
+  <h1 class="column__header"><%= title %></h1>
 
+  <div class="column-data">
+    <%= form_with(model: @user, url: registration_url, class: "form") do |form| %>
+      <div class="form-field">
+        <%= form.label :email_address, "email", class: "form-field__label" %>
+        <%= form.email_field(
+          :email_address,
+          required: true,
+          autofocus: true,
+          autocomplete: "username",
+          value: params[:email_address],
+          class: "text-field",
+        ) %>
+      </div>
 
-<%= form_with(model: @user, url: registration_url, class: "form max-w-sm") do |form| %>
-  <div class="form-field">
-    <%= form.label :email_address, "email", class: "form-field__label" %>
-    <%= form.email_field(
-      :email_address,
-      required: true,
-      autofocus: true,
-      autocomplete: "username",
-      value: params[:email_address],
-      class: "text-field",
-    ) %>
+      <div class="form-field">
+        <%= form.label :password, "password", class: "form-field__label" %>
+        <%= form.password_field(
+          :password,
+          required: true,
+          autocomplete: "current-password",
+          maxlength: 72,
+          class: "text-field",
+        ) %>
+      </div>
+
+      <div class="form-field">
+        <%= form.label :password_confirmation, "confirm password", class: "form-field__label" %>
+        <%= form.password_field(
+          :password_confirmation,
+          required: true,
+          autocomplete: "current-password",
+          maxlength: 72,
+          class: "text-field",
+        ) %>
+      </div>
+
+      <%= render "shared/banners" %>
+
+      <div>
+        <%= form.button "create account", type: :submit, class: "btn btn--primary" %>
+      </div>
+
+      <div>
+        already have an account? <%= link_to "sign in", new_session_path, class: "link" %>
+      </div>
+    <% end %>
   </div>
-
-  <div class="form-field">
-    <%= form.label :password, "password", class: "form-field__label" %>
-    <%= form.password_field(
-      :password,
-      required: true,
-      autocomplete: "current-password",
-      maxlength: 72,
-      class: "text-field",
-    ) %>
-  </div>
-
-  <div class="form-field">
-    <%= form.label :password_confirmation, "confirm password", class: "form-field__label" %>
-    <%= form.password_field(
-      :password_confirmation,
-      required: true,
-      autocomplete: "current-password",
-      maxlength: 72,
-      class: "text-field",
-    ) %>
-  </div>
-
-  <%= render "shared/banners" %>
-
-  <div>
-    <%= form.button "create account", type: :submit, class: "btn btn--primary" %>
-  </div>
-
-  <div>
-    already have an account? <%= link_to "sign in", new_session_path, class: "link" %>
-  </div>
-<% end %>
+</div>

@@ -22,8 +22,10 @@
     <%= javascript_importmap_tags %>
   </head>
 
-  <body class="layout">
-    <main>
+  <body class="app">
+    <%= render "layouts/public_sidebar" %>
+
+    <main class="main">
       <%= yield %>
     </main>
   </body>
