@@ -7,7 +7,6 @@ gem "rails", "~> 8.1.2"
 # Drivers
 gem "pg", "~> 1.1"
 
-
 # Deployment
 gem "puma", ">= 5.0"
 gem "thruster", require: false
