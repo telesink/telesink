@@ -10,9 +10,20 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_02_21_041249) do
+ActiveRecord::Schema[8.1].define(version: 2026_02_24_101644) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
+
+  create_table "columns", force: :cascade do |t|
+    t.jsonb "config"
+    t.datetime "created_at", null: false
+    t.string "name", null: false
+    t.integer "position", default: 0, null: false
+    t.bigint "sink_id", null: false
+    t.datetime "updated_at", null: false
+    t.index ["sink_id", "position"], name: "index_columns_on_sink_id_and_position"
+    t.index ["sink_id"], name: "index_columns_on_sink_id"
+  end
 
   create_table "events", force: :cascade do |t|
     t.datetime "created_at", null: false
@@ -64,6 +75,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_02_21_041249) do
     t.index ["email_address"], name: "index_users_on_email_address", unique: true
   end
 
+  add_foreign_key "columns", "sinks"
   add_foreign_key "events", "sinks"
   add_foreign_key "sessions", "users"
   add_foreign_key "sink_memberships", "sinks"

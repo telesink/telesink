@@ -1,0 +1,15 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  sink: one
+  name: MyString
+  position: 1
+  kind: MyString
+  config: 
+
+two:
+  sink: two
+  name: MyString
+  position: 1
+  kind: MyString
+  config: 
