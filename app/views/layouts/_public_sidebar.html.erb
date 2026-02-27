@@ -1,47 +1,58 @@
-<header class="sidebar">
-  <%= link_to root_path, class: "logo link" do %>
-    <%= inline_svg_tag "logo.svg" %>
-    telesink
-  <% end %>
-  <p>
-    Know what your product is doing. <i>Right now</i>.
-  </p>
-
-  <hr class="divider">
-
-  <div>
-    <a href="https://github.com/telesink/telesink" target="_blank" class="link">source code</a> (AGPL)
+<header class="mt-1ch column">
+  <div class="column-data">
+    <%= link_to root_path, class: "logo link" do %>
+      <%= inline_svg_tag "logo.svg" %>
+      telesink
+    <% end %>
+    <p class="column-data__text">
+      Know what your product is doing. <i>Right now</i>.
+    </p>
   </div>
 
   <hr class="divider">
 
-  <div class="mt-4">
-    <a href="https://x.com/TelesinkHQ" target="_blank" class="link">𝕏</a>
-    &middot;
-    <a href="http://bsky.app/profile/telesink.com" target="_blank" class="link">bluesky</a>
+  <div class="column-data">
+    <p class="column-data__text">
+      <a href="https://github.com/telesink/telesink" target="_blank" class="link">source code</a> (AGPL)
+    </p>
   </div>
 
   <hr class="divider">
 
-  <div>
-    <a href="https://telesink.com/terms" target="_blank" class="link">terms of service</a>
-  </div>
-  <div>
-    <a href="https://telesink.com/privacy" target="_blank" class="link">privacy policy</a>
+  <div class="column-data">
+    <p class="column-data__text">
+      <a href="https://x.com/TelesinkHQ" target="_blank" class="link">𝕏</a>
+      &middot;
+      <a href="http://bsky.app/profile/telesink.com" target="_blank" class="link">bluesky</a>
+    </p>
   </div>
 
   <hr class="divider">
 
-  <p class="text-xs">
-    We are here to make real-time event tracking better. We will be honest,
-    transparent, and empathetic. We care for our users, and we will not exploit
-    them, and we hope that they will reward our care and diligence with success.
-  </p>
+  <div class="column-data">
+    <p class="column-data__text">
+      <a href="https://telesink.com/terms" target="_blank" class="link">terms of service</a>
+      <br>
+      <a href="https://telesink.com/privacy" target="_blank" class="link">privacy policy</a>
+    </p>
+  </div>
 
-  <div class="text-xs">
-    © <%= Time.current.year %>
-    <a href="https://kyrylo.org" target="_blank" class="link">Kyrylo Silin</a>
-    PE
+  <hr class="divider">
+
+  <div class="column-data">
+    <p class="column-data__text text-xs">
+      We are here to make real-time event tracking better. We will be honest,
+      transparent, and empathetic. We care for our users, and we will not exploit
+      them, and we hope that they will reward our care and diligence with success.
+    </p>
+  </div>
+
+  <div class="column-data">
+    <p class="mt-1ch column-data__text text-xs">
+      © <%= Time.current.year %>
+      <a href="https://kyrylo.org" target="_blank" class="link">Kyrylo Silin</a>
+      PE
+    </p>
   </div>
 </header>
 

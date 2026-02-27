@@ -1,0 +1,33 @@
+<aside class="column">
+  <h2 class="column__header">
+    sinks: <%= @sinks.size %>
+  </h2>
+
+  <% if @sinks.any? %>
+    <ul class="sidebar-list">
+      <% @sinks.each do |sink| %>
+        <%= render "sinks/sink", sink: sink %>
+      <% end %>
+    </ul>
+  <% else %>
+  <div class="column-data">
+    <p class="column-data__text italic">
+      no sinks yet
+    </p>
+  </div>
+  <% end %>
+
+  <div class="mt-1ch column-data">
+    <p class="column-data__text">
+      <% if @sinks.any? %>
+        <%= link_to(
+          new_sink_path,
+          data: { turbo_frame: :dialog },
+          class: "btn btn--secondary"
+        ) do %>
+          new sink
+        <% end %>
+      <% end %>
+    </p>
+  </div>
+</aside>

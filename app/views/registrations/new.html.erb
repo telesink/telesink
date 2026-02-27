@@ -7,7 +7,7 @@
   <h1 class="column__header"><%= title %></h1>
 
   <div class="column-data">
-    <%= form_with(model: @user, url: registration_url, class: "form") do |form| %>
+    <%= form_with(model: @user, url: registration_url, class: "mt-1ch form") do |form| %>
       <div class="form-field">
         <%= form.label :email_address, "email", class: "form-field__label" %>
         <%= form.email_field(

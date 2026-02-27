@@ -7,7 +7,7 @@
   <h1 class="column__header"><%= title %></h1>
 
   <div class="column-data">
-    <%= form_with url: password_path(params[:token]), method: :put, class: "form" do |form| %>
+    <%= form_with url: password_path(params[:token]), method: :put, class: "mt-1ch form" do |form| %>
       <div class="form-field">
         <%= form.label :password, "new password", class: "form-field__label" %>
         <%= form.password_field(

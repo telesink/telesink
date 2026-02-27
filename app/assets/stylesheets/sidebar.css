@@ -1,0 +1,28 @@
+.sidebar-list {
+  margin: 0;
+  padding: 0;
+  list-style-type: none;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.sidebar-list__item {
+  display: flex;
+  justify-content: space-between;
+  padding: 0 var(--space-xs);
+}
+
+.sidebar-list__item--current {
+  font-weight: 700;
+  color: light-dark(var(--color-black), var(--color-white));
+  background-color: light-dark(var(--color-blue-100), var(--color-blue-800));
+}
+
+.sidebar-list__item--current .link {
+  font-weight: 400;
+  color: light-dark(var(--color-slate-400), var(--color-blue-400));
+}
+
+.sidebar-list--empty {
+  padding: var(--space-xs);
+  font-variant: italic;
+}

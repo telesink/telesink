@@ -2,7 +2,7 @@
   position: relative;
   display: inline-flex;
   align-items: center;
-  padding: 0.25em 2em 0.15em 0.5em;
+  padding: 0 2em 0 0.5em;
   font: inherit;
   text-decoration: none;
 
@@ -15,6 +15,25 @@
     font-size: 1.35em;
     line-height: 1;
     color: currentColor;
+  }
+}
+
+.btn--before-content {
+  padding: 0 0.5em 0 2em;
+
+  &:before {
+    content: "‹";
+    position: absolute;
+    left: 0.5em;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 1.35em;
+    line-height: 1;
+    color: currentColor;
+  }
+
+  &:after {
+    content: "";
   }
 }
 
@@ -59,5 +78,27 @@
   &:focus {
     outline: 3px solid light-dark(var(--color-blue-200), var(--color-blue-800));
     border-color: light-dark(var(--color-blue-800), var(--color-blue-300));
+  }
+}
+
+.btn--danger {
+  background-color: light-dark(var(--color-red-700), var(--color-red-800));
+  color: light-dark(var(--color-white), var(--color-white));
+  border: 1px solid light-dark(var(--color-red-900), var(--color-red-700));
+
+  &:hover {
+    background-color: light-dark(var(--color-red-800), var(--color-red-900));
+    border-color: light-dark(var(--color-red-950), var(--color-red-800));
+  }
+
+  &:active {
+    background-color: light-dark(var(--color-red-900), var(--color-red-950));
+    outline: 3px solid light-dark(var(--color-blue-200), var(--color-blue-800));
+    border-color: light-dark(var(--color-red-950), var(--color-red-950));
+  }
+
+  &:focus {
+    outline: 3px solid light-dark(var(--color-blue-200), var(--color-blue-800));
+    border-color: light-dark(var(--color-red-800), var(--color-red-950));
   }
 }

@@ -4,10 +4,26 @@
   white-space: nowrap;
 }
 
-.mt-4 {
-  margin-top: 1rem;
+.mt-1ch {
+  margin-top: 1ch;
 }
 
 .text-xs {
   font-size: var(--text-xs);
+}
+
+.contents {
+  display: contents;
+}
+
+.italic {
+  font-style: italic;
+}
+
+.whitespace-nowrap {
+  white-space: nowrap;
+}
+
+.self-start {
+  align-self: flex-start;
 }

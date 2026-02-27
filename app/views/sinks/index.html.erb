@@ -1,1 +1,23 @@
-Sinks
+<div class="column">
+  <h1 class="column__header">
+    create a sink
+  </h1>
+
+  <div class="column-data">
+    <p class="column-data__text">
+      <strong>Sinks</strong> are live event streams for your product.
+    </p>
+
+    <p class="column-data__text">
+      You decide what to track and how to organize it. Track virtually anything
+      — signups, payments, renewals… whatever matters to you.
+    </p>
+
+    <%= link_to(
+      "create your first sink",
+      new_sink_path,
+      data: { turbo_frame: :dialog },
+      class: "btn btn--primary self-start"
+    ) %>
+  </div>
+</div>

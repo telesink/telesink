@@ -1,0 +1,16 @@
+<li id="<%= dom_id(sink, :list_item) %>" class="sidebar-list__item <%= 'sidebar-list__item--current' if current_page?(sink) %>">
+  <%= link_to_unless_current(
+    sink.name,
+    sink_path(sink),
+    class: "link truncate",
+    title: sink.name,
+    target: "_top"
+  ) %>
+
+  <%= link_to(
+    "edit",
+    edit_sink_path(sink),
+    data: { turbo_frame: :dialog },
+    class: "link link--subtle"
+  ) %>
+</li>

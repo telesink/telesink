@@ -1,3 +1,9 @@
+html,
+body {
+  margin: 0;
+  height: 100%;
+}
+
 body {
   font: var(--text-base) monospace;
   line-height: 1.5;
@@ -29,9 +35,9 @@ body {
 .app {
   display: grid;
   grid-template-columns: var(--sidebar-width) 1fr;
-  margin: 0;
   height: 100vh;
   overflow: hidden;
+  margin: 0;
 }
 
 .main {
@@ -42,26 +48,8 @@ body {
   min-width: 0;
 }
 
-.footer {
+.add-column-column {
   display: flex;
-  flex: 0 0 var(--footer-width);
-  flex-direction: column;
-
-  margin-left: auto;
-  padding: var(--space-xs);
-
-  min-width: 0;
-  height: 100%;
-
-  border-left: 1px solid
-    light-dark(var(--color-gray-200), var(--color-zinc-800));
-
-  overflow-y: auto;
-  box-sizing: border-box;
-  font-size: var(--text-xs);
-}
-
-.footer__inner {
-  margin-top: auto;
-  text-align: center;
+  align-items: center;
+  margin: 0 var(--space-xl);
 }

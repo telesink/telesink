@@ -1,0 +1,14 @@
+.event {
+  word-wrap: break-word;
+  padding: 1ch 2ch;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.event-body {
+}
+
+.event__pre {
+  margin: 0;
+  padding: 0;
+  font-size: var(--text-base);
+}

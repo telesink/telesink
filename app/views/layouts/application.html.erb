@@ -22,13 +22,19 @@
     <%= javascript_importmap_tags %>
   </head>
 
-  <body class="app">
-    <%= render "layouts/nav" %>
+  <body>
+    <div class="app">
+      <%= render "layouts/sidebar" %>
 
-    <main class="main">
-      <%= yield %>
+      <main class="main">
+        <%= turbo_frame_tag :main_content, class: "contents" do %>
+          <%= yield %>
+        <% end %>
 
-      <%= render "layouts/footer" %>
-    </main>
+        <%= render "layouts/footer" %>
+      </main>
+    </div>
+
+    <%= turbo_frame_tag :dialog %>
   </body>
 </html>

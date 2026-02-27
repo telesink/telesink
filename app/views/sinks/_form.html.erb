@@ -1,0 +1,51 @@
+<div data-controller="dialog">
+  <dialog
+    id="<%= dom_id(sink, :sink_dialog) %>"
+    class="dialog"
+    data-dialog-target="dialog"
+    data-action="click->dialog#handleBackdrop cancel->dialog#handleCancel"
+    closedby="any"
+  >
+    <h2 class="dialog__header">
+      <% if sink.persisted? %>
+        edit "<%= sink.name %>"
+      <% else %>
+        add a sink
+      <% end %>
+    </h2>
+
+    <%= form_with(model: sink, class: "form", data: { turbo: false }) do |form| %>
+      <div class="form-field">
+        <%= form.label :name, "name", class: "form-field__label" %>
+        <%= form.text_field :name, required: true, autofocus: true, class: "text-field" %>
+      </div>
+
+      <%= render "shared/banners" %>
+
+      <div>
+        <%= form.button "save", type: :submit, class: "btn btn--primary" %>
+        <button type="button" class="btn btn--secondary" data-action="dialog#close">
+          close
+        </button>
+      </div>
+    <% end %>
+
+    <% if sink.persisted? %>
+      <hr class="divider">
+
+      <details>
+        <summary>more</summary>
+        <%= button_to(
+          "delete",
+          sink_path(sink),
+          method: :delete,
+          data: {
+            turbo_frame: "_top",
+            turbo_confirm: "delete '#{sink.name}' and all its events? this cannot be undone."
+          },
+          class: "btn btn--danger"
+        ) %>
+      </details>
+    <% end %>
+  </dialog>
+</div>
