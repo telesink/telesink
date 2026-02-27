@@ -1,0 +1,15 @@
+.dialog {
+  padding: 1ch 2ch;
+  margin: auto;
+  border: 3px solid light-dark(var(--color-blue-300), var(--color-blue-300));
+
+  &::backdrop {
+    background-color: light-dark(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6));
+  }
+}
+
+.dialog__header {
+  margin: 0;
+  margin-bottom: 1ch;
+  font-size: var(--text-base);
+}
