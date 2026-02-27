@@ -1,6 +1,5 @@
 .divider {
-  margin-top: var(--space-xs);
-  margin-bottom: var(--space-xs);
+  margin: 1ch 0;
   border: none;
-  border-top: 1px solid light-dark(var(--color-gray-200), var(--color-zinc-800));
+  border-top: 1px solid var(--border-color);
 }
