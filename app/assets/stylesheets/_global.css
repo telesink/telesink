@@ -282,10 +282,14 @@
   --space-md: clamp(1rem, 1.6vw, 1.75rem);
   --space-lg: clamp(1.25rem, 2vw, 2.25rem);
   --space-xl: clamp(1.5rem, 2.5vw, 3rem);
+  --space-2xl: clamp(2rem, 3.2vw, 4rem);
+  --space-3xl: clamp(3rem, 4.8vw, 6rem);
 
-  --sidebar-width: clamp(12rem, 16vw, 16.5rem);
-  --column-width: clamp(20rem, 24vw, 26rem);
-  --footer-width: clamp(8rem, 9.5vw, 9.5rem);
+  --sidebar-width: 27ch;
+  --column-width: 50ch;
+  --footer-width: 22ch;
+
+  --border-color: light-dark(var(--color-gray-200), var(--color-zinc-800));
 
   --logo-filter-default: none;
   --logo-filter-hover: saturate(2);
