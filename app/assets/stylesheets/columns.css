@@ -8,6 +8,8 @@
 }
 
 .column__header {
+  display: flex;
+  justify-content: space-between;
   margin: 0;
   padding: 1ch 2ch;
   font-size: var(--text-base);
