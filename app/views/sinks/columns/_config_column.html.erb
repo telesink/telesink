@@ -1,11 +1,37 @@
 <div class="column">
-  <h1 class="column__header">
-    send events to this sink
-  </h1>
+  <div class="column__header">
+    <h1 class="column__title">
+      start sending events to this sink
+    </h1>
+  </div>
 
   <div class="column-data">
     <p class="column-data__text">
-      To start sending events to this sink... TBA.
+      this sink is currently empty. to start sending events, make an HTTP POST
+      request to the URL below:
     </p>
+
+    <input
+      type="text"
+      value=""
+      readonly
+      disabled
+      class="url-input"
+      onclick="this.select();"
+    >
+
+    <p class="column-data__text">
+      Example using curl:
+    </p>
+
+    <pre class="curl-example"><code>curl -X POST ... \
+  -H "Content-Type: application/json" \
+  -d '{
+    "event": "test_event",
+    "user_id": 123,
+    "data": {
+      "message": "Hello from your app!"
+    }
+  }'</code></pre>
   </div>
 </div>
