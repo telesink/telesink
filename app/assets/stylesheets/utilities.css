@@ -12,6 +12,30 @@
   font-size: var(--text-xs);
 }
 
+.text-sm {
+  font-size: var(--text-sm);
+}
+
+.text-base {
+  font-size: var(--text-base);
+}
+
+.text-lg {
+  font-size: var(--text-lg);
+}
+
+.text-xl {
+  font-size: var(--text-xl);
+}
+
+.text-2xl {
+  font-size: var(--text-2xl);
+}
+
+.text-3xl {
+  font-size: var(--text-3xl);
+}
+
 .contents {
   display: contents;
 }
@@ -26,4 +50,8 @@
 
 .self-start {
   align-self: flex-start;
+}
+
+.font-normal {
+  font-weight: 400;
 }
