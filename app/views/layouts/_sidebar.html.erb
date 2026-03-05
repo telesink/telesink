@@ -21,14 +21,12 @@
 
   <div class="mt-1ch column-data">
     <p class="column-data__text">
-      <% if @sinks.any? %>
-        <%= link_to(
-          new_sink_path,
-          data: { turbo_frame: :dialog },
-          class: "btn btn--secondary"
-        ) do %>
-          new sink
-        <% end %>
+      <%= link_to(
+        new_sink_path,
+        data: { turbo_frame: :dialog },
+        class: "btn btn--secondary"
+      ) do %>
+        new sink
       <% end %>
     </p>
   </div>
