@@ -1,7 +1,9 @@
 <aside class="column">
-  <h2 class="column__header">
-    sinks: <%= @sinks.size %>
-  </h2>
+  <div class="column__header">
+    <h2 class="column__title">
+      sinks: <%= @sinks.size %>
+    </h2>
+  </div>
 
   <% if @sinks.any? %>
     <ul class="sidebar-list">

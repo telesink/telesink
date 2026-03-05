@@ -10,11 +10,17 @@
 .column__header {
   display: flex;
   justify-content: space-between;
-  margin: 0;
   padding: 1ch 2ch;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.column__title {
+  display: flex;
+  justify-content: space-between;
+  gap: 1ch;
+  margin: 0;
   font-size: var(--text-base);
   font-weight: 700;
-  border-bottom: 1px solid var(--border-color);
 }
 
 .column-data {

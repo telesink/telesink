@@ -12,4 +12,5 @@
   margin: 0;
   margin-bottom: 1ch;
   font-size: var(--text-base);
+  font-weight: 700;
 }

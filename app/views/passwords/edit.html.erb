@@ -4,7 +4,9 @@
 %>
 
 <div class="column">
-  <h1 class="column__header"><%= title %></h1>
+  <div class="column__header">
+    <h1 class="column__title"><%= title %></h1>
+  </div>
 
   <div class="column-data">
     <%= form_with url: password_path(params[:token]), method: :put, class: "mt-1ch form" do |form| %>
