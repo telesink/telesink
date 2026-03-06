@@ -6,4 +6,8 @@ class User < ApplicationRecord
 
   has_many :sink_memberships, dependent: :destroy
   has_many :sinks, through: :sink_memberships
+
+  def nickname
+    email_address.split("@").first
+  end
 end

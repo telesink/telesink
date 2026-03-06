@@ -1,3 +1,10 @@
+.sidebar-account {
+  display: flex;
+  gap: 1ch;
+  justify-content: space-between;
+  padding: 0 2ch;
+  border-bottom: 1px solid var(--border-color);
+}
 .sidebar-list {
   margin: 0;
   padding: 0;

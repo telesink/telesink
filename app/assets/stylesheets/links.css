@@ -1,6 +1,11 @@
 .link {
+  padding: 0;
+  margin: 0;
+  border: none;
+
   color: light-dark(var(--color-blue-600), var(--color-blue-400));
   text-decoration: none;
+  background: none;
 
   &:hover {
     text-decoration: underline;

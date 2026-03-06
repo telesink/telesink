@@ -55,3 +55,7 @@
 .font-normal {
   font-weight: 400;
 }
+
+.whitespace-nowrap {
+  white-space: nowrap;
+}

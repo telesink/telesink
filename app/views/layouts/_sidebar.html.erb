@@ -1,4 +1,16 @@
 <aside class="column">
+  <div class="sidebar-account">
+    <span class="truncate"><%= Current.user.nickname %></span>
+
+    <%= button_to(
+      "sign out",
+      session_path,
+      method: :delete,
+      data: { turbo_confirm: "sign out?" },
+      class: "link whitespace-nowrap",
+    ) %>
+  </div>
+
   <div class="column__header">
     <h2 class="column__title">
       sinks: <%= @sinks.size %>
