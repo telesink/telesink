@@ -1,16 +1,15 @@
 <% if @sink.columns.any? %>
   <%= render partial: "sinks/columns/column", collection: @sink.columns %>
+
+  <div class="add-column-column">
+    <%= button_to(
+      "add column",
+      sink_columns_path(@sink),
+      method: :post,
+      data: { turbo: false },
+      class: "btn btn--secondary btn--before-content whitespace-nowrap"
+    ) %>
+  </div>
 <% else %>
   <%= render partial: "sinks/columns/config_column" %>
 <% end %>
-
-<div class="add-column-column">
-  <%= button_to(
-    "add column",
-    sink_columns_path(@sink),
-    method: :post,
-    data: { turbo: false },
-    class: "btn btn--secondary btn--before-content whitespace-nowrap"
-  ) %>
-</div>
-
