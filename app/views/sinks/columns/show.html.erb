@@ -1,0 +1,7 @@
+<% if turbo_frame_request_id == "dialog" %>
+  <%= turbo_frame_tag :dialog do %>
+    <%= render "form", sink: @sink, column: @column %>
+  <% end %>
+<% else %>
+  <%= render "sinks/columns/column", column: @column %>
+<% end %>

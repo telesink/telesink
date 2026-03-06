@@ -1,13 +1,44 @@
 <div class="column">
-  <h1 class="column__header">
-    <%= column.name %>
-  </h1>
+  <%= turbo_frame_tag dom_id(column, :events) do %>
+    <div class="column__header">
+      <h2 class="column__title">
+        <%= column.name %>
+      </h2>
 
-    <% 10.times do %>
-    <div class="event">
-      <div class="event-body">
-        📦 event event event
-      </div>
+      <%= link_to(
+        "edit",
+        sink_column_path(sink_id: column.sink.id, column_id: column.id),
+        data: { turbo_frame: :dialog },
+        class: "link link--subtle font-normal"
+      ) %>
     </div>
+
+    <% column.sink.events.order(occurred_at: :desc).each do |event| %>
+      <%= link_to(
+        event_path(event, column_id: column.id),
+        data: { turbo_frame: dom_id(column, :events) },
+        class: "event-preview-card"
+      ) do %>
+
+        <div class="event-preview">
+          <% if event.emoji.present? %>
+            <div class="event-preview__emoji"><%= event.emoji %></div>
+          <% end %>
+
+          <div class="event-preview__content">
+            <div class="event-preview__header">
+              <strong class="event-preview__title"><%= event.event_type.humanize %></strong>
+              <time class="event-preview__time" datetime="<%= event.occurred_at.iso8601 %>">
+                <%= time_ago_in_words(event.occurred_at) %> ago
+              </time>
+            </div>
+            <div class="event-preview__body">
+              <%= truncate(event.text, length: 87, omission: "…") %>
+            </div>
+          </div>
+        </div>
+
+      <% end %>
     <% end %>
-  </div>
+  <% end %>
+</div>

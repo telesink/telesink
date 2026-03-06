@@ -1,0 +1,33 @@
+<%= turbo_frame_tag "events_column_#{@column_id}" do %>
+  <div class="column__header">
+    <h2 class="column__title">
+      <span><%= @event.emoji %></span>
+      <span><%= @event.event_type.humanize %></span>
+    </h2>
+
+    <%= link_to(
+      "close",
+      sink_column_path(sink_id: @event.sink_id, column_id: @column_id),
+      data: { turbo_frame: "events_column_#{@column_id}" },
+      class: "link"
+    ) %>
+  </div>
+
+  <div class="event-detail">
+    <div class="event-detail__meta">
+      <time datetime="<%= @event.occurred_at.iso8601 %>">
+        <%= @event.occurred_at.strftime("%b %d, %Y at %I:%M %p") %>
+      </time>
+    </div>
+
+    <p class="event-detail__body">
+      <%= @event.text %>
+    </p>
+
+    <% if @event.payload.present? %>
+      <div class="event-detail__payload">
+        <%= render "events/payload", payload: @event.payload %>
+      </div>
+    <% end %>
+  </div>
+<% end %>

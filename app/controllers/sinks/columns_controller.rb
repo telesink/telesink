@@ -1,6 +1,8 @@
 class Sinks::ColumnsController < ApplicationController
   include SinkScoped
 
+  before_action :set_column, only: %i[update show destroy]
+
   def create
     @column = @sink.columns.build(name: "all events")
 
@@ -18,5 +20,34 @@ class Sinks::ColumnsController < ApplicationController
     else
       redirect_to @sink, alert: "could not create column."
     end
+  end
+
+  def edit
+  end
+
+  def update
+    if @column.update(column_params)
+      redirect_to @sink
+    else
+      render :edit, status: :unprocessable_entity
+    end
+  end
+
+  def show
+  end
+
+  def destroy
+    @column.destroy
+    redirect_to @sink, status: :see_other
+  end
+
+  private
+
+  def set_column
+    @column = @sink.columns.find(params[:column_id] || params[:id])
+  end
+
+  def column_params
+    params.require(:column).permit(:name)
   end
 end

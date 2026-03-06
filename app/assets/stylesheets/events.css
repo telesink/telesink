@@ -1,14 +1,104 @@
-.event {
-  word-wrap: break-word;
+.event-preview-card {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+
+  &:hover {
+    background-color: light-dark(var(--color-blue-50), var(--color-blue-950));
+  }
+}
+
+.event-preview {
+  display: flex;
+  gap: 1ch;
   padding: 1ch 2ch;
+  border-bottom: 1px solid var(--border-color);
+  word-wrap: break-word;
+}
+
+.event-preview__emoji {
+  width: 2ch;
+  flex-shrink: 0;
+  text-align: center;
+}
+
+.event-preview__content {
+  flex: 1;
+  min-width: 0;
+}
+
+.event-preview__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 1.5ch;
+}
+
+.event-preview__title {
+  font-weight: 600;
+  font-size: var(--text-base);
+  color: var(--text-primary, inherit);
+}
+
+.event-preview__time {
+  font-size: var(--text-sm);
+  color: light-dark(var(--color-gray-400), var(--color-zinc-500));
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.event-preview__body {
+  color: light-dark(var(--color-gray-700), var(--color-zinc-400));
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+}
+
+.event-detail {
+  padding: 0;
+}
+
+.event-detail__meta {
+  padding: 0 2ch;
+  color: light-dark(var(--color-gray-500), var(--color-zinc-400));
+  border-bottom: 1px solid var(--border-color);
+  font-size: var(--text-sm);
+}
+
+.event-detail__body {
+  margin: 0;
+  padding: 1ch 2ch 1ch 2ch;
+  font-size: var(--text-lg);
+}
+
+.event-properties__list {
+  margin: 0;
   border-bottom: 1px solid var(--border-color);
 }
 
-.event-body {
+.event-properties__title {
+  margin: 0;
+  padding: 0 2ch;
+  border-top: 1px solid var(--border-color);
+  border-bottom: 1px solid var(--border-color);
+  font-size: var(--text-base);
 }
 
-.event__pre {
-  margin: 0;
-  padding: 0;
-  font-size: var(--text-base);
+.event-properties__item {
+  padding: 1ch 2ch;
+  background-color: light-dark(transparent, var(--color-zinc-900));
+
+  &:nth-child(even) {
+    background-color: light-dark(var(--color-gray-100), var(--color-zinc-800));
+  }
+}
+
+.event-properties__item-key {
+  font-weight: 700;
+}
+
+.event-properties__item-value {
+  margin: 0 0 0 2ch;
 }

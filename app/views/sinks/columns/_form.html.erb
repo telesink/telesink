@@ -1,0 +1,45 @@
+<div data-controller="dialog">
+  <dialog
+    id="<%= dom_id(sink, :sink_dialog) %>"
+    class="dialog"
+    data-dialog-target="dialog"
+    data-action="click->dialog#handleBackdrop cancel->dialog#handleCancel"
+    closedby="any"
+  >
+    <h2 class="dialog__header">
+      column "<%= column.name %>" options
+    </h2>
+
+    <%= form_with(model: [sink, column], class: "form", data: { turbo: false }) do |form| %>
+      <div class="form-field">
+        <%= form.label :name, "name", class: "form-field__label" %>
+        <%= form.text_field :name, required: true, autofocus: true, class: "text-field" %>
+      </div>
+
+      <%= render "shared/banners" %>
+
+      <div>
+        <%= form.button "save", type: :submit, class: "btn btn--primary" %>
+        <button type="button" class="btn btn--secondary" data-action="dialog#close">
+          close
+        </button>
+      </div>
+    <% end %>
+
+    <hr class="divider">
+
+    <details>
+      <summary>more</summary>
+      <%= button_to(
+        "delete",
+        [sink, column],
+        method: :delete,
+        data: {
+          turbo_frame: "_top",
+          turbo_confirm: "delete '#{column.name}'? events will not be deleted."
+        },
+        class: "btn btn--danger"
+      ) %>
+    </details>
+  </dialog>
+</div>
