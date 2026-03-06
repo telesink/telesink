@@ -6,5 +6,15 @@ class Sink < ApplicationRecord
   has_many :sink_memberships, dependent: :destroy
   has_many :users, through: :sink_memberships
 
-  has_many :columns, dependent: :destroy
+  has_many :columns, -> { order(:position) }, dependent: :destroy
+
+  before_validation :build_default_column, on: :create
+
+  private
+
+  def build_default_column
+    return if columns.any?
+
+    columns.build(name: "all events")
+  end
 end
