@@ -84,6 +84,7 @@
   border-top: 1px solid var(--border-color);
   border-bottom: 1px solid var(--border-color);
   font-size: var(--text-base);
+  color: light-dark(var(--color-gray-400), var(--color-zinc-600));
 }
 
 .event-properties__item {
