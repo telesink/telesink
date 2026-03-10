@@ -4,6 +4,12 @@ Rails.application.routes.draw do
   root "sinks#index"
   get "up" => "rails/health#show", as: :rails_health_check
 
+  namespace :api do
+    namespace :v1 do
+      post "sinks/:token/events", to: "events#create", as: :dsn
+    end
+  end
+
   resource :session
   resources :passwords, param: :token
   resource :registration, only: %i[new create]

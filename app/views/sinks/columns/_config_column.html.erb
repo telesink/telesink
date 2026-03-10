@@ -1,3 +1,5 @@
+<% url = "#{request.base_url}#{api_v1_dsn_path(@sink.token)}" %>
+
 <div class="column">
   <div class="column__header">
     <h1 class="column__title">
@@ -7,31 +9,57 @@
 
   <div class="column-data">
     <p class="column-data__text">
-      This sink is currently empty. to start sending events, make an HTTP POST
-      request to the URL below:
+      This sink is empty. Make an HTTP POST request to the URL below:
     </p>
 
-    <input
-      type="text"
-      value=""
-      readonly
-      disabled
-      class="url-input"
-      onclick="this.select();"
-    >
+    <div class="form-field">
+      <%= label_tag :dsn, "dsn", class: "form-field__label" %>
+      <%= text_field_tag(
+        :dsn,
+        url,
+        readonly: true,
+        class: "text-field",
+        onclick: "this.select()"
+      ) %>
+    </div>
+
+    <%= button_to_copy_to_clipboard(url) { "copy url" } %>
+
+    <hr class="divider">
 
     <p class="column-data__text">
-      Example using curl:
+      To quickly send an event manually, just <a href="https://curl.se/"
+      class="link">curl</a> it like this:
     </p>
 
-    <pre class="curl-example"><code>curl -X POST ... \
-  -H "Content-Type: application/json" \
-  -d '{
-    "event": "test_event",
-    "user_id": 123,
-    "data": {
-      "message": "Hello from your app!"
-    }
-  }'</code></pre>
+    <div class="form-field">
+      <%= label_tag :curl, "curl", class: "form-field__label" %>
+
+
+      <% curl_command = <<~CURL
+curl -X POST #{url} \
+-H "Content-Type: application/json" \
+-d '{
+  "event_type": "user_sign_up",
+  "text": "A new user signed up",
+  "emoji": "👤",
+  "payload": {
+    "user_id": 42,
+    "plan": "premium"
+  }
+}'
+CURL
+%>
+      <%= text_area_tag(
+        :curl,
+        curl_command,
+        readonly: true,
+        class: "text-field text-sm code-field",
+        rows: 10,
+        onclick: "this.select()"
+      ) %>
+    </div>
+
+    <%= button_to_copy_to_clipboard(curl_command) { "copy curl" } %>
   </div>
 </div>

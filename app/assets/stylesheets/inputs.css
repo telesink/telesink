@@ -32,3 +32,9 @@
       light-dark(var(--color-blue-100), var(--color-blue-600));
   }
 }
+
+.code-field {
+  white-space: pre;
+  overflow-x: auto;
+  tab-size: 2;
+}

@@ -1,4 +1,4 @@
-<% if @sink.columns.any? %>
+<% if @sink.events.exists? %>
   <%= render partial: "sinks/columns/column", collection: @sink.columns %>
 
   <div class="add-column-column">
