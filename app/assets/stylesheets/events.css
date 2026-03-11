@@ -11,7 +11,7 @@
 .event-preview {
   display: flex;
   gap: 1ch;
-  padding: 1ch 2ch;
+  padding: 1ch;
   border-bottom: 1px solid var(--border-color);
   word-wrap: break-word;
 }
