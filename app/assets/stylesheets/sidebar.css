@@ -2,7 +2,7 @@
   display: flex;
   gap: 1ch;
   justify-content: space-between;
-  padding: 0 2ch;
+  padding: 0 1ch;
   border-bottom: 1px solid var(--border-color);
 }
 .sidebar-list {
@@ -15,7 +15,7 @@
 .sidebar-list__item {
   display: flex;
   justify-content: space-between;
-  padding: 0 var(--space-xs);
+  padding: 0 1ch;
 }
 
 .sidebar-list__item--current {
@@ -30,6 +30,6 @@
 }
 
 .sidebar-list--empty {
-  padding: var(--space-xs);
+  padding: 1ch;
   font-variant: italic;
 }
