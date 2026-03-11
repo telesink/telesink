@@ -1,5 +1,5 @@
 class SinksController < ApplicationController
-  before_action :set_sinks, only: %i[index show new edit destroy]
+  before_action :set_sinks, only: %i[index show new edit create update destroy]
   before_action :set_sink, only: %i[show edit update destroy]
 
   def index

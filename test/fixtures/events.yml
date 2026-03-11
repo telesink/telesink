@@ -1,0 +1,7 @@
+new_signup:
+  event_type: user.signup
+  sink: telebugs
+  text: A new user has signed up.
+  occurred_at: <%= Time.current %>
+  payload:
+    user_email: newuser@example.com

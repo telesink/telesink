@@ -13,7 +13,7 @@
     <%= form_with(model: [sink, column], class: "form", data: { turbo: false }) do |form| %>
       <div class="form-field">
         <%= form.label :name, "name", class: "form-field__label" %>
-        <%= form.text_field :name, required: true, autofocus: true, class: "text-field" %>
+        <%= form.text_field :name, autofocus: true, class: "text-field" %>
       </div>
 
       <%= render "shared/banners" %>

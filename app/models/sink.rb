@@ -8,6 +8,8 @@ class Sink < ApplicationRecord
 
   has_many :columns, -> { order(:position) }, dependent: :destroy
 
+  validates :name, presence: true
+
   before_validation :build_default_column, on: :create
 
   private

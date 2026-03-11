@@ -59,3 +59,7 @@
 .whitespace-nowrap {
   white-space: nowrap;
 }
+
+.resize-none {
+  resize: none;
+}
