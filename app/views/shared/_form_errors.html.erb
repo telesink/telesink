@@ -1,0 +1,10 @@
+<% if model.errors.any? %>
+  <div class="banner banner--danger">
+    <strong><%= pluralize(model.errors.count, "error") %> prevented saving this <%= model.model_name.human.downcase %>:</strong>
+    <ul class="form-errors">
+      <% model.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+    </ul>
+  </div>
+<% end %>

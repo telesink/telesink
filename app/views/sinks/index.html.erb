@@ -1,6 +1,8 @@
 <div class="column">
   <div class="column__header">
-    <h1 class="column__title">create a sink</h1>
+    <h2 class="column__title">
+      welcome to telesink
+    </h2>
   </div>
 
   <div class="column-data">
@@ -9,15 +11,16 @@
     </p>
 
     <p class="column-data__text">
-      You decide what to track and how to organize it. Track virtually anything
-      — signups, payments, renewals… whatever matters to you.
+      You decide what to track and how to organize it. Track virtually anything:
+      signups, payments, renewals — whatever matters to you.
     </p>
 
-    <%= link_to(
-      "create your first sink",
-      new_sink_path,
-      data: { turbo_frame: :dialog },
-      class: "btn btn--primary self-start"
-    ) %>
+    <p class="column-data__text">
+      Events are sent to your sink from your application via HTTP.
+    </p>
+
+    <p class="column-data__text">
+      Create your first sink by clicking "new sink" on the left.
+    </p>
   </div>
 </div>

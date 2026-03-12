@@ -7,10 +7,12 @@
     target: "_top"
   ) %>
 
-  <%= link_to(
-    "edit",
-    edit_sink_path(sink),
-    data: { turbo_frame: :dialog },
-    class: "link link--subtle"
-  ) %>
+  <% if current_page?(sink) %>
+    <%= link_to(
+      "edit",
+      edit_sink_path(sink),
+      data: { turbo_frame: :sinks },
+      class: "link link--subtle"
+    ) %>
+  <% end %>
 </li>

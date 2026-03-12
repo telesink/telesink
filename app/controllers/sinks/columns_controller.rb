@@ -1,7 +1,7 @@
 class Sinks::ColumnsController < ApplicationController
   include SinkScoped
 
-  before_action :set_column, only: %i[update show destroy]
+  before_action :set_column, only: %i[edit update show destroy]
 
   def create
     @column = @sink.columns.build(name: "all events")
@@ -34,6 +34,7 @@ class Sinks::ColumnsController < ApplicationController
   end
 
   def show
+    @sink = @column.sink
   end
 
   def destroy

@@ -1,0 +1,27 @@
+<%= turbo_frame_tag :sinks do %>
+  <div class="column-data sidebar-account">
+    <p class="column-data__text">
+      <span class="font-bold">sinks:</span>
+    </p>
+  </div>
+
+  <% if @sinks.any? %>
+    <%= render partial: "sink", collection: @sinks %>
+  <% else %>
+    <div class="column-data">
+      <p class="column-data__text italic">no sinks yet</p>
+    </div>
+  <% end %>
+
+  <div class="column-data">
+    <p class="column-data__text">
+      <%= link_to(
+        new_sink_path,
+        data: { turbo_frame: :sinks },
+        class: "btn btn--#{@sinks.any? ? 'secondary' : 'primary'}"
+      ) do %>
+        new sink
+      <% end %>
+    </p>
+  </div>
+<% end %>

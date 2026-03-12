@@ -56,6 +56,10 @@
   font-weight: 400;
 }
 
+.font-bold {
+  font-weight: 700;
+}
+
 .whitespace-nowrap {
   white-space: nowrap;
 }

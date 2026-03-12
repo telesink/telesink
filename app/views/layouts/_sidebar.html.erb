@@ -1,45 +1,17 @@
 <aside class="column">
   <div class="sidebar-account">
-    <span class="truncate"><%= Current.user.nickname %></span>
+    <span class="truncate">@<%= Current.user.nickname %></span>
 
     <%= button_to(
       "sign out",
       session_path,
       method: :delete,
       data: { turbo_confirm: "sign out?" },
-      class: "link whitespace-nowrap",
+      class: "link link--subtle whitespace-nowrap text-base",
     ) %>
   </div>
 
-  <div class="column__header">
-    <h2 class="column__title">
-      sinks: <%= @sinks.size %>
-    </h2>
-  </div>
-
-  <% if @sinks.any? %>
-    <ul class="sidebar-list">
-      <% @sinks.each do |sink| %>
-        <%= render "sinks/sink", sink: sink %>
-      <% end %>
-    </ul>
-  <% else %>
-  <div class="column-data">
-    <p class="column-data__text italic">
-      no sinks yet
-    </p>
-  </div>
+  <%= turbo_frame_tag :sinks do %>
+    <%= render "sinks" %>
   <% end %>
-
-  <div class="mt-1ch column-data">
-    <p class="column-data__text">
-      <%= link_to(
-        new_sink_path,
-        data: { turbo_frame: :dialog },
-        class: "btn btn--secondary"
-      ) do %>
-        new sink
-      <% end %>
-    </p>
-  </div>
 </aside>

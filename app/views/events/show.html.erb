@@ -1,4 +1,4 @@
-<%= turbo_frame_tag "events_column_#{@column_id}" do %>
+<%= turbo_frame_tag dom_id(@column) do %>
   <div class="column__header">
     <h2 class="column__title">
       <span><%= @event.emoji %></span>
@@ -7,8 +7,8 @@
 
     <%= link_to(
       "close",
-      sink_column_path(sink_id: @event.sink_id, column_id: @column_id),
-      data: { turbo_frame: "events_column_#{@column_id}" },
+      sink_column_path(@column.sink, @column),
+      data: { turbo_frame: dom_id(@column) },
       class: "link"
     ) %>
   </div>

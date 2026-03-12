@@ -61,7 +61,7 @@
 }
 
 .event-detail__meta {
-  padding: 0 2ch;
+  padding: 0 1ch;
   color: light-dark(var(--color-gray-500), var(--color-zinc-400));
   border-bottom: 1px solid var(--border-color);
   font-size: var(--text-sm);
@@ -69,8 +69,9 @@
 
 .event-detail__body {
   margin: 0;
-  padding: 3ch 2ch 3ch 2ch;
-  font-size: var(--text-lg);
+  padding: 2ch 1ch 2ch 1ch;
+  background-color: light-dark(var(--color-blue-50), var(--color-blue-950));
+  color: light-dark(var(--color-gray-950), var(--color-blue-50));
 }
 
 .event-properties__list {
@@ -80,7 +81,7 @@
 
 .event-properties__title {
   margin: 0;
-  padding: 0 2ch;
+  padding: 0 1ch;
   border-top: 1px solid var(--border-color);
   border-bottom: 1px solid var(--border-color);
   font-size: var(--text-base);
@@ -88,7 +89,7 @@
 }
 
 .event-properties__item {
-  padding: 1ch 2ch;
+  padding: 1ch 1ch;
   background-color: light-dark(transparent, var(--color-zinc-900));
 
   &:nth-child(even) {
@@ -101,5 +102,5 @@
 }
 
 .event-properties__item-value {
-  margin: 0 0 0 2ch;
+  margin: 0 0 0 1ch;
 }

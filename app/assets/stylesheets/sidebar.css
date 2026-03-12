@@ -2,7 +2,7 @@
   display: flex;
   gap: 1ch;
   justify-content: space-between;
-  padding: 0 1ch;
+  padding: 1ch;
   border-bottom: 1px solid var(--border-color);
 }
 .sidebar-list {
@@ -27,9 +27,4 @@
 .sidebar-list__item--current .link {
   font-weight: 400;
   color: light-dark(var(--color-slate-400), var(--color-blue-400));
-}
-
-.sidebar-list--empty {
-  padding: 1ch;
-  font-variant: italic;
 }

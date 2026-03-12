@@ -3,6 +3,11 @@ class SinksController < ApplicationController
   before_action :set_sink, only: %i[show edit update destroy]
 
   def index
+    if turbo_frame_request? && turbo_frame_request_id == "sinks"
+      render partial: "sinks", layout: false
+      return
+    end
+
     if (first_sink = @sinks.first)
       redirect_to first_sink, status: :see_other
     end
@@ -13,6 +18,9 @@ class SinksController < ApplicationController
 
   def new
     @sink = Sink.new
+
+    @back_path = request.referer.presence
+    @back_path ||= (@sinks.first ? sink_path(@sinks.first) : root_path)
   end
 
   def create
@@ -27,6 +35,7 @@ class SinksController < ApplicationController
   end
 
   def edit
+    @back_path = sink_path(@sink)
   end
 
   def update

@@ -1,5 +1,5 @@
 <div class="column">
-  <%= turbo_frame_tag dom_id(column, :events) do %>
+  <%= turbo_frame_tag dom_id(column) do %>
     <div class="column__header">
       <h2 class="column__title">
         <%= column.name %>
@@ -7,8 +7,8 @@
 
       <%= link_to(
         "edit",
-        sink_column_path(sink_id: column.sink.id, column_id: column.id),
-        data: { turbo_frame: :dialog },
+        edit_sink_column_path(column.sink, column),
+        data: { turbo_frame: dom_id(column) },
         class: "link link--subtle font-normal"
       ) %>
     </div>
@@ -16,7 +16,7 @@
     <% column.sink.events.order(occurred_at: :desc).each do |event| %>
       <%= link_to(
         event_path(event, column_id: column.id),
-        data: { turbo_frame: dom_id(column, :events) },
+        data: { turbo_frame: dom_id(column) },
         class: "event-preview-card"
       ) do %>
 
