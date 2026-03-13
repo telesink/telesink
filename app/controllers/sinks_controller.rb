@@ -14,6 +14,10 @@ class SinksController < ApplicationController
   end
 
   def show
+    if turbo_frame_request? && turbo_frame_request_id == "sinks"
+      render partial: "sinks", layout: false
+      return
+    end
   end
 
   def new
