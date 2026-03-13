@@ -25,7 +25,7 @@ class RegistrationsControllerTest < ActionDispatch::IntegrationTest
       }
     }
 
-    assert_redirected_to new_sink_path
+    assert_redirected_to root_path
     assert cookies[:session_id]
   end
 
