@@ -1,18 +1,22 @@
-<li id="<%= dom_id(sink, :list_item) %>" class="sidebar-list__item <%= 'sidebar-list__item--current' if current_page?(sink) %>">
-  <%= link_to_unless_current(
-    sink.name,
-    sink_path(sink),
-    class: "link truncate",
-    title: sink.name,
-    target: "_top"
-  ) %>
+<li id="<%= dom_id(sink, :list_item) %>" class="sidebar-list__item <%= 'sidebar-list__item--current' if @sink == sink %>">
+  <% if @sink == sink %>
+    <%= sink.name %>
+  <% else %>
+    <%= link_to(
+      sink.name,
+      sink_path(sink),
+      title: sink.name,
+      class: "link truncate",
+      data: { turbo_frame: "_top" },
+    ) %>
+  <% end %>
 
-  <% if current_page?(sink) %>
+  <% if @sink == sink %>
     <%= link_to(
       "edit",
       edit_sink_path(sink),
+      class: "link link--subtle",
       data: { turbo_frame: :sinks },
-      class: "link link--subtle"
     ) %>
   <% end %>
 </li>

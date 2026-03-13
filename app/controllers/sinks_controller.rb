@@ -28,7 +28,16 @@ class SinksController < ApplicationController
 
     if @sink.save
       @sink.users << Current.user unless @sink.users.include?(Current.user)
-      redirect_to @sink
+
+      respond_to do |format|
+        format.turbo_stream do
+          render turbo_stream: [
+            turbo_stream.update(:sinks, partial: "sinks"),
+            turbo_stream.update(:main_content, template: "sinks/show")
+          ]
+        end
+        format.html { redirect_to @sink }
+      end
     else
       render :new, status: :unprocessable_entity
     end

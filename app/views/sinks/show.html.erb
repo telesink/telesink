@@ -1,9 +1,3 @@
-<% if turbo_frame_request? %>
-  <%= turbo_frame_tag :sinks do %>
-    <%= render "sinks" %>
-  <% end %>
-<% end %>
-
 <% if @sink.events.exists? %>
   <%= render partial: "sinks/columns/column", collection: @sink.columns %>
 

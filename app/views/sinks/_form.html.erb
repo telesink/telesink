@@ -16,7 +16,7 @@
 </div>
 
 <div class="column-data">
-  <%= form_with(model: sink, class: "form", data: { turbo_frame: "sinks" }) do |form| %>
+  <%= form_with(model: sink, class: "form") do |form| %>
     <div class="form-field">
       <%= form.label :name, "name", class: "form-field__label" %>
       <%= form.text_field :name, required: true, autofocus: true, class: "text-field" %>

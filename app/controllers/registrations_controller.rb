@@ -13,7 +13,7 @@ class RegistrationsController < ApplicationController
     @user = User.new(user_params)
     if @user.save
       start_new_session_for @user
-      redirect_to new_sink_url
+      redirect_to root_url
     else
       redirect_to new_registration_url, alert: @user.errors.first.full_message
     end
