@@ -6,7 +6,7 @@
   </div>
 
   <% if @sinks.any? %>
-    <%= render partial: "sink", collection: @sinks %>
+    <%= render partial: "sinks/sink", collection: @sinks %>
   <% else %>
     <div class="column-data">
       <p class="column-data__text italic">no sinks yet</p>

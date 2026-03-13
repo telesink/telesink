@@ -33,12 +33,13 @@ class EventsControllerTest < ActionDispatch::IntegrationTest
     @user.sinks.destroy_all
 
     sink = @user.sinks.create!(name: "Test Sink")
+    column = sink.columns.create!(name: "all events")
     event = sink.events.create!(
       event_type: "test_event",
       occurred_at: Time.current
     )
 
-    get event_path(event)
+    get event_path(event), params: { column_id: column.id }
     assert_response :success
   end
 end

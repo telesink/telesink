@@ -4,7 +4,7 @@ class SinksController < ApplicationController
 
   def index
     if turbo_frame_request? && turbo_frame_request_id == "sinks"
-      render partial: "sinks", layout: false
+      render partial: "sinks/sinks", layout: false
       return
     end
 
@@ -15,7 +15,7 @@ class SinksController < ApplicationController
 
   def show
     if turbo_frame_request? && turbo_frame_request_id == "sinks"
-      render partial: "sinks", layout: false
+      render partial: "sinks/sinks", layout: false
       return
     end
   end
