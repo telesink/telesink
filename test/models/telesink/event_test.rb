@@ -16,19 +16,19 @@ class Telesink::EventTest < ActiveSupport::TestCase
     assert_equal "", Telesink::Event.new({}).text
   end
 
-  test "payload" do
-    with_payload = Telesink::Event.new(
-      payload: { score: 100 },
+  test "properties" do
+    with_properties = Telesink::Event.new(
+      properties: { score: 100 },
       event_type: "game",
       token: "abc"
     )
-    assert_equal({ score: 100 }, with_payload.payload)
+    assert_equal({ score: 100 }, with_properties.properties)
 
-    without_payload = Telesink::Event.new(
+    without_properties = Telesink::Event.new(
       event_type: "click",
       token: "secret",
     )
-    assert_equal({}, without_payload.payload)
+    assert_equal({}, without_properties.properties)
   end
 
   test "occurred_at parses string or defaults to Time.current" do

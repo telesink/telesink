@@ -3,5 +3,5 @@ new_signup:
   sink: telebugs
   text: A new user has signed up.
   occurred_at: <%= Time.current %>
-  payload:
+  properties:
     user_email: newuser@example.com

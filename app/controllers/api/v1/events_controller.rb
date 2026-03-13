@@ -10,6 +10,6 @@ class Api::V1::EventsController < Api::V1::BaseController
   private
 
   def event_params
-    params[:event].permit(:event_type, :emoji, :text, payload: {})
+    params[:event].permit(:event_type, :emoji, :text, properties: {})
   end
 end

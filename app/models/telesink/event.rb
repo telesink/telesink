@@ -17,8 +17,8 @@ class Telesink::Event
     @raw[:text].presence || ""
   end
 
-  def payload
-    @raw[:payload].presence || {}
+  def properties
+    @raw[:properties].presence || {}
   end
 
   def occurred_at

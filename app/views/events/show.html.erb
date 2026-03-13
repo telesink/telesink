@@ -24,9 +24,9 @@
       <%= @event.text %>
     </p>
 
-    <% if @event.payload.present? %>
-      <div class="event-detail__payload">
-        <%= render "events/payload", payload: @event.payload %>
+    <% if @event.properties.present? %>
+      <div class="event-detail__properties">
+        <%= render "events/properties", properties: @event.properties %>
       </div>
     <% end %>
   </div>

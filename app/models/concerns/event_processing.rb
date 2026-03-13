@@ -8,7 +8,7 @@ module EventProcessing
         event_type: event.event_type,
         emoji: event.emoji,
         text: event.text,
-        payload: event.payload,
+        properties: event.properties,
         occurred_at: event.occurred_at
       )
     end
