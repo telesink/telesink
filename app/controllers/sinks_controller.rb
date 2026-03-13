@@ -36,7 +36,7 @@ class SinksController < ApplicationController
       respond_to do |format|
         format.turbo_stream do
           render turbo_stream: [
-            turbo_stream.update(:sinks, partial: "sinks"),
+            turbo_stream.update(:sinks, partial: "sinks/sinks"),
             turbo_stream.update(:main_content, template: "sinks/show")
           ]
         end
