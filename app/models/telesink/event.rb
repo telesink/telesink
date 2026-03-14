@@ -10,7 +10,7 @@ class Telesink::Event
   end
 
   def event_type
-    @raw[:event_type].presence || "event"
+    @raw[:event].presence || "event"
   end
 
   def emoji

@@ -3,7 +3,7 @@ require "test_helper"
 class Telesink::EventTest < ActiveSupport::TestCase
   test "event defaults to 'event'" do
     assert_equal "event", Telesink::Event.new({}).event_type
-    assert_equal "user_joined", Telesink::Event.new(event_type: "user_joined").event_type
+    assert_equal "user_joined", Telesink::Event.new(event: "user_joined").event_type
   end
 
   test "emoji defaults to 📌" do
