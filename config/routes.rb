@@ -6,7 +6,7 @@ Rails.application.routes.draw do
 
   namespace :api do
     namespace :v1 do
-      post "sinks/:token/events", to: "events#create", as: :dsn
+      post "sinks/:token/events", to: "events#create", as: :sink_events
     end
   end
 

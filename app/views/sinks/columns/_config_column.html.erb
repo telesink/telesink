@@ -1,4 +1,4 @@
-<% url = "#{request.base_url}#{api_v1_dsn_path(@sink.token)}" %>
+<% url = "#{request.base_url}#{api_v1_sink_events_path(@sink.token)}" %>
 
 <div class="column">
   <div class="column__header">
@@ -13,9 +13,9 @@
     </p>
 
     <div class="form-field">
-      <%= label_tag :dsn, "dsn", class: "form-field__label" %>
+      <%= label_tag :endpoint, "endpoint", class: "form-field__label" %>
       <%= text_field_tag(
-        :dsn,
+        :endpoint,
         url,
         readonly: true,
         class: "text-field",

@@ -2,14 +2,19 @@ class Api::V1::EventsController < Api::V1::BaseController
   include Telesink::Authentication
 
   def create
-    ProcessEventJob.perform_later(@sink, event_params)
+    event = Telesink::Event.new(event_params)
 
-    head :created
+    if event.valid?
+      ProcessEventJob.perform_later(@sink, event_params)
+      head :created
+    else
+      render json: { errors: event.errors.full_messages }, status: :unprocessable_entity
+    end
   end
 
   private
 
   def event_params
-    params[:event].permit(:event_type, :emoji, :text, properties: {})
+    params.permit(:event, :emoji, :text, properties: {})
   end
 end

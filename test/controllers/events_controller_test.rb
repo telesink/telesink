@@ -9,7 +9,8 @@ class EventsControllerTest < ActionDispatch::IntegrationTest
   test "show renders successfully" do
     sink = @user.sinks.first || @user.sinks.create!(name: "Test Sink")
     event = sink.events.create!(
-      event_type: "test_event",
+      event_type:  "test_event",
+      text: "Test event",
       occurred_at: Time.current
     )
 
@@ -22,6 +23,7 @@ class EventsControllerTest < ActionDispatch::IntegrationTest
     foreign_sink = Sink.create!(name: "Foreign Sink")
     event = foreign_sink.events.create!(
       event_type: "test_event",
+      text: "Test event",
       occurred_at: Time.current
     )
 
@@ -36,6 +38,7 @@ class EventsControllerTest < ActionDispatch::IntegrationTest
     column = sink.columns.create!(name: "all events")
     event = sink.events.create!(
       event_type: "test_event",
+      text: "Test event",
       occurred_at: Time.current
     )
 

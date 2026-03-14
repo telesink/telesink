@@ -1,12 +1,16 @@
 class Telesink::Event
+  include ActiveModel::Validations
+
+  validates :text, presence: true
+
   EVENT_KEYS = %i[event_type emoji text occurred_at]
 
   def initialize(payload)
-    @raw = payload
+    @raw = payload.to_h.symbolize_keys
   end
 
   def event_type
-    @raw[:event_type] || "event"
+    @raw[:event_type].presence || "event"
   end
 
   def emoji
@@ -14,7 +18,7 @@ class Telesink::Event
   end
 
   def text
-    @raw[:text].presence || ""
+    @raw[:text].presence
   end
 
   def properties
@@ -22,10 +26,6 @@ class Telesink::Event
   end
 
   def occurred_at
-    if @raw[:occurred_at].present?
-      Time.parse(@raw[:occurred_at])
-    else
-      Time.current
-    end
+    @raw[:occurred_at].present? ? Time.parse(@raw[:occurred_at].to_s) : Time.current
   end
 end
