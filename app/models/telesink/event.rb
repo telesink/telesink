@@ -3,8 +3,6 @@ class Telesink::Event
 
   validates :text, presence: true
 
-  EVENT_KEYS = %i[event_type emoji text occurred_at]
-
   def initialize(payload)
     @raw = payload.to_h.symbolize_keys
   end
