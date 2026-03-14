@@ -40,7 +40,7 @@ class Telesink::EventTest < ActiveSupport::TestCase
   test "is invalid without text" do
     event = Telesink::Event.new(event_type: "test")
     refute event.valid?
-    assert_equal ["Text can't be blank"], event.errors.full_messages
+    assert_equal [ "Text can't be blank" ], event.errors.full_messages
   end
 
   test "is valid with text" do

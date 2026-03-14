@@ -1,7 +1,6 @@
 require "test_helper"
 
 class Api::V1::EventsControllerTest < ActionDispatch::IntegrationTest
-
   test "create successful event" do
     assert_enqueued_jobs 1 do
       post api_v1_sink_events_url(token: sinks(:telebugs).token),
@@ -35,7 +34,7 @@ class Api::V1::EventsControllerTest < ActionDispatch::IntegrationTest
     end
 
     assert_response :unprocessable_entity
-    assert_equal ["Text can't be blank"], response.parsed_body["errors"]
+    assert_equal [ "Text can't be blank" ], response.parsed_body["errors"]
   end
 
   test "create requires valid sink token" do
