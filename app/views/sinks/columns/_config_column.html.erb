@@ -35,27 +35,27 @@
     <div class="form-field">
       <%= label_tag :curl, "curl", class: "form-field__label" %>
 
-
-    <% curl_command = <<~CURL
-curl -X POST #{url} \
-  -H "Content-Type: application/json" \
-  -d '{
-    "event": "user.signed_up",
-    "text": "New user signed up: user@example.com",
-    "emoji": "👤",
-    "properties": {
-      "user_id": 42,
-      "plan": "premium"
-    }
-  }'
-CURL
-%>
+    <%
+      curl_command = [
+        "curl -X POST #{url} \\",
+        '  -H "Content-Type: application/json" \\',
+        "  -d '{",
+        '    "event": "user.signed_up",',
+        '    "text": "New user signed up: user@example.com",',
+        '    "emoji": "👤",',
+        '    "properties": {',
+        '      "user_id": 42,',
+        '      "plan": "premium"',
+        '    }',
+        "  }'"
+      ].join("\n")
+    %>
       <%= text_area_tag(
         :curl,
         curl_command,
         readonly: true,
         class: "text-field text-sm code-field resize-none",
-        rows: 10,
+        rows: 12,
         onclick: "this.select()"
       ) %>
     </div>
