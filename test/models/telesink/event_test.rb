@@ -29,12 +29,16 @@ class Telesink::EventTest < ActiveSupport::TestCase
     assert_equal({}, without_properties.properties)
   end
 
-  test "occurred_at parses string or defaults to Time.current" do
+  test "occurred_at parses valid ISO string to UTC Time or returns nil when missing/blank/invalid" do
     event = Telesink::Event.new(occurred_at: "2026-03-11 12:00:00 UTC")
-    assert_equal Time.parse("2026-03-11 12:00:00 UTC"), event.occurred_at
+    assert_equal Time.parse("2026-03-11 12:00:00 UTC").utc, event.occurred_at
 
-    event = Telesink::Event.new({})
-    assert_in_delta Time.current, event.occurred_at, 1.second
+    assert_nil Telesink::Event.new({}).occurred_at
+    assert_nil Telesink::Event.new(occurred_at: nil).occurred_at
+    assert_nil Telesink::Event.new(occurred_at: "").occurred_at
+    assert_nil Telesink::Event.new(occurred_at: "   ").occurred_at
+
+    assert_nil Telesink::Event.new(occurred_at: "not-a-time").occurred_at
   end
 
   test "is invalid without text" do

@@ -24,6 +24,12 @@ class Telesink::Event
   end
 
   def occurred_at
-    @raw[:occurred_at].present? ? Time.parse(@raw[:occurred_at].to_s) : Time.current
+    @occurred_at ||= begin
+      return if @raw[:occurred_at].blank?
+
+      Time.parse(@raw[:occurred_at].to_s).utc
+    rescue ArgumentError, TypeError => e
+      nil
+    end
   end
 end
