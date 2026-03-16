@@ -25,8 +25,11 @@ class Telesink::EventTest < ActiveSupport::TestCase
     )
     assert_equal({ score: 100 }, with_properties.properties)
 
-    without_properties = Telesink::Event.new(event_type: "click")
+    without_properties = Telesink::Event.new(event: "click")
     assert_equal({}, without_properties.properties)
+
+    assert_predicate with_properties.properties, :frozen?
+    assert_predicate without_properties.properties, :frozen?
   end
 
   test "occurred_at parses valid ISO string to UTC Time or returns nil when missing/blank/invalid" do
@@ -42,7 +45,7 @@ class Telesink::EventTest < ActiveSupport::TestCase
   end
 
   test "is invalid without text" do
-    event = Telesink::Event.new(event_type: "test")
+    event = Telesink::Event.new(event: "test")
     refute event.valid?
     assert_equal [ "Text can't be blank" ], event.errors.full_messages
   end

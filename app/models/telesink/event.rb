@@ -3,32 +3,36 @@ class Telesink::Event
 
   validates :text, presence: true
 
-  def initialize(payload)
-    @raw = payload.to_h.symbolize_keys
+  def initialize(raw = {})
+    @event = raw["event"] || raw[:event]
+    @emoji = raw["emoji"] || raw[:emoji]
+    @text = raw["text"] || raw[:text]
+    @properties = (raw["properties"] || raw[:properties] || {}).dup.freeze
+    @occurred_at_raw = raw["occurred_at"] || raw[:occurred_at]
   end
 
   def event_type
-    @raw[:event].presence || "event"
+    @event.presence || "event"
   end
 
   def emoji
-    @raw[:emoji].presence || "📌"
+    @emoji.presence || "📌"
   end
 
   def text
-    @raw[:text].presence
+    @text.presence
   end
 
   def properties
-    @raw[:properties].presence || {}
+    @properties
   end
 
   def occurred_at
     @occurred_at ||= begin
-      return if @raw[:occurred_at].blank?
+      return if @occurred_at_raw.blank?
 
-      Time.parse(@raw[:occurred_at].to_s).utc
-    rescue ArgumentError, TypeError => e
+      Time.parse(@occurred_at_raw.to_s).utc
+    rescue ArgumentError, TypeError
       nil
     end
   end
