@@ -27,6 +27,7 @@ gem "bcrypt", "~> 3.1.7"
 gem "solid_cache"
 gem "solid_cable"
 gem "inline_svg"
+gem "sentry-rails"
 
 group :development, :test do
   gem "brakeman", require: false
