@@ -10,7 +10,9 @@ module EventProcessing
         text: event.text,
         properties: event.properties,
         occurred_at: event.occurred_at || Time.current,
-        idempotency_key: event.idempotency_key
+        idempotency_key: event.idempotency_key,
+        sdk_name: event.sdk_name,
+        sdk_version: event.sdk_version
       )
     end
   end

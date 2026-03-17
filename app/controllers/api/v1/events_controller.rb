@@ -16,8 +16,9 @@ class Api::V1::EventsController < Api::V1::BaseController
 
   def event_params
     params.permit(
-      :event, :emoji, :text, :occurred_at, :idempotency_key,
-      :token, properties: {}
+      :event, :emoji, :text, :occurred_at, :idempotency_key, :token,
+      properties: {},
+      sdk: [ :name, :version ]
     )
   end
 end

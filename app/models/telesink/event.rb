@@ -10,6 +10,10 @@ class Telesink::Event
     @properties = (raw[:properties] || {}).dup.freeze
     @occurred_at_raw = raw[:occurred_at]
     @idempotency_key = raw[:idempotency_key]
+
+    sdk = raw[:sdk] || {}
+    @sdk_name = sdk[:name]
+    @sdk_version = sdk[:version]
   end
 
   def event_type
@@ -40,5 +44,13 @@ class Telesink::Event
 
   def idempotency_key
     @idempotency_key.presence
+  end
+
+  def sdk_name
+    @sdk_name
+  end
+
+  def sdk_version
+    @sdk_version
   end
 end
