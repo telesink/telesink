@@ -3,12 +3,13 @@ class Telesink::Event
 
   validates :text, presence: true
 
-  def initialize(raw = {})
-    @event = raw["event"] || raw[:event]
-    @emoji = raw["emoji"] || raw[:emoji]
-    @text = raw["text"] || raw[:text]
-    @properties = (raw["properties"] || raw[:properties] || {}).dup.freeze
-    @occurred_at_raw = raw["occurred_at"] || raw[:occurred_at]
+  def initialize(raw)
+    @event = raw[:event]
+    @emoji = raw[:emoji]
+    @text = raw[:text]
+    @properties = (raw[:properties] || {}).dup.freeze
+    @occurred_at_raw = raw[:occurred_at]
+    @idempotency_key = raw[:idempotency_key]
   end
 
   def event_type
@@ -35,5 +36,9 @@ class Telesink::Event
     rescue ArgumentError, TypeError
       nil
     end
+  end
+
+  def idempotency_key
+    @idempotency_key.presence
   end
 end

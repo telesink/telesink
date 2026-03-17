@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_03_16_083147) do
+ActiveRecord::Schema[8.1].define(version: 2026_03_17_055212) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -29,13 +29,15 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_16_083147) do
     t.datetime "created_at", null: false
     t.string "emoji", limit: 8, default: "📌", null: false
     t.string "event_type", null: false
-    t.datetime "occurred_at"
+    t.string "idempotency_key"
+    t.datetime "occurred_at", null: false
     t.jsonb "properties", default: {}, null: false
     t.bigint "sink_id", null: false
     t.text "text", null: false
     t.datetime "updated_at", null: false
     t.index ["event_type"], name: "index_events_on_event_type"
     t.index ["properties"], name: "index_events_on_properties", using: :gin
+    t.index ["sink_id", "idempotency_key"], name: "index_events_on_sink_id_and_idempotency_key", unique: true
     t.index ["sink_id", "occurred_at"], name: "index_events_on_sink_id_and_occurred_at", order: { occurred_at: :desc }
     t.index ["sink_id"], name: "index_events_on_sink_id"
   end

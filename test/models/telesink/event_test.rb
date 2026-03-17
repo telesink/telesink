@@ -2,17 +2,17 @@ require "test_helper"
 
 class Telesink::EventTest < ActiveSupport::TestCase
   test "event defaults to 'event'" do
-    assert_equal "event", Telesink::Event.new({}).event_type
+    assert_equal "event", Telesink::Event.new({}.with_indifferent_access).event_type
     assert_equal "user_joined", Telesink::Event.new(event: "user_joined").event_type
   end
 
   test "emoji defaults to 📌" do
-    assert_equal "📌", Telesink::Event.new({}).emoji
+    assert_equal "📌", Telesink::Event.new({}.with_indifferent_access).emoji
     assert_equal "🚀", Telesink::Event.new(emoji: "🚀").emoji
   end
 
   test "text returns nil when missing or blank (no longer defaults to empty string)" do
-    assert_nil Telesink::Event.new({}).text
+    assert_nil Telesink::Event.new({}.with_indifferent_access).text
     assert_nil Telesink::Event.new(text: "").text
     assert_nil Telesink::Event.new(text: "   ").text
     assert_equal "Hello there", Telesink::Event.new(text: "Hello there").text

@@ -9,7 +9,8 @@ module EventProcessing
         emoji: event.emoji,
         text: event.text,
         properties: event.properties,
-        occurred_at: event.occurred_at
+        occurred_at: event.occurred_at || Time.current,
+        idempotency_key: event.idempotency_key
       )
     end
   end

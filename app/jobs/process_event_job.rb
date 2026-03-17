@@ -2,6 +2,12 @@ class ProcessEventJob < ApplicationJob
   queue_as :events
 
   def perform(sink, payload)
-    EventProcessing.process_event(sink, Telesink::Event.new(payload))
+    event = Telesink::Event.new(payload)
+
+    if event.idempotency_key && Event.exists?(sink_id: sink.id, idempotency_key: event.idempotency_key)
+      return
+    end
+
+    EventProcessing.process_event(sink, event)
   end
 end
