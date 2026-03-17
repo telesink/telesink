@@ -1,4 +1,7 @@
-<% url = "#{request.base_url}#{api_v1_sink_events_path(@sink.token)}" %>
+<%
+  url = "#{request.base_url}#{api_v1_sink_events_path(@sink.token)}"
+  occurred_at = Time.current.utc.iso8601
+%>
 
 <div class="column">
   <div class="column__header">
@@ -35,29 +38,30 @@
     <div class="form-field">
       <%= label_tag :curl, "curl", class: "form-field__label" %>
 
-    <%
-      curl_command = [
-        "curl -X POST #{url} \\",
-        '  -H "Content-Type: application/json" \\',
-        "  -d '{",
-        '    "event": "user.signed_up",',
-        '    "text": "New user signed up: user@example.com",',
-        '    "emoji": "👤",',
-        '    "properties": {',
-        '      "user_id": 42,',
-        '      "plan": "premium"',
-        '    },',
-        '    "occurred_at": "' + Time.current.utc.iso8601 + '",',
-        '    "idempotency_key": "user.signed_up:42"
-        "  }'"
-      ].join("\n")
-    %>
+      <%
+        curl_command = <<~CURL
+          curl -X POST #{url} \\
+            -H "Content-Type: application/json" \\
+            -d '{
+              "event": "user.signed_up",
+              "text": "New user signed up: user@example.com",
+              "emoji": "👤",
+              "properties": {
+                "user_id": 42,
+                "plan": "premium"
+              },
+              "occurred_at": "#{occurred_at}",
+              "idempotency_key": "user.signed_up:42"
+            }'
+        CURL
+      %>
+
       <%= text_area_tag(
         :curl,
         curl_command,
         readonly: true,
         class: "text-field text-sm code-field resize-none",
-        rows: 13,
+        rows: 14,
         onclick: "this.select()"
       ) %>
     </div>
