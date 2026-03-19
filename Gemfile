@@ -27,6 +27,7 @@ gem "bcrypt", "~> 3.1.7"
 gem "solid_cache"
 gem "solid_cable"
 gem "sentry-rails"
+gem "rack-cors"
 
 group :development, :test do
   gem "brakeman", require: false
