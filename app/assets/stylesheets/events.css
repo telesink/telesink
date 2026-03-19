@@ -11,6 +11,7 @@
 .event-preview {
   display: flex;
   gap: 1ch;
+  height: 7ch;
   padding: 1ch;
   border-bottom: 1px solid var(--border-color);
   word-wrap: break-word;
@@ -48,12 +49,12 @@
 }
 
 .event-preview__body {
-  color: light-dark(var(--color-gray-700), var(--color-zinc-400));
   overflow: hidden;
   display: -webkit-box;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
   line-clamp: 2;
+  color: light-dark(var(--color-gray-700), var(--color-zinc-400));
 }
 
 .event-detail {
