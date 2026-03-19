@@ -43,12 +43,12 @@
           curl -X POST #{url} \\
             -H "Content-Type: application/json" \\
             -d '{
-              "event": "user.signed_up",
-              "text": "New user signed up: user@example.com",
+              "event": "user.signed.up",
+              "text": "user@example.com",
               "emoji": "👤",
               "properties": {
                 "user_id": 42,
-                "plan": "premium"
+                "email_address": "user@example.com"
               },
               "occurred_at": "#{occurred_at}",
               "idempotency_key": "user.signed_up:42"
