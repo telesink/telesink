@@ -28,8 +28,12 @@
           <div class="event-preview__content">
             <div class="event-preview__header">
               <strong class="event-preview__title"><%= event.event_type.humanize %></strong>
-              <time class="event-preview__time" datetime="<%= event.occurred_at.iso8601 %>">
-                <%= time_ago_in_words(event.occurred_at) %> ago
+              <time
+                data-controller="time-formatter"
+                class="event-preview__time"
+                datetime="<%= event.occurred_at.iso8601 %>"
+                title="<%= event.occurred_at.iso8601 %>"
+              >
               </time>
             </div>
             <div class="event-preview__body">
