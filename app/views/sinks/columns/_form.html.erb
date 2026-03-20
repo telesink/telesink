@@ -12,16 +12,47 @@
 </div>
 
 <div class="column-data">
-  <%= form_with(model: [sink, column], class: "form") do |form| %>
+  <%= form_with(
+    model: [sink, column],
+    namespace: dom_id(column),
+    class: "form"
+  ) do |form| %>
     <div class="form-field">
       <%= form.label :name, "name", class: "form-field__label" %>
       <%= form.text_field :name, autofocus: true, class: "text-field" %>
     </div>
 
+    <div class="form-field">
+      <%= form.label :event_types, "filter by event", class: "form-field__label" %>
+      <%= form.select(
+        :event_types,
+        options_for_select(@available_event_types.map { |t| [t.humanize, t] }, column.event_types),
+        {
+          include_blank: "(show all events)"
+        },
+        {
+          multiple: true,
+          size: 8,
+          class: "text-field"
+        }
+      ) %>
+      <small class="form-field__help">hold ctrl/cmd to select multiple events</small>
+    </div>
+
+    <div class="form-field">
+      <%= form.label :search, "filter by text", class: "form-field__label" %>
+      <%= form.search_field(
+        :search,
+        value: column.search_term,
+        class: "text-field"
+      ) %>
+      <small class="form-field__help">case-insensitive, can be empty</small>
+    </div>
+
     <%= render "shared/banners" %>
 
     <div>
-      <%= form.button "save", type: :submit, class: "btn btn--primary" %>
+      <%= form.button "save column", type: :submit, class: "btn btn--primary" %>
     </div>
   <% end %>
 

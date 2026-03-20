@@ -13,7 +13,7 @@
       ) %>
     </div>
 
-    <% events.order(occurred_at: :desc).each do |event| %>
+    <% column.recent_events.each do |event| %>
       <%= link_to(
         event_path(event, column_id: column.id),
         data: { turbo_frame: dom_id(column) },

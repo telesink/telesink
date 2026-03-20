@@ -12,6 +12,10 @@
   font-weight: 700;
 }
 
+.form-field__help {
+  font-style: italic;
+}
+
 .text-field {
   font: inherit;
   box-sizing: border-box;

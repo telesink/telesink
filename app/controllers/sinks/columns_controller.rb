@@ -12,10 +12,7 @@ class Sinks::ColumnsController < ApplicationController
           render turbo_stream: turbo_stream.append(
             "columns-container",
             partial: "sinks/columns/column",
-            locals: {
-              column: @column,
-              events: @sink.events.order(occurred_at: :desc).limit(50)
-            }
+            locals: { column: @column }
           )
         end
         format.html { redirect_to @sink }
@@ -26,19 +23,47 @@ class Sinks::ColumnsController < ApplicationController
   end
 
   def edit
+    @available_event_types = @column.sink.events.distinct.pluck(:event_type).sort
   end
 
   def update
-    if @column.update(column_params)
-      redirect_to @sink
+    @column.assign_attributes(column_params.except(:event_types, :search))
+
+    @column.config ||= {}
+    @column.config["filters"] = {
+      "event_types" => Array(params.dig(:column, :event_types)).reject(&:blank?),
+      "search" => params.dig(:column, :search).to_s.strip.presence
+    }.compact_blank
+
+    if @column.save
+      respond_to do |format|
+        format.turbo_stream do
+          render turbo_stream: turbo_stream.replace(
+            @column,
+            partial: "sinks/columns/column",
+            locals: { column: @column }
+          )
+        end
+        format.html { redirect_to @sink }
+      end
     else
+      @available_event_types = @column.sink.events.distinct.pluck(:event_type).sort
       render :edit, status: :unprocessable_entity
     end
   end
 
   def show
     @sink = @column.sink
-    @events = @sink.events.order(occurred_at: :desc).limit(50)
+    respond_to do |format|
+      format.turbo_stream do
+        render turbo_stream: turbo_stream.replace(
+          dom_id(@column),
+          partial: "sinks/columns/column",
+          locals: { column: @column }
+        )
+      end
+      format.html { redirect_to @sink }
+    end
   end
 
   def destroy
@@ -53,6 +78,6 @@ class Sinks::ColumnsController < ApplicationController
   end
 
   def column_params
-    params.require(:column).permit(:name)
+    params.require(:column).permit(:name, event_types: [], search: nil)
   end
 end

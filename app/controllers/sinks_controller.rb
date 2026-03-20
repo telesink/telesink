@@ -17,8 +17,6 @@ class SinksController < ApplicationController
     if turbo_frame_request? && turbo_frame_request_id == "sinks"
       render partial: "sinks/sinks", layout: false
     end
-
-    @events = @sink.events.order(occurred_at: :desc).limit(50)
   end
 
   def new

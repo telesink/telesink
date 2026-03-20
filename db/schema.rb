@@ -10,9 +10,10 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_03_17_124113) do
+ActiveRecord::Schema[8.1].define(version: 2026_03_20_101852) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
+  enable_extension "pg_trgm"
 
   create_table "columns", force: :cascade do |t|
     t.jsonb "config"
@@ -42,6 +43,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_17_124113) do
     t.index ["sink_id", "idempotency_key"], name: "index_events_on_sink_id_and_idempotency_key", unique: true
     t.index ["sink_id", "occurred_at"], name: "index_events_on_sink_id_and_occurred_at", order: { occurred_at: :desc }
     t.index ["sink_id"], name: "index_events_on_sink_id"
+    t.index ["text"], name: "index_events_on_text_trgm", opclass: :gin_trgm_ops, using: :gin
   end
 
   create_table "sessions", force: :cascade do |t|

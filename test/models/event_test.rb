@@ -1,4 +1,3 @@
-# test/models/event_test.rb
 require "test_helper"
 
 class EventTest < ActiveSupport::TestCase
@@ -65,5 +64,78 @@ class EventTest < ActiveSupport::TestCase
 
     assert_not event.valid?
     assert_includes event.errors[:sink], "must exist"
+  end
+
+  test "for_column returns all events when column has no filters" do
+    columns(:all_telebugs).update!(config: { "filters" => {} })
+
+    events = Event.for_column(columns(:all_telebugs))
+    assert_equal 6, events.size
+  end
+
+  test "for_column filters by single event_type" do
+    columns(:all_telebugs).update!(config: {
+      "filters" => { "event_types" => [ "user.signup" ] }
+    })
+
+    events = Event.for_column(columns(:all_telebugs))
+    assert_equal 3, events.size
+    assert events.all? { |e| e.event_type == "user.signup" }
+  end
+
+  test "for_column filters by multiple event_types" do
+    columns(:all_telebugs).update!(config: {
+      "filters" => { "event_types" => [ "user.signup", "payment.succeeded" ] }
+    })
+
+    events = Event.for_column(columns(:all_telebugs))
+    assert_equal 4, events.size
+  end
+
+  test "for_column filters by search term" do
+    columns(:all_telebugs).update!(config: {
+      "filters" => { "search" => "premium" }
+    })
+
+    events = Event.for_column(columns(:all_telebugs))
+    assert_equal 3, events.size
+    assert events.all? { |e| e.text.downcase.include?("premium") }
+  end
+
+  test "for_column combines event_type + search filters" do
+    columns(:all_telebugs).update!(config: {
+      "filters" => {
+        "event_types" => [ "user.signup" ],
+        "search" => "premium"
+      }
+    })
+
+    events = Event.for_column(columns(:all_telebugs))
+    assert_equal 1, events.size
+    assert_equal events(:premium_signup), events.first
+  end
+
+  test "for_column handles nil config gracefully" do
+    columns(:all_telebugs).update!(config: nil)
+
+    events = Event.for_column(columns(:all_telebugs))
+    assert_equal 6, events.size
+  end
+
+  test "for_column always orders by occurred_at DESC" do
+    columns(:all_telebugs).update!(config: { "filters" => {} })
+
+    events = Event.for_column(columns(:all_telebugs))
+    times = events.map(&:occurred_at)
+    assert_equal times.sort.reverse, times
+  end
+
+  test "Column#recent_events applies filters and respects limit" do
+    columns(:all_telebugs).update!(config: {
+      "filters" => { "search" => "premium" }
+    })
+
+    events = columns(:all_telebugs).recent_events(limit: 2)
+    assert_equal 2, events.size
   end
 end
