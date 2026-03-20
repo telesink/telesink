@@ -1,5 +1,7 @@
 import { Controller } from "@hotwired/stimulus";
 
+const MILLISECONDS_PER_DAY = 86_400_000;
+
 export default class extends Controller {
   connect() {
     this.#update();
@@ -25,10 +27,9 @@ export default class extends Controller {
       });
     }
 
-    const yesterday = new Date(now);
-    yesterday.setDate(yesterday.getDate() - 1);
-    if (date.toDateString() === yesterday.toDateString()) {
-      return "Yesterday";
+    const diffDays = Math.floor((now - date) / MILLISECONDS_PER_DAY);
+    if (diffDays < 7) {
+      return date.toLocaleDateString([], { weekday: "short" });
     }
 
     const options =
