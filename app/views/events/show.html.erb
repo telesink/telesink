@@ -18,6 +18,8 @@
       <time datetime="<%= @event.occurred_at.iso8601 %>">
         <%= @event.occurred_at.strftime("%b %d, %Y at %I:%M %p") %>
       </time>
+
+      #<%= @event.id %>
     </div>
 
     <p class="event-detail__body">
