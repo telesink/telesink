@@ -35,6 +35,7 @@ class Sinks::ColumnsController < ApplicationController
 
   def show
     @sink = @column.sink
+    @events = @sink.events.order(occurred_at: :desc).limit(50)
   end
 
   def destroy
