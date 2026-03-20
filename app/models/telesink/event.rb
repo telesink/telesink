@@ -36,7 +36,7 @@ class Telesink::Event
     @occurred_at ||= begin
       return if @occurred_at_raw.blank?
 
-      Time.parse(@occurred_at_raw.to_s).utc
+      Time.iso8601(@occurred_at_raw.to_s).utc
     rescue ArgumentError, TypeError
       nil
     end
