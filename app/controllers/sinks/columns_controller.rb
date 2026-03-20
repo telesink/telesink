@@ -12,7 +12,10 @@ class Sinks::ColumnsController < ApplicationController
           render turbo_stream: turbo_stream.append(
             "columns-container",
             partial: "sinks/columns/column",
-            locals: { column: @column }
+            locals: {
+              column: @column,
+              events: @sink.events.order(occurred_at: :desc).limit(50)
+            }
           )
         end
         format.html { redirect_to @sink }

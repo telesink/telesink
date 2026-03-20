@@ -1,5 +1,11 @@
 <% if @sink.events.exists? %>
-  <%= render partial: "sinks/columns/column", collection: @sink.columns %>
+  <%= render(
+    partial: "sinks/columns/column",
+    collection: @sink.columns,
+    locals: {
+      events: @events,
+    }
+  ) %>
 
   <div class="add-column-column">
     <%= button_to(
