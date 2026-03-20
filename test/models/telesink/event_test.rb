@@ -33,8 +33,8 @@ class Telesink::EventTest < ActiveSupport::TestCase
   end
 
   test "occurred_at parses valid ISO string to UTC Time or returns nil when missing/blank/invalid" do
-    event = Telesink::Event.new(occurred_at: "2026-03-11 12:00:00 UTC")
-    assert_equal Time.parse("2026-03-11 12:00:00 UTC").utc, event.occurred_at
+    event = Telesink::Event.new(occurred_at: "2026-03-20T09:55:00.480Z")
+    assert_equal Time.parse("2026-03-20T09:55:00.480Z").utc, event.occurred_at
 
     assert_nil Telesink::Event.new({}).occurred_at
     assert_nil Telesink::Event.new(occurred_at: nil).occurred_at
