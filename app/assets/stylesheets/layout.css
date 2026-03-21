@@ -26,9 +26,20 @@ body {
     filter: var(--logo-filter-active);
   }
 
+  --size: 24px;
+
+  > picture {
+    display: block;
+    width: var(--size);
+    height: var(--size);
+    flex-shrink: 0;
+  }
+
+  picture img,
   img {
-    height: var(--space-base);
-    width: var(--space-base);
+    width: var(--size);
+    height: var(--size);
+    object-fit: contain;
   }
 }
 
