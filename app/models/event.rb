@@ -25,4 +25,21 @@ class Event < ApplicationRecord
 
     rel.order(occurred_at: :desc)
   }
+
+  after_create_commit :broadcast_to_matching_columns
+
+  private
+
+  def broadcast_to_matching_columns
+    sink.columns.each do |column|
+      next unless column.matches_event?(self)
+
+      Turbo::StreamsChannel.broadcast_prepend_to(
+        sink,
+        target: "events_list_#{column.id}",
+        partial: "events/preview_card",
+        locals: { event: self, column: column }
+      )
+    end
+  end
 end
