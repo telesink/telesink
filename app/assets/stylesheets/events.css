@@ -107,3 +107,19 @@
 .event-properties__item-value {
   margin: 0 0 0 1ch;
 }
+
+.event-preview--new-event {
+  animation: newEventHighlight 500ms 0ms ease-out forwards;
+}
+
+@keyframes newEventHighlight {
+  from {
+    background-color: light-dark(
+      var(--color-yellow-100),
+      var(--color-blue-800)
+    );
+  }
+  to {
+    background-color: transparent;
+  }
+}

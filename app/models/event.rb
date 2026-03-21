@@ -38,7 +38,7 @@ class Event < ApplicationRecord
         sink,
         target: "events_list_#{column.id}",
         partial: "events/preview_card",
-        locals: { event: self, column: column }
+        locals: { event: self, column: column, new_event: true }
       )
     end
   end

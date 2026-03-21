@@ -4,7 +4,7 @@
   class: "event-preview-card"
 ) do %>
 
-  <div class="event-preview">
+  <div class="event-preview <%= 'event-preview--new-event' if local_assigns[:new_event] %>">
     <% if event.emoji.present? %>
       <div class="event-preview__emoji"><%= event.emoji %></div>
     <% end %>
