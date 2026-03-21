@@ -109,7 +109,7 @@
 }
 
 .event-preview--new-event {
-  animation: newEventHighlight 500ms 0ms ease-out forwards;
+  animation: newEventHighlight 3000ms ease-out forwards;
 }
 
 @keyframes newEventHighlight {
