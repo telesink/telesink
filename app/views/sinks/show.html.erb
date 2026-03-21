@@ -1,3 +1,5 @@
+<%= turbo_stream_from @sink %>
+
 <% if @sink.events.exists? %>
   <%= render(
     partial: "sinks/columns/column",

@@ -28,6 +28,7 @@ gem "solid_cache"
 gem "solid_cable"
 gem "sentry-rails"
 gem "rack-cors"
+gem "telesink"
 
 group :development, :test do
   gem "brakeman", require: false

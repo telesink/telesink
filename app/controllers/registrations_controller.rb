@@ -12,6 +12,15 @@ class RegistrationsController < ApplicationController
   def create
     @user = User.new(user_params)
     if @user.save
+      Telesink.track(
+        event: "user.signed_up",
+        text: @user.email_address,
+        emoji: "👤",
+        properties: {
+          user_id: @user.id,
+          email_address: @user.email_address
+        }
+      )
       start_new_session_for @user
       redirect_to root_url
     else
