@@ -5,6 +5,7 @@ class Sinks::ColumnsController < ApplicationController
 
   def create
     @column = @sink.columns.build(name: "all events")
+    @column.has_events = @sink.events.exists?
 
     if @column.save
       respond_to do |format|

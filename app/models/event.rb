@@ -34,12 +34,24 @@ class Event < ApplicationRecord
     sink.columns.each do |column|
       next unless column.matches_event?(self)
 
-      Turbo::StreamsChannel.broadcast_prepend_to(
-        sink,
-        target: "events_list_#{column.id}",
-        partial: "events/preview_card",
-        locals: { event: self, column: column, new_event: true }
-      )
+      if column.has_events?
+        Turbo::StreamsChannel.broadcast_prepend_to(
+          sink,
+          target: "events_list_#{column.id}",
+          partial: "events/preview_card",
+          locals: { event: self, column: column, new_event: true }
+        )
+
+      else
+        column.update_column(:has_events, true)
+
+        Turbo::StreamsChannel.broadcast_replace_to(
+          sink,
+          target: column,
+          partial: "sinks/columns/column",
+          locals: { event: self, column: column, new_event: true }
+        )
+      end
     end
   end
 end

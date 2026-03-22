@@ -1,20 +1,18 @@
 <%= turbo_stream_from @sink %>
 
-<% if @sink.events.exists? %>
+<% @sink.columns.order(:position).each do |column| %>
   <%= render(
-    partial: "sinks/columns/column",
-    collection: @sink.columns
+    partial: column.has_events? ? "sinks/columns/column" : "sinks/columns/config_column",
+    locals: { column: column }
   ) %>
-
-  <div class="add-column-column">
-    <%= button_to(
-      "add column",
-      sink_columns_path(@sink),
-      method: :post,
-      data: { turbo: false },
-      class: "btn btn--secondary btn--before-content whitespace-nowrap"
-    ) %>
-  </div>
-<% else %>
-  <%= render partial: "sinks/columns/config_column" %>
 <% end %>
+
+<div class="add-column-column">
+  <%= button_to(
+    "add column",
+    sink_columns_path(@sink),
+    method: :post,
+    data: { turbo: false },
+    class: "btn btn--secondary btn--before-content whitespace-nowrap"
+  ) %>
+</div>

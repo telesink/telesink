@@ -15,7 +15,14 @@
 
     <div id="events_list_<%= column.id %>" class="events-list">
       <% column.recent_events.each do |event| %>
-        <%= render "events/preview_card", event: event, column: column %>
+        <% new_event = local_assigns[:new_event] %>
+
+        <%= render(
+          "events/preview_card",
+          event: event,
+          column: column,
+          new_event: new_event,
+        ) %>
       <% end %>
     </div>
   <% end %>

@@ -1,42 +1,39 @@
 <%
-  url = "#{request.base_url}#{api_v1_sink_events_path(@sink.token)}"
+  url = "#{request.base_url}#{api_v1_sink_events_path(column.sink.token)}"
   occurred_at = Time.current.utc.iso8601
 %>
 
 <div class="column">
-  <div class="column__header">
-    <h1 class="column__title">
-      start sending events to this sink
-    </h1>
-  </div>
-
-  <div class="column-data">
-    <p class="column-data__text">
-      This sink is empty. Make an HTTP POST request to the URL below:
-    </p>
-
-    <div class="form-field">
-      <%= label_tag :endpoint, "endpoint", class: "form-field__label" %>
-      <%= text_field_tag(
-        :endpoint,
-        url,
-        readonly: true,
-        class: "text-field",
-        onclick: "this.select()"
-      ) %>
+  <%= turbo_frame_tag dom_id(column) do %>
+    <div class="column__header">
+      <h1 class="column__title">
+        <%= column.name %>
+      </h1>
     </div>
 
-    <%= button_to_copy_to_clipboard(url) { "copy url" } %>
+    <div class="column-data">
+      <p class="column-data__text">
+        This column is empty. Make an HTTP POST request to the URL below:
+      </p>
 
-    <hr class="divider">
+      <div class="form-field">
+        <%= label_tag :endpoint, "endpoint", class: "form-field__label" %>
+        <%= text_field_tag(
+          :endpoint,
+          url,
+          readonly: true,
+          class: "text-field",
+          onclick: "this.select()"
+        ) %>
+      </div>
 
-    <p class="column-data__text">
-      To quickly send an event manually, just <a href="https://curl.se/"
-      class="link">curl</a> it like this:
-    </p>
+      <%= button_to_copy_to_clipboard(url) { "copy url" } %>
 
-    <div class="form-field">
-      <%= label_tag :curl, "curl", class: "form-field__label" %>
+      <hr class="divider">
+
+      <p class="column-data__text">
+        To quickly send an event manually, just <a href="https://curl.se/" class="link">curl</a> it like this:
+      </p>
 
       <%
         curl_command = <<~CURL
@@ -56,16 +53,20 @@
         CURL
       %>
 
-      <%= text_area_tag(
-        :curl,
-        curl_command,
-        readonly: true,
-        class: "text-field text-sm code-field resize-none",
-        rows: 14,
-        onclick: "this.select()"
-      ) %>
-    </div>
+      <div class="form-field">
+        <%= label_tag :curl, "curl", class: "form-field__label" %>
 
-    <%= button_to_copy_to_clipboard(curl_command) { "copy curl" } %>
-  </div>
+        <%= text_area_tag(
+          :curl,
+          curl_command,
+          readonly: true,
+          class: "text-field text-sm code-field resize-none",
+          rows: 14,
+          onclick: "this.select()"
+        ) %>
+      </div>
+
+      <%= button_to_copy_to_clipboard(curl_command) { "copy curl" } %>
+    </div>
+  <% end %>
 </div>
