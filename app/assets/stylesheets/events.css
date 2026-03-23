@@ -126,10 +126,7 @@
 
 .events__end-of-feed {
   height: 1px;
-  background-color: light-dark(
-    var(--color-purple-700),
-    var(--color-purple-400)
-  );
+  background-color: light-dark(var(--color-gray-300), var(--color-zinc-700));
   margin-bottom: 12ch;
 }
 
