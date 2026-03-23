@@ -21,14 +21,18 @@
       <% end %>
     </div>
 
-    <%= turbo_frame_tag(
-      "more_#{column.id}",
-      src: sink_column_events_path(column.sink, column, before_id: events.last&.id),
-      loading: :lazy
-    ) do %>
-      <div class="events__loading">
-        ↓ loading older events&hellip;
-      </div>
+    <% if events.size == 30 %>
+      <%= turbo_frame_tag(
+        "more_#{column.id}",
+        src: sink_column_events_path(column.sink, column, before_id: events.last&.id),
+        loading: :lazy
+      ) do %>
+        <div class="events__loading">
+          ↓ loading older events&hellip;
+        </div>
+      <% end %>
+    <% else %>
+      <div class="events__end-of-feed"></div>
     <% end %>
   <% end %>
 </div>
