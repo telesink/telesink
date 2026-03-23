@@ -8,6 +8,6 @@ module ColumnScoped
   private
 
   def set_column
-    @sink = Column.find(params[:column_id])
+    @column = Column.find(params[:column_id])
   end
 end
