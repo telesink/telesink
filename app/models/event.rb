@@ -23,7 +23,7 @@ class Event < ApplicationRecord
       # rel = rel.or(where("properties::text ILIKE ?", "%#{term}%"))
     end
 
-    rel.order(occurred_at: :desc)
+    rel.order(occurred_at: :desc, id: :desc)
   }
 
   after_create_commit :broadcast_to_matching_columns

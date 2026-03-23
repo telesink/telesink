@@ -123,3 +123,17 @@
     background-color: transparent;
   }
 }
+
+.events__end-of-feed {
+  height: 1px;
+  background-color: light-dark(
+    var(--color-purple-700),
+    var(--color-purple-400)
+  );
+  margin-bottom: 12ch;
+}
+
+.events__loading {
+  padding: 4ch 1ch;
+  font-style: italic;
+}

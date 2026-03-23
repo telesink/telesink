@@ -3,8 +3,10 @@ class Column < ApplicationRecord
 
   validates :name, presence: true
 
-  def recent_events(limit: 30)
-    sink.events.for_column(self).limit(limit)
+  def recent_events(limit: 30, before_id: nil)
+    rel = sink.events.for_column(self)
+    rel = rel.where("id < ?", before_id) if before_id.present?
+    rel.limit(limit)
   end
 
   def filters

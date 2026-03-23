@@ -1,5 +1,7 @@
 <div class="column">
   <%= turbo_frame_tag dom_id(column) do %>
+    <% events = column.recent_events %>
+
     <div class="column__header">
       <h2 class="column__title">
         <%= column.name %>
@@ -14,16 +16,19 @@
     </div>
 
     <div id="events_list_<%= column.id %>" class="events-list">
-      <% column.recent_events.each do |event| %>
-        <% new_event = local_assigns[:new_event] %>
-
-        <%= render(
-          "events/preview_card",
-          event: event,
-          column: column,
-          new_event: new_event,
-        ) %>
+      <% events.each do |event| %>
+        <%= render "events/preview_card", event: event, column: column %>
       <% end %>
     </div>
+
+    <%= turbo_frame_tag(
+      "more_#{column.id}",
+      src: sink_column_events_path(column.sink, column, before_id: events.last&.id),
+      loading: :lazy
+    ) do %>
+      <div class="events__loading">
+        ↓ loading older events&hellip;
+      </div>
+    <% end %>
   <% end %>
 </div>
