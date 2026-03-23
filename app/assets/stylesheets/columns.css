@@ -22,6 +22,7 @@
   display: flex;
   justify-content: space-between;
   gap: 1ch;
+  overflow: hidden;
   margin: 0;
   font-size: var(--text-base);
   font-weight: 700;

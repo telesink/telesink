@@ -1,7 +1,7 @@
 <div class="column__header">
   <h2 class="column__title">
     <% if sink.persisted? %>
-      edit "<%= sink.name.presence || sink.name_was %>"
+      <span class="truncate">edit "<%= sink.name.presence || sink.name_was %>"</span>
     <% else %>
       add a sink
     <% end %>
