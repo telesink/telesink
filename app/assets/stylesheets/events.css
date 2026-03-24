@@ -128,9 +128,7 @@
   height: 1px;
   background-color: light-dark(var(--color-gray-300), var(--color-zinc-700));
   margin-bottom: 12ch;
-}
-
-.events__loading {
-  padding: 4ch 1ch;
   font-style: italic;
+  text-align: center;
+  color: light-dark(var(--color-gray-400), var(--color-zinc-500));
 }

@@ -18,6 +18,6 @@
   <% end %>
 <% else %>
   <%= turbo_stream.replace "more_#{@column.id}" do %>
-    <div class="events__end-of-feed"></div>
+    <div class="events__end-of-feed">end</div>
   <% end %>
 <% end %>
