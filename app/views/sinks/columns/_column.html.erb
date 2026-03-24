@@ -24,7 +24,12 @@
       <span data-column-target="newCount" class="hidden"></span>
     </div>
 
-    <div id="events_list_<%= column.id %>" class="events-list" data-column-target="list">
+    <div
+      id="events_list_<%= column.id %>"
+      class="events-list"
+      data-column-target="list"
+      data-max-items="200"
+    >
       <% events.each do |event| %>
         <%= render "events/preview_card", event: event, column: column %>
       <% end %>

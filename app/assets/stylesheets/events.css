@@ -141,6 +141,7 @@
   background-color: light-dark(var(--color-white), var(--color-black));
   color: light-dark(var(--color-blue-700), var(--color-blue-400));
   border: 1px solid light-dark(var(--color-blue-700), var(--color-blue-400));
+  cursor: pointer;
 
   &:hover {
     background-color: light-dark(var(--color-blue-50), var(--color-blue-950));
