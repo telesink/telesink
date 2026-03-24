@@ -67,3 +67,7 @@
 .resize-none {
   resize: none;
 }
+
+.hidden {
+  display: none;
+}

@@ -1,4 +1,4 @@
-<div class="column">
+<div class="column" data-controller="column" data-column-id-value="<%= column.id %>">
   <%= turbo_frame_tag dom_id(column) do %>
     <% events = column.recent_events %>
 
@@ -15,7 +15,16 @@
       ) %>
     </div>
 
-    <div id="events_list_<%= column.id %>" class="events-list">
+    <div
+      data-column-target="jumpBar"
+      data-action="click->column#jumpToTop"
+      class="jump-bar hidden"
+    >
+      ⇡ back to top
+      <span data-column-target="newCount" class="hidden"></span>
+    </div>
+
+    <div id="events_list_<%= column.id %>" class="events-list" data-column-target="list">
       <% events.each do |event| %>
         <%= render "events/preview_card", event: event, column: column %>
       <% end %>
@@ -27,9 +36,7 @@
         src: sink_column_events_path(column.sink, column, before_id: events.last&.id),
         loading: :lazy
       ) do %>
-        <div class="events__loading">
-          ↓ loading older events&hellip;
-        </div>
+        <div class="events__loading">↓ loading older events&hellip;</div>
       <% end %>
     <% else %>
       <div class="events__end-of-feed">end</div>

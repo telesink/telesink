@@ -132,3 +132,29 @@
   text-align: center;
   color: light-dark(var(--color-gray-400), var(--color-zinc-500));
 }
+
+.jump-bar {
+  position: sticky;
+  top: 4ch;
+  z-index: 10;
+  padding: 0 1ch;
+  background-color: light-dark(var(--color-white), var(--color-black));
+  color: light-dark(var(--color-blue-700), var(--color-blue-400));
+  border: 1px solid light-dark(var(--color-blue-700), var(--color-blue-400));
+
+  &:hover {
+    background-color: light-dark(var(--color-blue-50), var(--color-blue-950));
+    border-color: light-dark(var(--color-blue-800), var(--color-blue-300));
+  }
+
+  &:active {
+    background-color: light-dark(var(--color-blue-100), var(--color-blue-900));
+    border-color: light-dark(var(--color-blue-900), var(--color-blue-200));
+    outline: 3px solid light-dark(var(--color-blue-200), var(--color-blue-800));
+  }
+
+  &:focus {
+    outline: 3px solid light-dark(var(--color-blue-200), var(--color-blue-800));
+    border-color: light-dark(var(--color-blue-800), var(--color-blue-300));
+  }
+}
