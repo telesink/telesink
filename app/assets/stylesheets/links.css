@@ -13,9 +13,9 @@
 }
 
 .link--subtle {
-  color: light-dark(var(--color-gray-300), var(--color-zinc-500));
+  color: light-dark(var(--color-gray-400), var(--color-zinc-400));
 
   &:hover {
-    color: light-dark(var(--color-gray-400), var(--color-zinc-400));
+    color: light-dark(var(--color-gray-500), var(--color-zinc-300));
   }
 }

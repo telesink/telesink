@@ -5,13 +5,14 @@
   overflow-y: auto;
   overflow-x: hidden;
   border-right: 1px solid var(--border-color);
+  scrollbar-width: thin;
 }
 
 .column__header {
   position: sticky;
   top: 0;
   z-index: 10;
-  background-color: light-dark(var(--color-white), var(--color-black));
+  background-color: light-dark(var(--color-gray-100), var(--color-zinc-900));
   display: flex;
   justify-content: space-between;
   padding: 1ch;

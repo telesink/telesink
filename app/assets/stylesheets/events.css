@@ -65,6 +65,7 @@
   display: flex;
   justify-content: space-between;
   padding: 0 1ch;
+  background-color: light-dark(var(--color-gray-100), var(--color-zinc-900));
   color: light-dark(var(--color-gray-500), var(--color-zinc-400));
   border-bottom: 1px solid var(--border-color);
   font-size: var(--text-sm);
@@ -73,7 +74,6 @@
 .event-detail__body {
   margin: 0;
   padding: 2ch 1ch 2ch 1ch;
-  background-color: light-dark(var(--color-blue-50), var(--color-blue-950));
   color: light-dark(var(--color-gray-950), var(--color-blue-50));
 }
 
@@ -87,8 +87,9 @@
   padding: 0 1ch;
   border-top: 1px solid var(--border-color);
   border-bottom: 1px solid var(--border-color);
-  font-size: var(--text-base);
-  color: light-dark(var(--color-gray-400), var(--color-zinc-600));
+  font-size: var(--text-sm);
+  color: light-dark(var(--color-gray-500), var(--color-zinc-400));
+  background-color: light-dark(var(--color-gray-100), var(--color-zinc-900));
 }
 
 .event-properties__item {
@@ -96,7 +97,7 @@
   background-color: light-dark(transparent, var(--color-zinc-900));
 
   &:nth-child(even) {
-    background-color: light-dark(var(--color-gray-100), var(--color-zinc-800));
+    background-color: light-dark(var(--color-gray-50), var(--color-zinc-800));
   }
 }
 
