@@ -47,7 +47,6 @@ export default class extends Controller {
       return;
     }
 
-    // buffer new events
     if (this.pendingEvents.length >= MAX_PENDING) {
       this.pendingEvents.shift();
     }
@@ -95,14 +94,14 @@ export default class extends Controller {
     this.newEventCount = 0;
     this.newCountTarget.classList.add("hidden");
 
-    this.#trimBottom(); // safe here
+    this.#trimBottom();
   }
 
   #trimBottom() {
     const list = this.listTarget;
 
     while (list.children.length > MAX_ITEMS) {
-      list.lastElementChild?.remove(); // remove oldest
+      list.lastElementChild?.remove();
     }
   }
 
@@ -120,7 +119,6 @@ export default class extends Controller {
       el.remove();
     }
 
-    // preserve scroll position
     if (removedHeight > 0) {
       column.scrollTop -= removedHeight;
     }
