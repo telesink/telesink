@@ -23,7 +23,7 @@ gem "turbo-rails"
 gem "stimulus-rails"
 
 # Other
-gem "bcrypt", "~> 3.1.7"
+gem "bcrypt", "~> 3.1.22"
 gem "solid_cache"
 gem "solid_cable"
 gem "sentry-rails"
