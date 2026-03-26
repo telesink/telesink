@@ -19,4 +19,13 @@ class UserTest < ActiveSupport::TestCase
     refute user.authenticate("wrong")
     assert_not_nil user.password_digest
   end
+
+  test "sinks are ordered by created_at ascending (oldest first)" do
+    user = User.create!(email_address: "order@test.com", password: "password123")
+
+    sink2 = user.sinks.create!(name: "Newer Sink")
+    sink1 = user.sinks.create!(name: "Older Sink", created_at: 1.day.ago)
+
+    assert_equal [ sink1, sink2 ], user.sinks.to_a
+  end
 end

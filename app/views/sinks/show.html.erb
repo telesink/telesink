@@ -1,18 +1,23 @@
 <%= turbo_stream_from @sink %>
 
-<% @sink.columns.order(:position).each do |column| %>
-  <%= render(
-    partial: column.has_events? ? "sinks/columns/column" : "sinks/columns/config_column",
-    locals: { column: column }
-  ) %>
-<% end %>
+<div
+  id="columns-container"
+  data-controller="sortable-columns"
+  data-sortable-columns-url-value="<%= sink_column_order_path(@sink) %>"
+>
+  <% @sink.columns.each do |column| %>
+    <%= render(
+      partial: column.has_events? ? "sinks/columns/column" : "sinks/columns/config_column",
+      locals: { column: column }
+    ) %>
+  <% end %>
+</div>
 
 <div class="add-column-column">
   <%= button_to(
     "add column",
     sink_columns_path(@sink),
     method: :post,
-    data: { turbo: false },
     class: "btn btn--secondary btn--before-content whitespace-nowrap"
   ) %>
 </div>

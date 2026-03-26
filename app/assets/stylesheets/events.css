@@ -2,6 +2,7 @@
   display: block;
   text-decoration: none;
   color: inherit;
+  background-color: light-dark(var(--color-white), var(--color-black));
 
   &:hover {
     background-color: light-dark(var(--color-blue-50), var(--color-blue-950));

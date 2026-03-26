@@ -1,3 +1,11 @@
+#columns-container {
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+  gap: 0;
+  flex-shrink: 0;
+}
+
 .column {
   flex: 0 0 var(--column-width);
   min-width: 0;
@@ -6,6 +14,10 @@
   overflow-x: hidden;
   border-right: 1px solid var(--border-color);
   scrollbar-width: thin;
+
+  &.dragging {
+    opacity: 0.4;
+  }
 }
 
 .column__header {
@@ -17,6 +29,21 @@
   justify-content: space-between;
   padding: 1ch;
   border-bottom: 1px solid var(--border-color);
+}
+
+.column__drag-handle {
+  margin-right: 1.5ch;
+  cursor: grab;
+  user-select: none;
+
+  &:hover {
+    background-color: light-dark(var(--color-gray-300), var(--color-zinc-600));
+    color: light-dark(var(--color-black), var(--color-white));
+  }
+
+  &:active {
+    cursor: grabbing;
+  }
 }
 
 .column__title {

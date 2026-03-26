@@ -71,7 +71,7 @@ class SinksController < ApplicationController
   private
 
   def set_sinks
-    @sinks = Current.user.sinks.order(created_at: :asc)
+    @sinks = Current.user.sinks
   end
 
   def set_sink
