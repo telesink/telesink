@@ -19,6 +19,10 @@
   &.dragging {
     opacity: 0.4;
   }
+
+  &.sortable-drag {
+    border-right: none;
+  }
 }
 
 .column__header {
