@@ -2,7 +2,9 @@
   display: block;
   text-decoration: none;
   color: inherit;
-  background-color: light-dark(var(--color-white), var(--color-black));
+  background-color: light-dark(var(--color-white), var(--color-zinc-900));
+  border-bottom: 1px solid
+    light-dark(var(--color-gray-200), var(--color-zinc-800));
 
   &:hover {
     background-color: light-dark(var(--color-blue-50), var(--color-blue-950));
@@ -14,7 +16,6 @@
   gap: 1ch;
   height: 7ch;
   padding: 1ch;
-  border-bottom: 1px solid var(--border-color);
   word-wrap: break-word;
 }
 
@@ -66,7 +67,7 @@
   display: flex;
   justify-content: space-between;
   padding: 0 1ch;
-  background-color: light-dark(var(--color-gray-100), var(--color-zinc-900));
+  background-color: light-dark(var(--color-gray-100), var(--color-zinc-800));
   color: light-dark(var(--color-gray-500), var(--color-zinc-400));
   border-bottom: 1px solid var(--border-color);
   font-size: var(--text-sm);
@@ -75,6 +76,7 @@
 .event-detail__body {
   margin: 0;
   padding: 2ch 1ch 2ch 1ch;
+  background-color: light-dark(var(--color-white), var(--color-zinc-900));
   color: light-dark(var(--color-gray-950), var(--color-blue-50));
 }
 
@@ -90,15 +92,15 @@
   border-bottom: 1px solid var(--border-color);
   font-size: var(--text-sm);
   color: light-dark(var(--color-gray-500), var(--color-zinc-400));
-  background-color: light-dark(var(--color-gray-100), var(--color-zinc-900));
+  background-color: light-dark(var(--color-gray-100), var(--color-zinc-800));
 }
 
 .event-properties__item {
   padding: 1ch 1ch;
-  background-color: light-dark(transparent, var(--color-zinc-900));
+  background-color: light-dark(var(--color-white), var(--color-zinc-900));
 
   &:nth-child(even) {
-    background-color: light-dark(var(--color-gray-50), var(--color-zinc-800));
+    background-color: light-dark(var(--color-gray-100), var(--color-zinc-800));
   }
 }
 

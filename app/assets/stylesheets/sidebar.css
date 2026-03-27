@@ -1,5 +1,5 @@
 .sidebar {
-  background-color: light-dark(var(--color-gray-100), var(--color-zinc-900));
+  background-color: light-dark(var(--color-gray-100), var(--color-zinc-800));
 }
 
 .sidebar-account {

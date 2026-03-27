@@ -289,7 +289,7 @@
   --column-width: 50ch;
   --footer-width: 22ch;
 
-  --border-color: light-dark(var(--color-gray-200), var(--color-zinc-800));
+  --border-color: light-dark(var(--color-gray-300), var(--color-zinc-700));
 
   --logo-filter-default: none;
   --logo-filter-hover: saturate(2);

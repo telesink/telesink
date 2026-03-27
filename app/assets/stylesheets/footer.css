@@ -15,7 +15,7 @@
   box-sizing: border-box;
   font-size: var(--text-xs);
 
-  background-color: light-dark(var(--color-gray-100), var(--color-zinc-900));
+  background-color: light-dark(var(--color-gray-100), var(--color-zinc-800));
 }
 
 .footer__inner {
