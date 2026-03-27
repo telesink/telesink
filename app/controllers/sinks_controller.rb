@@ -1,5 +1,5 @@
 class SinksController < ApplicationController
-  before_action :set_sinks, only: %i[index show new edit create update destroy]
+  before_action :set_sink_memberships, only: %i[index show new edit create update destroy]
   before_action :set_sink, only: %i[show edit update destroy]
 
   def index
@@ -8,7 +8,7 @@ class SinksController < ApplicationController
       return
     end
 
-    if (first_sink = @sinks.first)
+    if (first_sink = @sink_memberships.first&.sink)
       redirect_to first_sink, status: :see_other
     end
   end
@@ -16,6 +16,14 @@ class SinksController < ApplicationController
   def show
     if turbo_frame_request? && turbo_frame_request_id == "sinks"
       render partial: "sinks/sinks", layout: false
+      return
+    end
+
+    membership = @sink.sink_memberships.find_by(user: Current.user)
+    membership&.update!(has_unread_events: false)
+
+    if Current.user.current_sink_id != @sink.id
+      Current.user.update!(current_sink_id: @sink.id)
     end
   end
 
@@ -23,7 +31,7 @@ class SinksController < ApplicationController
     @sink = Sink.new
 
     @back_path = request.referer.presence
-    @back_path ||= (@sinks.first ? sink_path(@sinks.first) : root_path)
+    @back_path ||= (@sink_memberships.first&.sink ? sink_path(@sink_memberships.first.sink) : root_path)
   end
 
   def create
@@ -61,7 +69,9 @@ class SinksController < ApplicationController
   def destroy
     @sink.destroy
 
-    if (remaining_sink = @sinks.first)
+    set_sink_memberships
+
+    if (remaining_sink = @sink_memberships.first&.sink)
       redirect_to remaining_sink, status: :see_other
     else
       redirect_to sinks_path
@@ -70,8 +80,13 @@ class SinksController < ApplicationController
 
   private
 
-  def set_sinks
-    @sinks = Current.user.sinks
+  def set_sink_memberships
+    @sink_memberships =
+      Current
+        .user
+        .sink_memberships
+        .includes(:sink)
+        .order(sinks: { name: :asc })
   end
 
   def set_sink

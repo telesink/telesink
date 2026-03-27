@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_03_22_054000) do
+ActiveRecord::Schema[8.1].define(version: 2026_03_27_133930) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pg_trgm"
@@ -58,6 +58,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_22_054000) do
 
   create_table "sink_memberships", force: :cascade do |t|
     t.datetime "created_at", null: false
+    t.boolean "has_unread_events", default: false, null: false
     t.bigint "sink_id", null: false
     t.datetime "updated_at", null: false
     t.bigint "user_id", null: false
@@ -77,9 +78,11 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_22_054000) do
 
   create_table "users", force: :cascade do |t|
     t.datetime "created_at", null: false
+    t.bigint "current_sink_id"
     t.string "email_address", null: false
     t.string "password_digest", null: false
     t.datetime "updated_at", null: false
+    t.index ["current_sink_id"], name: "index_users_on_current_sink_id"
     t.index ["email_address"], name: "index_users_on_email_address", unique: true
   end
 
@@ -88,4 +91,5 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_22_054000) do
   add_foreign_key "sessions", "users"
   add_foreign_key "sink_memberships", "sinks"
   add_foreign_key "sink_memberships", "users"
+  add_foreign_key "users", "sinks", column: "current_sink_id", on_delete: :nullify
 end

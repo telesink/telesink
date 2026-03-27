@@ -1,4 +1,6 @@
 <aside class="column sidebar">
+  <%= turbo_stream_from "user_#{Current.user.id}_sinks" %>
+
   <div class="sidebar-account">
     <span class="truncate">@<%= Current.user.nickname %></span>
 

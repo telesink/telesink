@@ -23,6 +23,29 @@ class SinksControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
   end
 
+  test "show marks the sink as read for the current user (clears has_unread_events)" do
+    sink = @user.sinks.create!(name: "Unread Test Sink")
+
+    membership = @user.sink_memberships.find_by(sink: sink)
+    membership.update!(has_unread_events: true)
+
+    get sink_path(sink)
+
+    assert_response :success
+    assert_not membership.reload.has_unread_events?
+  end
+
+  test "show gracefully handles a sink that is already marked as read" do
+    sink = @user.sinks.create!(name: "Already Read Sink")
+
+    get sink_path(sink)
+
+    assert_response :success
+
+    membership = @user.sink_memberships.find_by(sink: sink)
+    assert_not membership.has_unread_events?
+  end
+
   test "new" do
     get new_sink_path
     assert_response :success

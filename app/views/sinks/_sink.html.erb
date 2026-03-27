@@ -1,12 +1,19 @@
-<li id="<%= dom_id(sink, :list_item) %>" class="sidebar-list__item <%= 'sidebar-list__item--current' if @sink == sink %>">
-  <% if @sink == sink %>
-    <span class="truncate">
-      <%= sink.name %>
-    </span>
+<% is_current = current_sink_id == sink.id %>
+
+<li
+  id="<%= dom_id(sink, "list_item") %>"
+  class="<%= class_names(
+    "sidebar-list__item",
+    "sidebar-list__item--current" => is_current,
+    "sidebar-list__item--has-new-events" => membership.has_unread_events && !is_current,
+  ) %>"
+>
+  <% if is_current %>
+    <span class="truncate"><%= sink.name %></span>
     <%= link_to(
       "edit",
       edit_sink_path(sink),
-      class: "link link--subtle whitespace-nowrap ml-2",
+      class: "link link--subtle whitespace-nowrap",
       data: { turbo_frame: :sinks },
     ) %>
   <% else %>

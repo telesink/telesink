@@ -26,7 +26,7 @@ class Event < ApplicationRecord
     rel.order(occurred_at: :desc, id: :desc)
   }
 
-  after_create_commit :broadcast_to_matching_columns
+  after_create_commit :broadcast_to_matching_columns, :mark_unread_for_all_members
 
   private
 
@@ -52,6 +52,27 @@ class Event < ApplicationRecord
           locals: { event: self, column: column, new_event: true }
         )
       end
+    end
+  end
+
+  def mark_unread_for_all_members
+    sink.sink_memberships.includes(:user).each do |membership|
+      next if membership.has_unread_events?
+
+      unless membership.user.current_sink_id == membership.sink.id
+        membership.update!(has_unread_events: true)
+      end
+
+      Turbo::StreamsChannel.broadcast_replace_to(
+        "user_#{membership.user_id}_sinks",
+        target: ActionView::RecordIdentifier.dom_id(membership.sink, "list_item"),
+        partial: "sinks/sink",
+        locals: {
+          current_sink_id: membership.user.current_sink_id,
+          sink: membership.sink,
+          membership: membership
+        }
+      )
     end
   end
 end

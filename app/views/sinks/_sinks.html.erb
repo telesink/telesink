@@ -5,8 +5,15 @@
     </p>
   </div>
 
-  <% if @sinks.any? %>
-    <%= render partial: "sinks/sink", collection: @sinks %>
+  <% if @sink_memberships.any? %>
+    <% @sink_memberships.each do |membership| %>
+      <%= render(
+        "sinks/sink",
+        sink: membership.sink,
+        current_sink_id: Current.user.current_sink_id,
+        membership: membership
+      ) %>
+    <% end %>
   <% else %>
     <div class="column-data">
       <p class="column-data__text italic">no sinks yet</p>
@@ -18,7 +25,7 @@
       <%= link_to(
         new_sink_path,
         data: { turbo_frame: :sinks },
-        class: "btn btn--#{@sinks.any? ? 'secondary' : 'primary'}"
+        class: "btn btn--#{@sink_memberships.any? ? 'secondary' : 'primary'}"
       ) do %>
         new sink
       <% end %>
