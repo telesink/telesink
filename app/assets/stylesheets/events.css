@@ -139,12 +139,14 @@
 
 .jump-bar {
   position: sticky;
-  top: 4ch;
+  top: 4.5ch;
   z-index: 10;
   padding: 0 1ch;
-  background-color: light-dark(var(--color-white), var(--color-black));
+  background-color: light-dark(var(--color-gray-50), var(--color-black));
   color: light-dark(var(--color-blue-700), var(--color-blue-400));
-  border: 1px solid light-dark(var(--color-blue-700), var(--color-blue-400));
+  border-top: 1px solid light-dark(var(--color-gray-300), var(--color-blue-400));
+  border-bottom: 1px solid
+    light-dark(var(--color-gray-300), var(--color-blue-400));
   cursor: pointer;
 
   &:hover {
