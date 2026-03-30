@@ -28,7 +28,6 @@
 }
 
 .sidebar-list__item--current {
-  font-weight: 700;
   color: light-dark(var(--color-black), var(--color-white));
   background-color: light-dark(var(--color-blue-100), var(--color-zinc-700));
 }
