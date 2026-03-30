@@ -3,12 +3,12 @@ import { Controller } from "@hotwired/stimulus";
 export default class extends Controller {
   connect() {
     this.insertDelimiters();
-    this._onRender = () => this.insertDelimiters();
-    this.element.addEventListener("turbo:frame-render", this._onRender);
+    this.observer = new MutationObserver(() => this.insertDelimiters());
+    this.observer.observe(this.element, { childList: true });
   }
 
   disconnect() {
-    this.element.removeEventListener("turbo:frame-render", this._onRender);
+    this.observer.disconnect();
   }
 
   insertDelimiters() {
