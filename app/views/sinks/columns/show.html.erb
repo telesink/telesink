@@ -13,7 +13,11 @@
       ) %>
     </div>
 
-    <div id="events_list_<%= @column.id %>" class="events-list">
+    <div
+      id="events_list_<%= @column.id %>"
+      class="events-list"
+      data-controller="events-list"
+    >
       <% @events.each do |event| %>
         <%= render "events/preview_card", event: event, column: @column %>
       <% end %>

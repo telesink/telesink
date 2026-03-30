@@ -165,3 +165,19 @@
     border-color: light-dark(var(--color-blue-800), var(--color-blue-300));
   }
 }
+
+.day-delimiter {
+  color: light-dark(var(--color-gray-500), var(--color-zinc-900));
+  font-size: var(--text-sm);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.1ch;
+  text-align: center;
+  background-color: light-dark(var(--color-gray-100), var(--color-zinc-800));
+  border-bottom: 1px solid
+    light-dark(var(--color-gray-200), var(--color-zinc-800));
+}
+
+.day-delimiter__label {
+  white-space: nowrap;
+}
