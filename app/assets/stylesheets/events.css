@@ -167,15 +167,15 @@
 }
 
 .day-delimiter {
-  color: light-dark(var(--color-gray-500), var(--color-zinc-900));
+  color: light-dark(var(--color-gray-500), var(--color-zinc-500));
+  background-color: light-dark(var(--color-gray-100), var(--color-zinc-800));
+  border-bottom: 1px solid
+    light-dark(var(--color-gray-200), var(--color-zinc-950));
   font-size: var(--text-sm);
   font-weight: 500;
   text-transform: uppercase;
   letter-spacing: 0.1ch;
   text-align: center;
-  background-color: light-dark(var(--color-gray-100), var(--color-zinc-800));
-  border-bottom: 1px solid
-    light-dark(var(--color-gray-200), var(--color-zinc-800));
 }
 
 .day-delimiter__label {
