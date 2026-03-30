@@ -1,12 +1,5 @@
 <div class="column" data-controller="column" data-column-id-value="<%= column.id %>">
   <%= turbo_frame_tag dom_id(column) do %>
-    <%
-      last_viewed_at = nil
-      if local_assigns[:show_seen_delimiter] && local_assigns[:effective_last_viewed_at]&.present?
-        ts = local_assigns[:effective_last_viewed_at][column.id.to_s]
-        last_viewed_at = Time.zone.parse(ts) if ts.present?
-      end
-    %>
 
     <% events = column.recent_events %>
 
@@ -39,10 +32,20 @@
       class="events-list"
       data-column-target="list"
       data-max-items="200"
-      data-controller="events-list unread-delimiter"
-      data-unread-delimiter-last-viewed-at-value="<%= last_viewed_at&.iso8601 %>"
+      data-controller="events-list"
     >
+      <% cutoff = local_assigns[:seen_cutoffs]&.[](column.id) %>
+
       <% events.each do |event| %>
+        <% if cutoff && event.occurred_at <= cutoff %>
+          <div class="seen-delimiter">
+            <div class="seen-line"></div>
+            <span class="seen-label">↓ seen ↓</span>
+            <div class="seen-line"></div>
+          </div>
+          <% cutoff = nil %>
+        <% end %>
+
         <%= render "events/preview_card", event: event, column: column %>
       <% end %>
     </div>

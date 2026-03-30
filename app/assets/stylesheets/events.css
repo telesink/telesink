@@ -185,7 +185,6 @@
 .seen-delimiter {
   display: flex;
   align-items: center;
-  gap: 1ch;
 }
 
 .seen-line {
@@ -198,6 +197,7 @@
   font-size: var(--text-sm);
   font-weight: 700;
   color: light-dark(var(--color-indigo-700), var(--color-indigo-400));
+  padding: 0 1ch;
   white-space: nowrap;
   text-transform: lowercase;
   letter-spacing: 0.5px;
