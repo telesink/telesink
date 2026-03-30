@@ -8,7 +8,12 @@
   <% @sink.columns.each do |column| %>
     <%= render(
       partial: column.has_events? ? "sinks/columns/column" : "sinks/columns/config_column",
-      locals: { column: column }
+      locals: {
+        column: column,
+        membership: @membership,
+        show_seen_delimiter: @show_seen_delimiter,
+        effective_last_viewed_at: @effective_last_viewed_at
+      }
     ) %>
   <% end %>
 </div>

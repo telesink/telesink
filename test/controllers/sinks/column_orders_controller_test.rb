@@ -32,7 +32,7 @@ class Sinks::ColumnOrdersControllerTest < ActionDispatch::IntegrationTest
     default_column = sink.columns.find_by!(name: "all events")
 
     patch sink_column_order_path(sink), params: {
-      column_order: { column_ids: [] }   # now handled correctly
+      column_order: { column_ids: [] }
     }
 
     assert_response :ok

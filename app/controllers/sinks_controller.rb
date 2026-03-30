@@ -20,7 +20,16 @@ class SinksController < ApplicationController
     end
 
     membership = @sink.sink_memberships.find_by(user: Current.user)
+    @membership = membership
+
+    @show_seen_delimiter = membership&.has_unread_events? || false
+    @effective_last_viewed_at =
+      if @show_seen_delimiter
+        membership.column_last_viewed_at || {}
+      end
+
     membership&.update!(has_unread_events: false)
+    membership&.mark_all_columns_viewed
 
     if Current.user.current_sink_id != @sink.id
       Current.user.update!(current_sink_id: @sink.id)

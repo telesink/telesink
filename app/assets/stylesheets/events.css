@@ -181,3 +181,24 @@
 .day-delimiter__label {
   white-space: nowrap;
 }
+
+.seen-delimiter {
+  display: flex;
+  align-items: center;
+  gap: 1ch;
+}
+
+.seen-line {
+  flex: 1;
+  height: 1px;
+  background: light-dark(var(--color-indigo-700), var(--color-indigo-400));
+}
+
+.seen-label {
+  font-size: var(--text-sm);
+  font-weight: 700;
+  color: light-dark(var(--color-indigo-700), var(--color-indigo-400));
+  white-space: nowrap;
+  text-transform: lowercase;
+  letter-spacing: 0.5px;
+}
