@@ -37,7 +37,7 @@
 }
 
 .column__header--cast-shadow {
-  box-shadow: 0 3px 6px -4px light-dark(var(--color-gray-400), transparent);
+  box-shadow: 0 3px 4px -4px light-dark(var(--color-gray-400), transparent);
 }
 
 .column__drag-handle {
