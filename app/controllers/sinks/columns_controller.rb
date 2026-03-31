@@ -72,6 +72,17 @@ class Sinks::ColumnsController < ApplicationController
     redirect_to @sink, status: :see_other
   end
 
+  def viewed
+    membership = @sink.sink_memberships.find_by(user: Current.user)
+    return head :ok unless membership
+
+    membership.column_last_viewed_at ||= {}
+    membership.column_last_viewed_at[@column.id.to_s] = Time.current.iso8601
+    membership.save!
+
+    head :ok
+  end
+
   private
 
   def set_column

@@ -17,6 +17,8 @@ Rails.application.routes.draw do
   resources :sinks do
     resources :columns, only: %i[create show edit update destroy], controller: "sinks/columns" do
       resources :events, only: %i[index], controller: "sinks/columns/events"
+
+      post :viewed, on: :member
     end
 
     resource :column_order, only: [ :update ], controller: "sinks/column_orders"
