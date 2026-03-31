@@ -1,9 +1,10 @@
-<% cutoff = local_assigns[:seen_cutoffs]&.[](column.id) %>  <%# ← THIS LINE WAS MISSING %>
+<% cutoff = local_assigns[:seen_cutoffs]&.[](column.id) %>
 
 <div
   class="column"
   data-controller="column"
-  data-column-id-value="<%= column.id %>"
+  data-column-column-id-value="<%= column.id %>"
+  data-column-sink-id-value="<%= column.sink_id %>"
   data-column-cutoff-value="<%= cutoff&.iso8601 %>"
 >
 

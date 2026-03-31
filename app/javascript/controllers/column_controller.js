@@ -46,9 +46,7 @@ export default class extends Controller {
 
     this.isAtTop = this.columnEl.scrollTop < 80;
 
-    if (this.isAtTop) {
-      this.#markAsViewed();
-    }
+    this.#insertSeenDelimiter();
 
     this._markAsViewedDebounced = this.#debounce(
       this.#markAsViewed.bind(this),
@@ -107,7 +105,10 @@ export default class extends Controller {
           this.listTarget.querySelectorAll(".event-preview"),
         ).some((el) => {
           const t = el.querySelector("time");
-          return t && new Date(t.getAttribute("datetime")) > this.hiddenSince;
+          return (
+            t &&
+            new Date(t.getAttribute("datetime")).getTime() > this.hiddenSince
+          );
         });
 
         if (hasNewEvents) {
@@ -119,7 +120,7 @@ export default class extends Controller {
         this.hiddenSince = null;
       }
     } else {
-      this.hiddenSince = new Date();
+      this.hiddenSince = Date.now();
     }
   }
 
