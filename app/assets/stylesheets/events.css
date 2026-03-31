@@ -198,7 +198,6 @@
 
 .seen-label {
   font-size: var(--text-sm);
-  font-weight: 700;
   color: light-dark(var(--color-red-600), var(--color-red-400));
   padding: 0 1ch;
   white-space: nowrap;
