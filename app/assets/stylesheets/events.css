@@ -173,8 +173,7 @@
     light-dark(var(--color-gray-200), var(--color-zinc-950));
   font-size: var(--text-sm);
   font-weight: 500;
-  text-transform: uppercase;
-  letter-spacing: 0.1ch;
+  text-transform: lowercase;
   text-align: center;
 }
 
@@ -185,18 +184,21 @@
 .seen-delimiter {
   display: flex;
   align-items: center;
+  background-color: light-dark(var(--color-gray-100), var(--color-zinc-900));
+  border-bottom: 1px solid
+    light-dark(var(--color-gray-200), var(--color-zinc-800));
 }
 
 .seen-line {
   flex: 1;
   height: 1px;
-  background: light-dark(var(--color-indigo-700), var(--color-indigo-400));
+  background: light-dark(var(--color-red-600), var(--color-red-400));
 }
 
 .seen-label {
   font-size: var(--text-sm);
   font-weight: 700;
-  color: light-dark(var(--color-indigo-700), var(--color-indigo-400));
+  color: light-dark(var(--color-red-600), var(--color-red-400));
   padding: 0 1ch;
   white-space: nowrap;
   text-transform: lowercase;
