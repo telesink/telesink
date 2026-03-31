@@ -33,8 +33,11 @@
   display: flex;
   justify-content: space-between;
   padding: 1ch;
-  border-bottom: none;
-  box-shadow: 0 0 2px light-dark(var(--color-gray-400), var(--color-zinc-300));
+  border-bottom: 1px solid var(--border-color);
+}
+
+.column__header--cast-shadow {
+  box-shadow: 0 3px 6px -4px light-dark(var(--color-gray-400), transparent);
 }
 
 .column__drag-handle {

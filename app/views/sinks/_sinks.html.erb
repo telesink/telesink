@@ -6,14 +6,16 @@
   </div>
 
   <% if @sink_memberships.any? %>
-    <% @sink_memberships.each do |membership| %>
-      <%= render(
-        "sinks/sink",
-        sink: membership.sink,
-        current_sink_id: Current.user.current_sink_id,
-        membership: membership
-      ) %>
-    <% end %>
+    <ul class="sidebar-list">
+      <% @sink_memberships.each do |membership| %>
+        <%= render(
+          "sinks/sink",
+          sink: membership.sink,
+          current_sink_id: Current.user.current_sink_id,
+          membership: membership
+        ) %>
+      <% end %>
+    </ul>
   <% else %>
     <div class="column-data">
       <p class="column-data__text italic">no sinks yet</p>
