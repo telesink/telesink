@@ -5,16 +5,21 @@ const MAX_PENDING = 100;
 
 export default class extends Controller {
   static targets = ["list", "jumpBar", "newCount"];
+  static values = { cutoff: String };
 
   connect() {
     this.pendingEvents = [];
     this.newEventCount = 0;
     this.isAtTop = true;
+    this.cutoffTime = null;
 
-    this.columnEl = this.element.closest(".column");
+    this.columnEl = this.element.closest(".column") || this.element;
 
     this.scrollHandler = this.#onScroll.bind(this);
-    this.columnEl?.addEventListener("scroll", this.scrollHandler);
+    this.columnEl.addEventListener("scroll", this.scrollHandler);
+
+    this.visibilityHandler = this.#onVisibilityChange.bind(this);
+    document.addEventListener("visibilitychange", this.visibilityHandler);
 
     this.observer = new MutationObserver((mutations) => {
       for (const m of mutations) {
@@ -33,17 +38,73 @@ export default class extends Controller {
     });
 
     this.observer.observe(this.listTarget, { childList: true });
+
+    this.#setupCutoff();
   }
 
   disconnect() {
     this.columnEl?.removeEventListener("scroll", this.scrollHandler);
+    document.removeEventListener("visibilitychange", this.visibilityHandler);
     this.observer?.disconnect();
     this.pendingEvents = [];
+  }
+
+  #setupCutoff() {
+    if (!this.cutoffValue) return;
+    this.cutoffTime = new Date(this.cutoffValue);
+    if (isNaN(this.cutoffTime.getTime())) return;
+
+    this.#insertSeenDelimiter();
+  }
+
+  #onVisibilityChange() {
+    if (document.visibilityState === "visible") {
+      this.#insertSeenDelimiter();
+    }
+  }
+
+  #insertSeenDelimiter() {
+    if (!this.cutoffTime) return;
+
+    const list = this.listTarget;
+    list.querySelectorAll(".seen-delimiter").forEach((el) => el.remove());
+
+    const events = Array.from(list.querySelectorAll(".event-preview"));
+    if (!events.length) return;
+
+    const newestEventTime = new Date(
+      events[0].querySelector("time").getAttribute("datetime"),
+    );
+    if (newestEventTime <= this.cutoffTime) return;
+
+    for (const eventEl of events) {
+      const timeEl = eventEl.querySelector("time");
+      if (!timeEl) continue;
+
+      const eventTime = new Date(timeEl.getAttribute("datetime"));
+
+      if (eventTime <= this.cutoffTime) {
+        eventEl.before(this.#createSeenDelimiter());
+        break;
+      }
+    }
+  }
+
+  #createSeenDelimiter() {
+    const div = document.createElement("div");
+    div.className = "seen-delimiter";
+    div.innerHTML = `
+      <div class="seen-line"></div>
+      <span class="seen-label">↑ new ↑</span>
+      <div class="seen-line"></div>
+    `;
+    return div;
   }
 
   #handlePrepend(node) {
     if (this.isAtTop) {
       this.#trimBottom();
+      this.#insertSeenDelimiter();
       return;
     }
 
@@ -54,9 +115,7 @@ export default class extends Controller {
     this.pendingEvents.push(node);
     this.newEventCount++;
 
-    this.newCountTarget.textContent = `· ${this.newEventCount} new event${
-      this.newEventCount > 1 ? "s" : ""
-    }`;
+    this.newCountTarget.textContent = `· ${this.newEventCount} new event${this.newEventCount > 1 ? "s" : ""}`;
     this.newCountTarget.classList.remove("hidden");
 
     node.remove();
@@ -95,6 +154,7 @@ export default class extends Controller {
     this.newCountTarget.classList.add("hidden");
 
     this.#trimBottom();
+    if (this.cutoffTime) this.#insertSeenDelimiter();
   }
 
   #trimBottom() {

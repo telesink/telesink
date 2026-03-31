@@ -1,4 +1,12 @@
-<div class="column" data-controller="column" data-column-id-value="<%= column.id %>">
+<% cutoff = local_assigns[:seen_cutoffs]&.[](column.id) %>  <%# ← THIS LINE WAS MISSING %>
+
+<div
+  class="column"
+  data-controller="column"
+  data-column-id-value="<%= column.id %>"
+  data-column-cutoff-value="<%= cutoff&.iso8601 %>"
+>
+
   <%= turbo_frame_tag dom_id(column) do %>
 
     <% events = column.recent_events %>
@@ -34,20 +42,7 @@
       data-max-items="200"
       data-controller="events-list"
     >
-      <% cutoff = local_assigns[:seen_cutoffs]&.[](column.id) %>
-
-      <% show_seen_delimiter = cutoff.present? && events.any? && events.first.occurred_at > cutoff %>
-
       <% events.each do |event| %>
-        <% if show_seen_delimiter && event.occurred_at <= cutoff %>
-          <div class="seen-delimiter">
-            <div class="seen-line"></div>
-            <span class="seen-label">↑ new ↑</span>
-            <div class="seen-line"></div>
-          </div>
-          <% show_seen_delimiter = false %>
-        <% end %>
-
         <%= render "events/preview_card", event: event, column: column %>
       <% end %>
     </div>
