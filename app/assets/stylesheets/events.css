@@ -185,7 +185,7 @@
 .seen-delimiter {
   display: flex;
   align-items: center;
-  background-color: light-dark(var(--color-gray-100), var(--color-zinc-900));
+  background-color: light-dark(var(--color-red-50), var(--color-zinc-950));
   border-bottom: 1px solid
     light-dark(var(--color-gray-200), var(--color-zinc-800));
 }
