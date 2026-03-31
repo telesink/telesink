@@ -36,14 +36,16 @@
     >
       <% cutoff = local_assigns[:seen_cutoffs]&.[](column.id) %>
 
+      <% show_seen_delimiter = cutoff.present? && events.any? && events.first.occurred_at > cutoff %>
+
       <% events.each do |event| %>
-        <% if cutoff && event.occurred_at <= cutoff %>
+        <% if show_seen_delimiter && event.occurred_at <= cutoff %>
           <div class="seen-delimiter">
             <div class="seen-line"></div>
             <span class="seen-label">↑ new ↑</span>
             <div class="seen-line"></div>
           </div>
-          <% cutoff = nil %>
+          <% show_seen_delimiter = false %>
         <% end %>
 
         <%= render "events/preview_card", event: event, column: column %>

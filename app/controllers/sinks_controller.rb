@@ -23,10 +23,9 @@ class SinksController < ApplicationController
     @membership = membership
 
     if membership
-
-      @show_seen_line = membership.has_unread_events? || false
       @seen_cutoffs = {}
-      if @show_seen_line && membership.column_last_viewed_at.present?
+
+      if membership.column_last_viewed_at.present?
         membership.column_last_viewed_at.each do |col_id, ts|
           @seen_cutoffs[col_id.to_i] = Time.zone.parse(ts) if ts.present?
         end
