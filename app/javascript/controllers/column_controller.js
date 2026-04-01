@@ -3,9 +3,20 @@ import { Controller } from "@hotwired/stimulus";
 const MAX_ITEMS = 200;
 const MAX_PENDING = 100;
 
+const NEW_DELIMITER_HTML = `
+  <div class="seen-line"></div>
+  <span class="seen-label">↑ new ↑</span>
+  <div class="seen-line"></div>
+`;
+
 export default class extends Controller {
   static targets = ["list", "jumpBar", "newCount"];
-  static values = { cutoff: String, columnId: String, sinkId: String };
+
+  static values = {
+    cutoff: String,
+    columnId: String,
+    sinkId: String,
+  };
 
   connect() {
     this.pendingEvents = [];
@@ -13,11 +24,11 @@ export default class extends Controller {
     this.isAtTop = true;
     this.cutoffTime = null;
     this.hiddenSince = null;
-
-    this.columnEl = this.element;
+    this.storageKey = `column-cutoff-${this.sinkIdValue}-${this.columnIdValue}`;
+    this._syncTimer = null;
 
     this.scrollHandler = this.#onScroll.bind(this);
-    this.columnEl.addEventListener("scroll", this.scrollHandler, {
+    this.element.addEventListener("scroll", this.scrollHandler, {
       passive: true,
     });
 
@@ -44,58 +55,74 @@ export default class extends Controller {
 
     this.#setupCutoff();
 
-    this.isAtTop = this.columnEl.scrollTop < 80;
+    this.isAtTop = this.element.scrollTop < 80;
 
     this.#insertSeenDelimiter();
-
-    this._markAsViewedDebounced = this.#debounce(
-      this.#markAsViewed.bind(this),
-      1000,
-    );
   }
 
   disconnect() {
-    this.columnEl?.removeEventListener("scroll", this.scrollHandler);
+    this.element?.removeEventListener("scroll", this.scrollHandler);
     document.removeEventListener("visibilitychange", this.visibilityHandler);
     this.observer?.disconnect();
-    this.pendingEvents = [];
-    this._markAsViewedDebounced = null;
-  }
+    clearTimeout(this._syncTimer);
 
-  #debounce(fn, ms) {
-    let timer;
-    return (...args) => {
-      clearTimeout(timer);
-      timer = setTimeout(() => fn.apply(this, args), ms);
-    };
+    if (this.isAtTop) {
+      this.#syncCutoffToServer();
+    }
+
+    this.pendingEvents = [];
   }
 
   #setupCutoff() {
-    if (!this.cutoffValue) return;
-    this.cutoffTime = new Date(this.cutoffValue);
-    if (isNaN(this.cutoffTime.getTime())) this.cutoffTime = null;
+    let serverCutoff = null;
+    if (this.cutoffValue) {
+      const parsed = new Date(this.cutoffValue);
+      if (!isNaN(parsed.getTime())) serverCutoff = parsed;
+    }
+
+    let clientCutoff = null;
+    const stored = localStorage.getItem(this.storageKey);
+    if (stored) {
+      const parsed = new Date(stored);
+      if (!isNaN(parsed.getTime())) clientCutoff = parsed;
+    }
+
+    if (clientCutoff && serverCutoff) {
+      this.cutoffTime =
+        clientCutoff > serverCutoff ? clientCutoff : serverCutoff;
+    } else {
+      this.cutoffTime = clientCutoff || serverCutoff;
+    }
   }
 
-  async #markAsViewed() {
+  #markAsViewedLocally() {
+    this.cutoffTime = new Date();
+    localStorage.setItem(this.storageKey, this.cutoffTime.toISOString());
+    this.#removeSeenDelimiter();
+  }
+
+  #scheduleSyncToServer() {
+    clearTimeout(this._syncTimer);
+    this._syncTimer = setTimeout(() => this.#syncCutoffToServer(), 1000);
+  }
+
+  #syncCutoffToServer() {
     if (!this.columnIdValue || !this.sinkIdValue) return;
 
-    this.cutoffTime = new Date();
-    this.#removeSeenDelimiter();
+    const csrf =
+      document.querySelector('meta[name="csrf-token"]')?.content || "";
+    const formData = new FormData();
+    formData.append("authenticity_token", csrf);
 
-    const csrf = document.querySelector('meta[name="csrf-token"]')?.content;
-
-    try {
-      await fetch(
-        `/sinks/${this.sinkIdValue}/columns/${this.columnIdValue}/viewed`,
-        {
-          method: "POST",
-          headers: { "X-CSRF-Token": csrf || "" },
-          credentials: "same-origin",
-        },
-      );
-    } catch (e) {
+    fetch(`/sinks/${this.sinkIdValue}/columns/${this.columnIdValue}/views`, {
+      method: "POST",
+      headers: { "X-CSRF-Token": csrf },
+      credentials: "same-origin",
+      keepalive: true,
+      body: formData,
+    }).catch((e) => {
       console.error("Failed to mark column as viewed", e);
-    }
+    });
   }
 
   #onVisibilityChange() {
@@ -138,12 +165,16 @@ export default class extends Controller {
     if (!firstTime) return;
 
     const newestTime = new Date(firstTime.getAttribute("datetime"));
-    if (newestTime <= this.cutoffTime) return;
+    if (newestTime.getTime() <= this.cutoffTime.getTime()) return;
 
     for (const eventEl of events) {
       const timeEl = eventEl.querySelector("time");
       if (!timeEl) continue;
-      if (new Date(timeEl.getAttribute("datetime")) <= this.cutoffTime) {
+
+      if (
+        new Date(timeEl.getAttribute("datetime")).getTime() <=
+        this.cutoffTime.getTime()
+      ) {
         eventEl.before(this.#createSeenDelimiter());
         break;
       }
@@ -159,11 +190,8 @@ export default class extends Controller {
   #createSeenDelimiter() {
     const div = document.createElement("div");
     div.className = "seen-delimiter";
-    div.innerHTML = `
-      <div class="seen-line"></div>
-      <span class="seen-label">↑ new ↑</span>
-      <div class="seen-line"></div>
-    `;
+    div.innerHTML = NEW_DELIMITER_HTML;
+
     return div;
   }
 
@@ -175,11 +203,15 @@ export default class extends Controller {
         const timeEl = node.querySelector("time");
         if (timeEl) {
           const eventTime = new Date(timeEl.getAttribute("datetime"));
-          if (!this.cutoffTime || eventTime > this.cutoffTime) {
+          if (
+            !this.cutoffTime ||
+            eventTime.getTime() > this.cutoffTime.getTime()
+          ) {
             this.cutoffTime = eventTime;
           }
         }
-        this._markAsViewedDebounced();
+        this.#markAsViewedLocally();
+        this.#scheduleSyncToServer();
       }
 
       return;
@@ -212,7 +244,8 @@ export default class extends Controller {
 
       if (atTop) {
         this.#flushPending();
-        this._markAsViewedDebounced();
+        this.#markAsViewedLocally();
+        this.#scheduleSyncToServer();
       }
     }
 
@@ -220,8 +253,9 @@ export default class extends Controller {
   }
 
   #flushPending() {
-    const list = this.listTarget;
-    [...this.pendingEvents].reverse().forEach((el) => list.prepend(el));
+    [...this.pendingEvents]
+      .reverse()
+      .forEach((el) => this.listTarget.prepend(el));
     this.pendingEvents = [];
     this.newEventCount = 0;
     this.newCountTarget.classList.add("hidden");
@@ -229,19 +263,16 @@ export default class extends Controller {
   }
 
   #trimBottom() {
-    const list = this.listTarget;
-
-    while (list.children.length > MAX_ITEMS) {
-      list.lastElementChild?.remove();
+    while (this.listTarget.children.length > MAX_ITEMS) {
+      this.listTarget.lastElementChild?.remove();
     }
   }
 
   #trimTop() {
-    const list = this.listTarget;
     let removedHeight = 0;
 
-    while (list.children.length > MAX_ITEMS) {
-      const el = list.firstElementChild;
+    while (this.listTarget.children.length > MAX_ITEMS) {
+      const el = this.listTarget.firstElementChild;
       if (!el) break;
 
       removedHeight += el.offsetHeight;
@@ -249,11 +280,14 @@ export default class extends Controller {
     }
 
     if (removedHeight > 0) {
-      this.columnEl.scrollTop -= removedHeight;
+      this.element.scrollTop -= removedHeight;
     }
   }
 
   jumpToTop() {
-    this.columnEl?.scrollTo({ top: 0, behavior: "smooth" });
+    this.element?.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
   }
 }

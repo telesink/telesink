@@ -7,9 +7,7 @@
   data-column-sink-id-value="<%= column.sink_id %>"
   data-column-cutoff-value="<%= cutoff&.iso8601 %>"
 >
-
   <%= turbo_frame_tag dom_id(column) do %>
-
     <% events = column.recent_events %>
 
     <div class="column__header column__header--cast-shadow">

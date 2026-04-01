@@ -1,7 +1,7 @@
 class Sinks::ColumnsController < ApplicationController
   include SinkScoped
 
-  before_action :set_column, only: %i[edit update show destroy viewed]
+  before_action :set_column, only: %i[edit update show destroy]
 
   def create
     @column = @sink.columns.build(name: "all events")
@@ -70,17 +70,6 @@ class Sinks::ColumnsController < ApplicationController
   def destroy
     @column.destroy
     redirect_to @sink, status: :see_other
-  end
-
-  def viewed
-    membership = @sink.sink_memberships.find_by(user: Current.user)
-    return head :ok unless membership
-
-    membership.column_last_viewed_at ||= {}
-    membership.column_last_viewed_at[@column.id.to_s] = Time.current.iso8601
-    membership.save!
-
-    head :ok
   end
 
   private
