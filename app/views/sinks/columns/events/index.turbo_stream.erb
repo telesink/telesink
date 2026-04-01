@@ -1,5 +1,10 @@
 <%= turbo_stream.append "events_list_#{@column.id}" do %>
+  <% delimiter_inserted = false %>
   <% @events.each do |event| %>
+    <% if @cutoff && !delimiter_inserted && event.occurred_at <= @cutoff %>
+      <div class="seen-delimiter hidden"></div>
+      <% delimiter_inserted = true %>
+    <% end %>
     <%= render "events/preview_card", event: event, column: @column %>
   <% end %>
 <% end %>

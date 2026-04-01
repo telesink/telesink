@@ -51,7 +51,7 @@ export default class extends Controller {
 
     this.isAtTop = this.element.scrollTop < 80;
 
-    this.#insertSeenDelimiter();
+    this.#revealSeenDelimiter();
   }
 
   disconnect() {
@@ -93,11 +93,18 @@ export default class extends Controller {
     this.cutoffTime = new Date();
     localStorage.setItem(this.storageKey, this.cutoffTime.toISOString());
     this.#removeSeenDelimiter();
+    this.#scheduleSyncToServer();
+  }
+
+  #updateCutoffToNow() {
+    this.cutoffTime = new Date();
+    localStorage.setItem(this.storageKey, this.cutoffTime.toISOString());
+    this.#scheduleSyncToServer();
   }
 
   #scheduleSyncToServer() {
     clearTimeout(this._syncTimer);
-    this._syncTimer = setTimeout(() => this.#syncCutoffToServer(), 1000);
+    this._syncTimer = setTimeout(() => this.#syncCutoffToServer(), 500);
   }
 
   #syncCutoffToServer() {
@@ -133,7 +140,7 @@ export default class extends Controller {
         });
 
         if (hasNewEvents) {
-          this.#insertSeenDelimiter();
+          this.#insertDelimiterForTabReturn();
         } else {
           this.#removeSeenDelimiter();
         }
@@ -145,8 +152,8 @@ export default class extends Controller {
     }
   }
 
-  #insertSeenDelimiter() {
-    if (!this.cutoffTime) return;
+  #insertDelimiterForTabReturn() {
+    if (!this.hiddenSince) return;
 
     this.#removeSeenDelimiter();
 
@@ -155,24 +162,38 @@ export default class extends Controller {
     );
     if (!events.length) return;
 
-    const firstTime = events[0].querySelector("time");
-    if (!firstTime) return;
-
-    const newestTime = new Date(firstTime.getAttribute("datetime"));
-    if (newestTime.getTime() <= this.cutoffTime.getTime()) return;
-
     for (const eventEl of events) {
       const timeEl = eventEl.querySelector("time");
       if (!timeEl) continue;
 
       if (
-        new Date(timeEl.getAttribute("datetime")).getTime() <=
-        this.cutoffTime.getTime()
+        new Date(timeEl.getAttribute("datetime")).getTime() <= this.hiddenSince
       ) {
         eventEl.before(this.#createSeenDelimiter());
-        break;
+        this.#updateCutoffToNow();
+        return;
       }
     }
+
+    const firstChild = this.listTarget.firstElementChild;
+    if (firstChild) {
+      firstChild.before(this.#createSeenDelimiter());
+    } else {
+      this.listTarget.prepend(this.#createSeenDelimiter());
+    }
+    this.#updateCutoffToNow();
+  }
+
+  #revealSeenDelimiter() {
+    const delimiter = this.listTarget.querySelector(".seen-delimiter");
+    if (!delimiter) return;
+
+    if (this.listTarget.firstElementChild === delimiter) {
+      delimiter.remove();
+      return;
+    }
+
+    delimiter.classList.remove("hidden");
   }
 
   #removeSeenDelimiter() {
@@ -204,7 +225,6 @@ export default class extends Controller {
           }
         }
         this.#markAsViewedLocally();
-        this.#scheduleSyncToServer();
       }
 
       return;
@@ -227,6 +247,7 @@ export default class extends Controller {
     if (!this.isAtTop) {
       this.#trimTop();
     }
+    this.#revealSeenDelimiter();
   }
 
   #onScroll(e) {
@@ -248,7 +269,6 @@ export default class extends Controller {
       const delimiterTop = delimiter.getBoundingClientRect().top + scrollTop;
       if (scrollTop > delimiterTop + 50) {
         this.#markAsViewedLocally();
-        this.#scheduleSyncToServer();
       }
     }
   }
