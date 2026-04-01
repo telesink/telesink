@@ -3,12 +3,6 @@ import { Controller } from "@hotwired/stimulus";
 const MAX_ITEMS = 200;
 const MAX_PENDING = 100;
 
-const NEW_DELIMITER_HTML = `
-  <div class="seen-line"></div>
-  <span class="seen-label">↑ new ↑</span>
-  <div class="seen-line"></div>
-`;
-
 export default class extends Controller {
   static targets = ["list", "jumpBar", "newCount"];
 
@@ -190,7 +184,6 @@ export default class extends Controller {
   #createSeenDelimiter() {
     const div = document.createElement("div");
     div.className = "seen-delimiter";
-    div.innerHTML = NEW_DELIMITER_HTML;
 
     return div;
   }
