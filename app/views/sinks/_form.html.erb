@@ -1,3 +1,7 @@
+<%
+  url = "#{request.base_url}#{api_v1_sink_events_path(sink.token)}"
+%>
+
 <div class="column__header">
   <h2 class="column__title">
     <% if sink.persisted? %>
@@ -31,20 +35,40 @@
   <% end %>
 
   <% if sink.persisted? %>
-    <hr class="divider">
+    <div class="divider"></div>
 
     <details>
       <summary class="link">more</summary>
-      <%= button_to(
-        "delete sink",
-        sink_path(sink),
-        method: :delete,
-        data: {
-          turbo_frame: "_top",
-          turbo_confirm: "delete '#{sink.name}' and all its events? this cannot be undone."
-        },
-        class: "btn btn--danger"
-      ) %>
+
+      <div class="form">
+        <div class="form-field">
+          <%= label_tag :endpoint, "endpoint", class: "form-field__label" %>
+          <%= text_field_tag(
+            :endpoint,
+            url,
+            readonly: true,
+            class: "text-field",
+            onclick: "this.select()"
+          ) %>
+        </div>
+
+        <div>
+          <%= button_to_copy_to_clipboard(url) { "copy url" } %>
+        </div>
+
+        <div class="divider"></div>
+
+        <%= button_to(
+          "delete sink",
+          sink_path(sink),
+          method: :delete,
+          data: {
+            turbo_frame: "_top",
+            turbo_confirm: "delete '#{sink.name}' and all its events? this cannot be undone."
+          },
+          class: "btn btn--danger"
+        ) %>
+      </div>
     </details>
   <% end %>
 </div>
