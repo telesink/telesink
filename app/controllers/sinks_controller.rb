@@ -1,4 +1,6 @@
 class SinksController < ApplicationController
+  skip_demo_restrictions only: %i[index show]
+
   before_action :set_sink_memberships, only: %i[index show new edit create update destroy]
   before_action :set_sink, only: %i[show edit update destroy]
 

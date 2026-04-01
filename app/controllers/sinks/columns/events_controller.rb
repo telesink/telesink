@@ -1,6 +1,8 @@
 class Sinks::Columns::EventsController < ApplicationController
   include SinkScoped, ColumnScoped
 
+  skip_demo_restrictions only: %i[index]
+
   before_action :set_cutoff, only: %i[index]
 
   def index

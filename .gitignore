@@ -39,3 +39,4 @@
 
 /config/deploy.yml
 .DS_Store
+config/deploy.demo.yml

@@ -1,6 +1,8 @@
 class Sinks::Columns::ViewsController < ApplicationController
   include SinkScoped, ColumnScoped
 
+  skip_demo_restrictions only: %i[create]
+
   before_action :set_membership, only: %i[create]
   before_action :verify_membership, only: %i[create]
 

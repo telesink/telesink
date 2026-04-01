@@ -104,3 +104,21 @@ production:
     <<: *primary_production
     database: telesink_production_cable
     migrations_paths: db/cable_migrate
+
+demo:
+  primary: &primary_demo
+    <<: *default
+    database: telesink_demo
+    password: <%= ENV["POSTGRES_PASSWORD"] %>
+  cache:
+    <<: *primary_demo
+    database: telesink_demo_cache
+    migrations_paths: db/cache_migrate
+  queue:
+    <<: *primary_demo
+    database: telesink_demo_queue
+    migrations_paths: db/queue_migrate
+  cable:
+    <<: *primary_demo
+    database: telesink_demo_cable
+    migrations_paths: db/cable_migrate

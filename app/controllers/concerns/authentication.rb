@@ -19,7 +19,22 @@ module Authentication
   end
 
   def require_authentication
-    resume_session || request_authentication
+    if resume_session
+      # Proceed with existing session
+    elsif Rails.env.demo?
+      demo_user = User.find_by(email_address: "demo@telesink.com")
+      if demo_user
+        start_new_session_for(demo_user)
+      else
+        demo_user = User.create!(
+          email_address: "demo@telesink.com",
+          password: SecureRandom.hex(32)
+        )
+        start_new_session_for(demo_user)
+      end
+    else
+      request_authentication
+    end
   end
 
   def resume_session
