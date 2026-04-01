@@ -1,7 +1,7 @@
 class Sinks::ColumnsController < ApplicationController
   include SinkScoped
 
-  skip_demo_restrictions only: %i[show]
+  skip_demo_restrictions # only: %i[show]
 
   before_action :set_column, only: %i[edit update show destroy]
 
