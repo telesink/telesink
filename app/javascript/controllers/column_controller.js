@@ -230,19 +230,27 @@ export default class extends Controller {
   }
 
   #onScroll(e) {
-    const atTop = e.target.scrollTop < 80;
+    const scrollTop = e.target.scrollTop;
+    const atTop = scrollTop < 80;
 
     if (atTop !== this.isAtTop) {
       this.isAtTop = atTop;
 
       if (atTop) {
         this.#flushPending();
-        this.#markAsViewedLocally();
-        this.#scheduleSyncToServer();
       }
     }
 
     this.jumpBarTarget.classList.toggle("hidden", atTop);
+
+    const delimiter = this.listTarget.querySelector(".seen-delimiter");
+    if (delimiter) {
+      const delimiterTop = delimiter.getBoundingClientRect().top + scrollTop;
+      if (scrollTop > delimiterTop + 50) {
+        this.#markAsViewedLocally();
+        this.#scheduleSyncToServer();
+      }
+    }
   }
 
   #flushPending() {
