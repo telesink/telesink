@@ -34,4 +34,8 @@ class Column < ApplicationRecord
 
     true
   end
+
+  def single_event_type?
+    event_types.size == 1
+  end
 end

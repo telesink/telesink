@@ -1,6 +1,9 @@
 module EventsHelper
   def highlighted_event_body(event, column, length: 87)
     text = event.text
+    if column.single_event_type?
+      length = 84
+    end
 
     if column&.search_term.present?
       truncated = truncate(text, length: length, omission: "…")
