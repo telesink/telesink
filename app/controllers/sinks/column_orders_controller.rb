@@ -2,6 +2,8 @@
 class Sinks::ColumnOrdersController < ApplicationController
   include SinkScoped
 
+  skip_demo_restrictions only: %i[update]
+
   def update
     column_ids = params.require(:column_order)[:column_ids] || []
     column_ids = column_ids.reject(&:blank?).map(&:to_i)
