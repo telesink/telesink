@@ -128,6 +128,13 @@
   }
 }
 
+.events__loading {
+  position: relative;
+  padding: 0 1ch;
+  background-color: light-dark(var(--color-gray-100), var(--color-zinc-800));
+  border-top: 1px solid var(--border-color);
+}
+
 .events__end-of-feed {
   height: 1px;
   background-color: light-dark(var(--color-gray-300), var(--color-zinc-700));
