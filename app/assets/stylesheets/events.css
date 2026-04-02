@@ -59,6 +59,10 @@
   color: light-dark(var(--color-gray-700), var(--color-zinc-400));
 }
 
+.event-preview__body--single-event-type {
+  line-clamp: 3;
+}
+
 .event-preview__highlight {
   font-weight: 700;
   background: none;

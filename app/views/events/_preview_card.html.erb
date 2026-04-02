@@ -16,7 +16,7 @@
     <div class="event-preview__content">
       <div class="event-preview__header">
         <% if column.single_event_type? %>
-          <div class="event-preview__body">
+          <div class="event-preview__body event-preview__body--single-event-type">
             <%= highlighted_event_body(event, column) %>
           </div>
         <% else %>
