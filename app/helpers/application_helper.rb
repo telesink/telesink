@@ -1,4 +1,13 @@
 module ApplicationHelper
+  def site_title
+    s = content_for(:title) || "Telesink"
+
+    if Rails.env.demo?
+      s += " (demo)"
+    end
+
+    s
+  end
   def button_to_copy_to_clipboard(content, &)
     tag.button(
       class: "btn btn--primary self-start",
