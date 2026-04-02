@@ -14,7 +14,12 @@
       <span class="column__drag-handle">⋮⋮</span>
 
       <h2 class="column__title">
-        <%= column.name %>
+        <% if column.search_term %>
+          🔎 "<%= column.search_term %>"
+        <% else %>
+          <%= column.name %>
+        <% end %>
+
       </h2>
 
       <%= link_to(
