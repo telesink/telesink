@@ -8,35 +8,31 @@
   <div class="
     event-preview
     <%= 'event-preview--new-event' if local_assigns[:new_event] %>
-    <%= 'event-preview--compact' if column.single_event_type? %>
   ">
     <% if event.emoji.present? %>
       <div class="event-preview__emoji"><%= event.emoji %></div>
     <% end %>
 
     <div class="event-preview__content">
+      <div class="event-preview__header">
+        <% if column.single_event_type? %>
+          <div class="event-preview__body">
+            <%= highlighted_event_body(event, column) %>
+          </div>
+        <% else %>
+          <strong class="event-preview__title"><%= event.event_type.humanize %></strong>
+        <% end %>
 
-      <% if column.single_event_type? %>
         <time
           data-controller="time-formatter"
-          class="event-preview__time event-preview__time--compact"
+          class="event-preview__time"
           datetime="<%= event.occurred_at.iso8601 %>"
           title="<%= event.occurred_at.iso8601 %>"
         >
         </time>
-        <%= highlighted_event_body(event, column) %>
-      <% else %>
-        <div class="event-preview__header">
-          <strong class="event-preview__title"><%= event.event_type.humanize %></strong>
-          <time
-            data-controller="time-formatter"
-            class="event-preview__time"
-            datetime="<%= event.occurred_at.iso8601 %>"
-            title="<%= event.occurred_at.iso8601 %>"
-          >
-          </time>
-        </div>
+      </div>
 
+      <% unless column.single_event_type? %>
         <div class="event-preview__body">
           <%= highlighted_event_body(event, column) %>
         </div>

@@ -19,10 +19,6 @@
   word-wrap: break-word;
 }
 
-.event-preview--compact {
-  height: 5ch;
-}
-
 .event-preview__emoji {
   width: 2ch;
   flex-shrink: 0;
@@ -52,11 +48,6 @@
   color: light-dark(var(--color-gray-400), var(--color-zinc-500));
   white-space: nowrap;
   flex-shrink: 0;
-}
-
-.event-preview__time--compact {
-  margin-left: 1ch;
-  float: right;
 }
 
 .event-preview__body {
