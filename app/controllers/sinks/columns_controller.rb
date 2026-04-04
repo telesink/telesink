@@ -56,17 +56,11 @@ class Sinks::ColumnsController < ApplicationController
   end
 
   def show
-    @sink = @column.sink
-    respond_to do |format|
-      format.turbo_stream do
-        render turbo_stream: turbo_stream.replace(
-          dom_id(@column),
-          partial: "sinks/columns/column",
-          locals: { column: @column }
-        )
-      end
-      format.html { redirect_to @sink }
-    end
+    render turbo_stream: turbo_stream.replace(
+      @column,
+      partial: "sinks/columns/column",
+      locals: { column: @column }
+    )
   end
 
   def destroy
