@@ -13,7 +13,7 @@
 
 <div class="column-data">
   <%= form_with(
-    model: [sink, column],
+    model: [column.sink, column],
     namespace: dom_id(column),
     class: "form"
   ) do |form| %>
@@ -62,7 +62,7 @@
     <summary class="link">more</summary>
     <%= button_to(
       "delete column",
-      [sink, column],
+      [column.sink, column],
       method: :delete,
       data: {
         turbo_frame: "_top",
