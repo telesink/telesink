@@ -11,6 +11,8 @@ class RegistrationsController < ApplicationController
 
   def create
     @user = User.new(user_params)
+    @user.role = :admin
+
     if @user.save
       Telesink.track(
         event: "user.signed_up",
