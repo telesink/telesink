@@ -1,4 +1,3 @@
-# app/controllers/sinks/column_orders_controller.rb
 class Sinks::ColumnOrdersController < ApplicationController
   include SinkScoped
 

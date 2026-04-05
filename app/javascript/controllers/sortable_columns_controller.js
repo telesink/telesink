@@ -21,9 +21,13 @@ export default class extends Controller {
   }
 
   #saveOrder() {
-    const columnIds = Array.from(this.element.querySelectorAll(".column")).map(
-      (el) => parseInt(el.dataset.columnIdValue, 10),
-    );
+    const columnIds = Array.from(this.element.querySelectorAll(".column"))
+      .map((el) => {
+        const columnCtrl =
+          this.application.getControllerForElementAndIdentifier(el, "column");
+        return parseInt(columnCtrl.columnIdValue, 10);
+      })
+      .filter((id) => !isNaN(id));
 
     const csrfToken = document
       .querySelector("meta[name='csrf-token']")
