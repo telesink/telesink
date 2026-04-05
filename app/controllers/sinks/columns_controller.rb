@@ -27,6 +27,11 @@ class Sinks::ColumnsController < ApplicationController
 
   def edit
     @available_event_types = @column.sink.events.distinct.pluck(:event_type).sort
+
+    # This route is intended for Turbo Streams, but bots sometimes access it
+    # directly, causing 500 errors. This guard prevents the template from making
+    # unnecessary queries and failing.
+    @sink_memberships = []
   end
 
   def update
