@@ -10,10 +10,17 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_03_30_111317) do
+ActiveRecord::Schema[8.1].define(version: 2026_04_06_090736) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pg_trgm"
+
+  create_table "accounts", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.string "join_code"
+    t.datetime "updated_at", null: false
+    t.index ["join_code"], name: "index_accounts_on_join_code", unique: true
+  end
 
   create_table "columns", force: :cascade do |t|
     t.jsonb "config"
@@ -78,11 +85,14 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_30_111317) do
   end
 
   create_table "users", force: :cascade do |t|
+    t.bigint "account_id"
     t.datetime "created_at", null: false
     t.bigint "current_sink_id"
     t.string "email_address", null: false
     t.string "password_digest", null: false
+    t.integer "role", default: 0, null: false
     t.datetime "updated_at", null: false
+    t.index ["account_id"], name: "index_users_on_account_id"
     t.index ["current_sink_id"], name: "index_users_on_current_sink_id"
     t.index ["email_address"], name: "index_users_on_email_address", unique: true
   end
@@ -92,5 +102,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_30_111317) do
   add_foreign_key "sessions", "users"
   add_foreign_key "sink_memberships", "sinks"
   add_foreign_key "sink_memberships", "users"
+  add_foreign_key "users", "accounts"
   add_foreign_key "users", "sinks", column: "current_sink_id", on_delete: :nullify
 end

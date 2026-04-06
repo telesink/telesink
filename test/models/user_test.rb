@@ -2,17 +2,19 @@ require "test_helper"
 
 class UserTest < ActiveSupport::TestCase
   test "downcases and strips email_address" do
-    user = User.new(email_address: " DOWNCASED@EXAMPLE.COM ")
+    user = User.new(email_address: " DOWNCASED@EXAMPLE.COM ", account: accounts(:telebugs))
+
     assert_equal "downcased@example.com", user.email_address
   end
 
   test "nickname is derived from the email" do
-    user = User.new(email_address: "sunshine@telesink.com")
+    user = User.new(email_address: "sunshine@telesink.com", account: accounts(:telebugs))
+
     assert_equal "sunshine", user.nickname
   end
 
   test "hashes the password (via has_secure_password)" do
-    user = User.new(email_address: "secure@telesink.com", password: "pass")
+    user = User.new(email_address: "secure@telesink.com", password: "pass", account: accounts(:telebugs))
     user.save!
 
     assert user.authenticate("pass")
@@ -21,7 +23,7 @@ class UserTest < ActiveSupport::TestCase
   end
 
   test "sinks are ordered by created_at ascending (oldest first)" do
-    user = User.create!(email_address: "order@test.com", password: "password123")
+    user = User.create!(email_address: "order@test.com", password: "password123", account: accounts(:telebugs))
 
     sink2 = user.sinks.create!(name: "Newer Sink")
     sink1 = user.sinks.create!(name: "Older Sink", created_at: 1.day.ago)

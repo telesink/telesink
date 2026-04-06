@@ -1,5 +1,6 @@
 <% password_digest = BCrypt::Password.create("password") %>
 
 kyrylo:
+  account: telebugs
   email_address: kyrylo@telesink.com
   password_digest: <%= password_digest %>

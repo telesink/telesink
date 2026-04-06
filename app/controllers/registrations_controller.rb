@@ -11,23 +11,29 @@ class RegistrationsController < ApplicationController
 
   def create
     @user = User.new(user_params)
-    @user.role = :admin
+    @user.role = :owner
 
-    if @user.save
-      Telesink.track(
-        event: "user.signed_up",
-        text: @user.email_address,
-        emoji: "👤",
-        properties: {
-          user_id: @user.id,
-          email_address: @user.email_address
-        }
-      )
-      start_new_session_for @user
-      redirect_to root_url
-    else
-      redirect_to new_registration_url, alert: @user.errors.first.full_message
+    ActiveRecord::Base.transaction do
+      account = Account.create!
+      @user.account = account
+      @user.save!
     end
+
+    Telesink.track(
+      event: "New account",
+      text: "Owner: #{@user.email_address}",
+      emoji: "👤",
+      properties: {
+        owner: @user.id,
+        user_id: @user.id,
+        email_address: @user.email_address
+      }
+    )
+
+    start_new_session_for @user
+    redirect_to root_url
+  rescue ActiveRecord::RecordInvalid
+    redirect_to new_registration_url, alert: "registration failed. please try again."
   rescue ActiveRecord::RecordNotUnique
     redirect_to new_registration_url, alert: "registration failed. please try a different email address."
   end

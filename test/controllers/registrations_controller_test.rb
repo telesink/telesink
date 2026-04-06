@@ -26,7 +26,9 @@ class RegistrationsControllerTest < ActionDispatch::IntegrationTest
     }
 
     assert_redirected_to root_path
-    assert cookies[:session_id]
+    user = User.find_by(email_address: email)
+    assert_equal "owner", user.role
+    assert user.account
   end
 
   test "create with invalid parameters" do
@@ -53,21 +55,5 @@ class RegistrationsControllerTest < ActionDispatch::IntegrationTest
       }
     }
     assert_redirected_to root_path
-  end
-
-  test "create with valid parameters makes user an admin" do
-    email = "new@example.com"
-
-    post registration_path, params: {
-      user: {
-        email_address: email,
-        password: "password",
-        password_confirmation: "password"
-      }
-    }
-
-    assert_redirected_to root_path
-    user = User.find_by(email_address: email)
-    assert_equal "admin", user.role
   end
 end
