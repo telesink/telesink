@@ -1,12 +1,6 @@
 <%= turbo_stream.append "events_list_#{@column.id}" do %>
   <% last_date_key = nil %>
-  <% delimiter_inserted = false %>
   <% @events.each do |event| %>
-    <% if @cutoff && !delimiter_inserted && event.occurred_at <= @cutoff %>
-      <div class="seen-delimiter hidden"></div>
-      <% delimiter_inserted = true %>
-    <% end %>
-
     <% date_key = event.occurred_at.strftime("%Y-%m-%d") %>
     <% if date_key != last_date_key %>
       <%= render "events/day_delimiter", event: event %>

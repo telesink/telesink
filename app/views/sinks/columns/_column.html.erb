@@ -1,11 +1,9 @@
-<% cutoff = local_assigns[:seen_cutoffs]&.[](column.id) %>
-
 <div
   class="column"
   data-controller="column"
   data-column-column-id-value="<%= column.id %>"
   data-column-sink-id-value="<%= column.sink_id %>"
-  data-column-cutoff-value="<%= cutoff&.iso8601 %>"
+  data-column-cutoff-value="<%= local_assigns[:seen_cutoffs]&.[](column.id)&.iso8601 %>"
 >
   <%= turbo_frame_tag dom_id(column) do %>
     <% events = column.recent_events %>
@@ -45,19 +43,12 @@
       data-column-target="list"
     >
       <% last_date_key = nil %>
-      <% delimiter_inserted = false %>
       <% events.each do |event| %>
-        <% if cutoff && !delimiter_inserted && event.occurred_at <= cutoff %>
-          <div class="seen-delimiter hidden"></div>
-          <% delimiter_inserted = true %>
-        <% end %>
-
         <% date_key = event.occurred_at.strftime("%Y-%m-%d") %>
         <% if date_key != last_date_key %>
           <%= render "events/day_delimiter", event: event %>
           <% last_date_key = date_key %>
         <% end %>
-
         <%= render "events/preview_card", event: event, column: column %>
       <% end %>
     </div>
@@ -73,6 +64,5 @@
     <% else %>
       <div class="events__end-of-feed">end</div>
     <% end %>
-
   <% end %>
 </div>

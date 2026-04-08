@@ -51,15 +51,16 @@ export default class extends Controller {
     this.#setupCutoff();
 
     this.isAtTop = this.element.scrollTop < 80;
-
-    this.#revealSeenDelimiter();
+    this.#updateSeenStates();
     this.#rebuildDayDelimiters();
   }
 
   disconnect() {
     this.element?.removeEventListener("scroll", this.scrollHandler);
     document.removeEventListener("visibilitychange", this.visibilityHandler);
+
     this.observer?.disconnect();
+
     clearTimeout(this._syncTimer);
 
     if (this.isAtTop) {
@@ -94,14 +95,9 @@ export default class extends Controller {
   #markAsViewedLocally() {
     this.cutoffTime = new Date();
     localStorage.setItem(this.storageKey, this.cutoffTime.toISOString());
-    this.#removeSeenDelimiter();
-    this.#scheduleSyncToServer();
-  }
 
-  #updateCutoffToNow() {
-    this.cutoffTime = new Date();
-    localStorage.setItem(this.storageKey, this.cutoffTime.toISOString());
     this.#scheduleSyncToServer();
+    this.#updateSeenStates();
   }
 
   #scheduleSyncToServer() {
@@ -129,22 +125,7 @@ export default class extends Controller {
   #onVisibilityChange() {
     if (document.visibilityState === "visible") {
       if (this.hiddenSince) {
-        const hasNewEvents = Array.from(
-          this.listTarget.querySelectorAll(".event-preview"),
-        ).some((el) => {
-          const t = el.querySelector("time");
-          return (
-            t &&
-            new Date(t.getAttribute("datetime")).getTime() > this.hiddenSince
-          );
-        });
-
-        if (hasNewEvents) {
-          this.#insertDelimiterForTabReturn();
-        } else {
-          this.#removeSeenDelimiter();
-        }
-
+        this.#updateSeenStates();
         this.hiddenSince = null;
       }
     } else {
@@ -152,59 +133,23 @@ export default class extends Controller {
     }
   }
 
-  #insertDelimiterForTabReturn() {
-    if (!this.hiddenSince) return;
+  #updateSeenStates() {
+    if (!this.cutoffTime) return;
 
-    this.#removeSeenDelimiter();
+    const cutoffMs = this.cutoffTime.getTime();
+    const cards = this.listTarget.querySelectorAll(".event-preview-card");
 
-    const events = Array.from(
-      this.listTarget.querySelectorAll(".event-preview"),
-    );
-    if (!events.length) return;
+    cards.forEach((card) => {
+      const timeEl = card.querySelector("time");
+      if (!timeEl) return;
 
-    for (const eventEl of events) {
-      const timeEl = eventEl.querySelector("time");
-      if (!timeEl) continue;
-
-      if (
-        new Date(timeEl.getAttribute("datetime")).getTime() <= this.hiddenSince
-      ) {
-        eventEl.before(this.#createSeenDelimiter());
-        this.#updateCutoffToNow();
-        return;
+      const eventTime = new Date(timeEl.getAttribute("datetime")).getTime();
+      if (eventTime > cutoffMs) {
+        card.classList.add("is-unseen");
+      } else {
+        card.classList.remove("is-unseen");
       }
-    }
-
-    const firstChild = this.listTarget.firstElementChild;
-    if (firstChild) firstChild.before(this.#createSeenDelimiter());
-    else this.listTarget.prepend(this.#createSeenDelimiter());
-
-    this.#updateCutoffToNow();
-  }
-
-  #revealSeenDelimiter() {
-    const delimiter = this.listTarget.querySelector(".seen-delimiter");
-    if (!delimiter) return;
-
-    if (this.listTarget.firstElementChild === delimiter) {
-      delimiter.remove();
-      return;
-    }
-
-    delimiter.classList.remove("hidden");
-  }
-
-  #removeSeenDelimiter() {
-    this.listTarget
-      .querySelectorAll(".seen-delimiter")
-      .forEach((el) => el.remove());
-  }
-
-  #createSeenDelimiter() {
-    const div = document.createElement("div");
-    div.className = "seen-delimiter";
-
-    return div;
+    });
   }
 
   #handlePrepend(node) {
@@ -212,17 +157,9 @@ export default class extends Controller {
       this.#trimBottom();
 
       if (document.visibilityState === "visible") {
-        const timeEl = node.querySelector("time");
-        if (timeEl) {
-          const eventTime = new Date(timeEl.getAttribute("datetime"));
-          if (
-            !this.cutoffTime ||
-            eventTime.getTime() > this.cutoffTime.getTime()
-          ) {
-            this.cutoffTime = eventTime;
-          }
-        }
         this.#markAsViewedLocally();
+      } else {
+        this.#updateSeenStates();
       }
 
       this.#rebuildDayDelimiters();
@@ -244,13 +181,11 @@ export default class extends Controller {
   #handleAppend(_node) {
     if (!this.isAtTop) this.#trimTop();
     this.#rebuildDayDelimiters();
-    this.#revealSeenDelimiter();
+    this.#updateSeenStates();
   }
 
   #onScroll(e) {
-    const scrollTop = e.target.scrollTop;
-    const atTop = scrollTop < 80;
-
+    const atTop = e.target.scrollTop < 80;
     if (atTop !== this.isAtTop) {
       this.isAtTop = atTop;
       if (atTop) this.#flushPending();
@@ -269,7 +204,7 @@ export default class extends Controller {
     this.#trimBottom();
 
     this.#rebuildDayDelimiters();
-    this.#revealSeenDelimiter();
+    this.#markAsViewedLocally();
   }
 
   #trimBottom() {
@@ -284,10 +219,10 @@ export default class extends Controller {
     while (this.listTarget.children.length > MAX_ITEMS) {
       const el = this.listTarget.firstElementChild;
       if (!el) break;
-
       removedHeight += el.offsetHeight;
       el.remove();
     }
+
     if (removedHeight > 0) this.element.scrollTop -= removedHeight;
   }
 
@@ -299,6 +234,7 @@ export default class extends Controller {
     const events = Array.from(
       this.listTarget.querySelectorAll(".event-preview-card"),
     );
+
     let lastDateKey = null;
 
     events.forEach((eventEl) => {
@@ -336,8 +272,8 @@ export default class extends Controller {
         year: "numeric",
       });
     }
-
     div.appendChild(span);
+
     return div;
   }
 

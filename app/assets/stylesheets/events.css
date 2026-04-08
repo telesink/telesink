@@ -11,6 +11,13 @@
   }
 }
 
+.event-preview-card.is-unseen + .event-preview-card:not(.is-unseen)::before {
+  content: "";
+  display: block;
+  height: 1px;
+  background: light-dark(var(--color-red-600), var(--color-red-400));
+}
+
 .event-preview {
   display: flex;
   gap: 1ch;
@@ -198,9 +205,4 @@
 
 .day-delimiter__label {
   white-space: nowrap;
-}
-
-.seen-delimiter {
-  height: 1px;
-  background: light-dark(var(--color-red-600), var(--color-red-400));
 }
