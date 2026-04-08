@@ -17,4 +17,16 @@ module EventsHelper
       truncate(text, length: length, omission: "…")
     end
   end
+
+  def day_delimiter_label(occurred_at)
+    date = occurred_at.to_date
+
+    if date == Date.today
+      "Today"
+    elsif date == Date.yesterday
+      "Yesterday"
+    else
+      occurred_at.strftime("%A, %B %d, %Y")
+    end
+  end
 end

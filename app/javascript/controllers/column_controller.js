@@ -33,6 +33,7 @@ export default class extends Controller {
       for (const m of mutations) {
         for (const node of m.addedNodes) {
           if (node.nodeType !== Node.ELEMENT_NODE) continue;
+          if (node.classList.contains("day-delimiter")) continue;
 
           const isPrepend = m.target.firstElementChild === node;
 
@@ -52,6 +53,7 @@ export default class extends Controller {
     this.isAtTop = this.element.scrollTop < 80;
 
     this.#revealSeenDelimiter();
+    this.#rebuildDayDelimiters();
   }
 
   disconnect() {
@@ -121,9 +123,7 @@ export default class extends Controller {
       credentials: "same-origin",
       keepalive: true,
       body: formData,
-    }).catch((e) => {
-      console.error("Failed to mark column as viewed", e);
-    });
+    }).catch((e) => console.error("Failed to mark column as viewed", e));
   }
 
   #onVisibilityChange() {
@@ -176,11 +176,9 @@ export default class extends Controller {
     }
 
     const firstChild = this.listTarget.firstElementChild;
-    if (firstChild) {
-      firstChild.before(this.#createSeenDelimiter());
-    } else {
-      this.listTarget.prepend(this.#createSeenDelimiter());
-    }
+    if (firstChild) firstChild.before(this.#createSeenDelimiter());
+    else this.listTarget.prepend(this.#createSeenDelimiter());
+
     this.#updateCutoffToNow();
   }
 
@@ -227,12 +225,12 @@ export default class extends Controller {
         this.#markAsViewedLocally();
       }
 
+      this.#rebuildDayDelimiters();
+
       return;
     }
 
-    if (this.pendingEvents.length >= MAX_PENDING) {
-      this.pendingEvents.shift();
-    }
+    if (this.pendingEvents.length >= MAX_PENDING) this.pendingEvents.shift();
 
     this.pendingEvents.push(node);
     this.newEventCount++;
@@ -244,9 +242,8 @@ export default class extends Controller {
   }
 
   #handleAppend(_node) {
-    if (!this.isAtTop) {
-      this.#trimTop();
-    }
+    if (!this.isAtTop) this.#trimTop();
+    this.#rebuildDayDelimiters();
     this.#revealSeenDelimiter();
   }
 
@@ -256,21 +253,10 @@ export default class extends Controller {
 
     if (atTop !== this.isAtTop) {
       this.isAtTop = atTop;
-
-      if (atTop) {
-        this.#flushPending();
-      }
+      if (atTop) this.#flushPending();
     }
 
     this.jumpBarTarget.classList.toggle("hidden", atTop);
-
-    const delimiter = this.listTarget.querySelector(".seen-delimiter");
-    if (delimiter) {
-      const delimiterTop = delimiter.getBoundingClientRect().top + scrollTop;
-      if (scrollTop > delimiterTop + 50) {
-        this.#markAsViewedLocally();
-      }
-    }
   }
 
   #flushPending() {
@@ -281,6 +267,9 @@ export default class extends Controller {
     this.newEventCount = 0;
     this.newCountTarget.classList.add("hidden");
     this.#trimBottom();
+
+    this.#rebuildDayDelimiters();
+    this.#revealSeenDelimiter();
   }
 
   #trimBottom() {
@@ -299,16 +288,71 @@ export default class extends Controller {
       removedHeight += el.offsetHeight;
       el.remove();
     }
+    if (removedHeight > 0) this.element.scrollTop -= removedHeight;
+  }
 
-    if (removedHeight > 0) {
-      this.element.scrollTop -= removedHeight;
+  #rebuildDayDelimiters() {
+    this.listTarget
+      .querySelectorAll(".day-delimiter")
+      .forEach((el) => el.remove());
+
+    const events = Array.from(
+      this.listTarget.querySelectorAll(".event-preview-card"),
+    );
+    let lastDateKey = null;
+
+    events.forEach((eventEl) => {
+      const timeEl = eventEl.querySelector("time");
+      if (!timeEl) return;
+
+      const date = new Date(timeEl.getAttribute("datetime"));
+      const dateKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
+
+      if (dateKey !== lastDateKey) {
+        eventEl.before(this.#createDayDelimiter(date));
+        lastDateKey = dateKey;
+      }
+    });
+  }
+
+  #createDayDelimiter(date) {
+    const div = document.createElement("div");
+    div.className = "day-delimiter";
+
+    const span = document.createElement("span");
+    span.className = "day-delimiter__label";
+
+    const today = new Date();
+    const yesterday = new Date();
+    yesterday.setDate(yesterday.getDate() - 1);
+
+    if (this.#isSameDay(date, today)) span.textContent = "Today";
+    else if (this.#isSameDay(date, yesterday)) span.textContent = "Yesterday";
+    else {
+      span.textContent = date.toLocaleDateString(navigator.language, {
+        weekday: "long",
+        month: "long",
+        day: "numeric",
+        year: "numeric",
+      });
     }
+
+    div.appendChild(span);
+    return div;
+  }
+
+  #isSameDay(a, b) {
+    return (
+      a.getFullYear() === b.getFullYear() &&
+      a.getMonth() === b.getMonth() &&
+      a.getDate() === b.getDate()
+    );
   }
 
   jumpToTop() {
-    this.element?.scrollTo({
-      top: 0,
-      behavior: "smooth",
-    });
+    this.element?.scrollTo({ top: 0, behavior: "smooth" });
+    this.isAtTop = true;
+    this.jumpBarTarget.classList.add("hidden");
+    this.#flushPending();
   }
 }
