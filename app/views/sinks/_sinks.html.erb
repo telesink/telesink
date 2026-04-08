@@ -1,8 +1,8 @@
 <%= turbo_frame_tag :sinks do %>
-  <div class="column-data sidebar-account">
-    <p class="column-data__text">
-      <span class="font-bold">sinks</span>
-    </p>
+  <div class="column__header">
+    <h1 class="column__title">
+      <span class="truncate">sinks</span>
+    </h1>
   </div>
 
   <% if @sink_memberships.any? %>

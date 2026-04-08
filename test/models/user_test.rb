@@ -8,7 +8,7 @@ class UserTest < ActiveSupport::TestCase
   end
 
   test "nickname is derived from the email" do
-    user = User.new(email_address: "sunshine@telesink.com", account: accounts(:telebugs))
+    user = User.create(email_address: "sunshine@telesink.com", account: accounts(:telebugs))
 
     assert_equal "sunshine", user.nickname
   end

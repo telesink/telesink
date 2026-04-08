@@ -1,0 +1,30 @@
+<div class="column__header">
+  <h1 class="column__title">
+    settings
+  </h1>
+
+  <%= link_to "back", root_path, class: "link" %>
+</div>
+
+<ul class="sidebar-list">
+  <li class="<%= class_names(
+    "sidebar-list__item",
+    "sidebar-list__item--current" => current_page?(edit_settings_nickname_path),
+  ) %>">
+    <%= link_to_unless_current "nickname", edit_settings_nickname_path, class: "link" %>
+  </li>
+
+  <li class="<%= class_names(
+    "sidebar-list__item",
+    "sidebar-list__item--current" => current_page?(edit_settings_email_path),
+  ) %>">
+    <%= link_to_unless_current "email", edit_settings_email_path, class: "link" %>
+  </li>
+
+  <li class="<%= class_names(
+    "sidebar-list__item",
+    "sidebar-list__item--current" => current_page?(edit_settings_password_path),
+  ) %>">
+    <%= link_to_unless_current "password", edit_settings_password_path, class: "link" %>
+  </li>
+</ul>

@@ -1,8 +1,11 @@
 .sidebar {
   background-color: light-dark(var(--color-gray-100), var(--color-zinc-800));
   border-right: 1px solid var(--border-color);
-  box-shadow: 0 0 4px light-dark(var(--color-gray-400), transparent);
   z-index: 1;
+}
+
+.sidebar--cast-shadow {
+  box-shadow: 0 0 4px light-dark(var(--color-gray-400), transparent);
 }
 
 .sidebar-account {

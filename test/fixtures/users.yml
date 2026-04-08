@@ -2,5 +2,6 @@
 
 kyrylo:
   account: telebugs
+  nickname: kyrylo
   email_address: kyrylo@telesink.com
   password_digest: <%= password_digest %>

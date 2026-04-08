@@ -1,0 +1,21 @@
+<aside class="column sidebar sidebar--cast-shadow">
+  <%= turbo_stream_from "user_#{Current.user.id}_sinks" %>
+
+  <div class="sidebar-account">
+    <span class="truncate">
+      <%= link_to_unless_current "@#{Current.user.nickname}", edit_settings_nickname_path, class: "link" %>
+    </span>
+
+    <%= button_to(
+      "sign out",
+      session_path,
+      method: :delete,
+      data: { turbo_confirm: "sign out?" },
+      class: "link link--subtle whitespace-nowrap text-base",
+    ) %>
+  </div>
+
+  <%= turbo_frame_tag :sinks do %>
+    <%= render "sinks/sinks" %>
+  <% end %>
+</aside>

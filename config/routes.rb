@@ -24,4 +24,10 @@ Rails.application.routes.draw do
   end
 
   resources :events, only: %i[show]
+
+  resource :settings, only: %i[show] do
+    resource :nickname, only: %i[edit update], controller: "settings/nicknames"
+    resource :email, only: %i[edit update], controller: "settings/emails"
+    resource :password, only: %i[edit update], controller: "settings/passwords"
+  end
 end

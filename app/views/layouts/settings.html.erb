@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title><%= content_for(:title) || "Telesink" %></title>
+    <title><%= site_title %></title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="color-scheme" content="light dark">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -9,6 +9,7 @@
     <meta name="mobile-web-app-capable" content="yes">
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
+    <meta name="turbo-prefetch" content="false">
 
     <%= yield :head %>
 
@@ -22,11 +23,17 @@
     <%= javascript_importmap_tags %>
   </head>
 
-  <body class="app">
-    <%= render "layouts/sidebars/public" %>
+  <body>
+    <div class="app">
+      <%= render "layouts/sidebars/settings" %>
 
-    <main class="main">
-      <%= yield %>
-    </main>
+      <main class="main">
+        <%= turbo_frame_tag :main_content, class: "contents" do %>
+          <%= yield %>
+        <% end %>
+
+        <%= render "layouts/footer" %>
+      </main>
+    </div>
   </body>
 </html>

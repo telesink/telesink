@@ -1,0 +1,42 @@
+<%= form_with(
+  model: Current.user,
+  url: settings_password_path,
+  method: :put,
+  class: "form",
+) do |form| %>
+  <div class="form-field">
+    <%= form.label :password_challenge, "current password", class: "form-field__label" %>
+    <%= form.password_field(
+      :password_challenge,
+      required: true,
+      autocomplete: "current-password",
+      class: "text-field",
+    ) %>
+  </div>
+
+  <div class="form-field">
+    <%= form.label :password, "new password", class: "form-field__label" %>
+    <%= form.password_field(
+      :password,
+      required: true,
+      autocomplete: "new-password",
+      class: "text-field",
+    ) %>
+  </div>
+
+  <div class="form-field">
+    <%= form.label :password_confirmation, "confirm new password", class: "form-field__label" %>
+    <%= form.password_field(
+      :password_confirmation,
+      required: true,
+      autocomplete: "new-password",
+      class: "text-field",
+    ) %>
+  </div>
+
+  <%= render "shared/banners" %>
+
+  <div>
+    <%= form.button "update password", type: :submit, class: "btn btn--primary" %>
+  </div>
+<% end %>
