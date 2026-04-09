@@ -21,8 +21,10 @@ export default class extends Controller {
     this.storageKey = `column-cutoff-${this.sinkIdValue}-${this.columnIdValue}`;
     this._syncTimer = null;
 
+    this.scrollContainer = this.element.closest(".column");
+
     this.scrollHandler = this.#onScroll.bind(this);
-    this.element.addEventListener("scroll", this.scrollHandler, {
+    this.scrollContainer.addEventListener("scroll", this.scrollHandler, {
       passive: true,
     });
 
@@ -46,17 +48,19 @@ export default class extends Controller {
       }
     });
 
-    this.observer.observe(this.listTarget, { childList: true });
+    if (this.hasListTarget) {
+      this.observer.observe(this.listTarget, { childList: true });
+    }
 
     this.#setupCutoff();
 
-    this.isAtTop = this.element.scrollTop < 80;
+    this.isAtTop = this.scrollContainer.scrollTop < 80;
     this.#updateSeenStates();
     this.#rebuildDayDelimiters();
   }
 
   disconnect() {
-    this.element?.removeEventListener("scroll", this.scrollHandler);
+    this.scrollContainer?.removeEventListener("scroll", this.scrollHandler);
     document.removeEventListener("visibilitychange", this.visibilityHandler);
 
     this.observer?.disconnect();
@@ -134,7 +138,7 @@ export default class extends Controller {
   }
 
   #updateSeenStates() {
-    if (!this.cutoffTime) return;
+    if (!this.hasListTarget || !this.cutoffTime) return;
 
     const cutoffMs = this.cutoffTime.getTime();
     const cards = this.listTarget.querySelectorAll(".event-preview-card");
@@ -185,7 +189,9 @@ export default class extends Controller {
   }
 
   #onScroll(e) {
-    const atTop = e.target.scrollTop < 80;
+    if (!this.hasJumpBarTarget) return;
+
+    const atTop = this.scrollContainer.scrollTop < 80;
     if (atTop !== this.isAtTop) {
       this.isAtTop = atTop;
       if (atTop) this.#flushPending();
@@ -195,6 +201,8 @@ export default class extends Controller {
   }
 
   #flushPending() {
+    if (!this.hasNewCountTarget || !this.hasListTarget) return;
+
     [...this.pendingEvents]
       .reverse()
       .forEach((el) => this.listTarget.prepend(el));
@@ -223,7 +231,7 @@ export default class extends Controller {
       el.remove();
     }
 
-    if (removedHeight > 0) this.element.scrollTop -= removedHeight;
+    if (removedHeight > 0) this.scrollContainer.scrollTop -= removedHeight;
   }
 
   #rebuildDayDelimiters() {
@@ -286,9 +294,9 @@ export default class extends Controller {
   }
 
   jumpToTop() {
-    this.element?.scrollTo({ top: 0, behavior: "smooth" });
+    this.scrollContainer?.scrollTo({ top: 0, behavior: "smooth" });
     this.isAtTop = true;
-    this.jumpBarTarget.classList.add("hidden");
+    if (this.hasJumpBarTarget) this.jumpBarTarget.classList.add("hidden");
     this.#flushPending();
   }
 }

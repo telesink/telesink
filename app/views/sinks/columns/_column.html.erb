@@ -1,11 +1,11 @@
-<div
-  class="column"
-  data-controller="column"
-  data-column-column-id-value="<%= column.id %>"
-  data-column-sink-id-value="<%= column.sink_id %>"
-  data-column-cutoff-value="<%= local_assigns[:seen_cutoffs]&.[](column.id)&.iso8601 %>"
->
-  <%= turbo_frame_tag dom_id(column) do %>
+<div class="column">
+  <%= turbo_frame_tag dom_id(column),
+    data: {
+      controller: "column",
+      column_column_id_value: column.id,
+      column_sink_id_value: column.sink_id,
+      column_cutoff_value: local_assigns[:seen_cutoffs]&.[](column.id)&.iso8601
+  } do %>
     <% events = column.recent_events %>
 
     <div class="column__header column__header--cast-shadow">
