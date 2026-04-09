@@ -3,7 +3,7 @@
 
   <div class="sidebar-account">
     <span class="truncate">
-      <%= link_to_unless_current "@#{Current.user.nickname}", edit_settings_nickname_path, class: "link" %>
+      <%= link_to_unless_current display_name(Current.user), edit_settings_nickname_path, class: "link" %>
     </span>
 
     <%= button_to(

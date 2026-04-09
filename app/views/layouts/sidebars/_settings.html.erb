@@ -1,7 +1,7 @@
 <aside class="column sidebar">
    <div class="sidebar-account">
     <span class="truncate">
-      @<%= Current.user.nickname %>
+      <%= display_name(Current.user) %>
     </span>
 
     <%= button_to(
