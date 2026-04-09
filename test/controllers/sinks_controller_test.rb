@@ -6,9 +6,28 @@ class SinksControllerTest < ActionDispatch::IntegrationTest
     sign_in_as(@user)
   end
 
-  test "index redirects to first sink when sinks exist" do
+  test "index redirects to user's last visited sink when available" do
+    sink = @user.sinks.create!(name: "Last Visited Sink")
+    @user.update!(current_sink_id: sink.id)
+
     get sinks_path
-    assert_redirected_to Sink.first
+    assert_redirected_to sink
+  end
+
+  test "index falls back to first sink (alphabetical by name) when no current_sink_id is set" do
+    @user.update!(current_sink_id: nil)
+
+    get sinks_path
+    assert_redirected_to @user.sinks.order(name: :asc).first
+  end
+
+  test "index falls back to first sink when current_sink_id points to a deleted sink" do
+    old_sink = @user.sinks.create!(name: "Old Sink")
+    @user.update!(current_sink_id: old_sink.id)
+    old_sink.destroy!
+
+    get sinks_path
+    assert_redirected_to @user.sinks.order(name: :asc).first
   end
 
   test "index renders when user has no sinks" do
@@ -99,11 +118,14 @@ class SinksControllerTest < ActionDispatch::IntegrationTest
       delete sink_path(sink)
     end
 
-    assert_redirected_to Sink.first
+    assert_redirected_to @user.sinks.order(name: :asc).first
   end
 
   test "destroy last sink redirects to index" do
-    delete sink_path(Sink.first)
+    @user.sinks.destroy_all
+    last_sink = @user.sinks.create!(name: "Last Remaining Sink")
+
+    delete sink_path(last_sink)
 
     assert_redirected_to sinks_path
   end

@@ -10,8 +10,13 @@ class SinksController < ApplicationController
       return
     end
 
-    if (first_sink = @sink_memberships.first&.sink)
-      redirect_to first_sink, status: :see_other
+    sink_to_redirect = if Current.user.current_sink_id.present?
+      @sink_memberships.find { |m| m.sink_id == Current.user.current_sink_id }&.sink
+    end
+    sink_to_redirect ||= @sink_memberships.first&.sink
+
+    if sink_to_redirect
+      redirect_to sink_to_redirect, status: :see_other
     end
   end
 
