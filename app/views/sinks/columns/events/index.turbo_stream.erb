@@ -1,28 +1,7 @@
 <%= turbo_stream.append "events_list_#{@column.id}" do %>
-  <% last_date_key = nil %>
-  <% @events.each do |event| %>
-    <% date_key = event.occurred_at.strftime("%Y-%m-%d") %>
-    <% if date_key != last_date_key %>
-      <%= render "events/day_delimiter", event: event %>
-      <% last_date_key = date_key %>
-    <% end %>
-
-    <%= render "events/preview_card", event: event, column: @column %>
-  <% end %>
+  <%= render "events/batch", events: @events, column: @column %>
 <% end %>
 
-<% if @events.size == 30 %>
-  <%= turbo_stream.replace "more_#{@column.id}" do %>
-    <%= turbo_frame_tag(
-      "more_#{@column.id}",
-      src: sink_column_events_path(@column.sink, @column, before_id: @events.last.id),
-      loading: :lazy
-    ) do %>
-      <div class="events__loading">↓ loading older events&hellip;</div>
-    <% end %>
-  <% end %>
-<% else %>
-  <%= turbo_stream.replace "more_#{@column.id}" do %>
-    <div class="events__end-of-feed">end</div>
-  <% end %>
+<%= turbo_stream.replace "more_#{@column.id}" do %>
+  <%= render "events/more", column: @column, events: @events %>
 <% end %>
