@@ -16,10 +16,15 @@
   border-bottom: 1px solid var(--border-color);
 }
 
-.sidebar-list {
+.sidebar__section-title {
   margin: 0;
-  padding: 0;
-  list-style-type: none;
+  padding: 1ch;
+  border-bottom: 1px solid var(--border-color);
+  font-size: var(--text-base);
+  font-weight: normal;
+}
+
+.sidebar-list {
   border-bottom: 1px solid var(--border-color);
 }
 

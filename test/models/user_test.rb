@@ -30,4 +30,23 @@ class UserTest < ActiveSupport::TestCase
 
     assert_equal [ sink1, sink2 ], user.sinks.to_a
   end
+
+  test "ordered_by_role orders by role descending (owner first) then by nickname ascending" do
+    account = accounts(:telebugs)
+
+    common = { password: "password123", account: account }
+
+    owner_z = User.create!(common.merge(nickname: "Zoe", email_address: "zoe@test.com", role: :owner))
+    owner_a = User.create!(common.merge(nickname: "Alice", email_address: "alice@test.com", role: :owner))
+    admin = User.create!(common.merge(nickname: "Mike", email_address: "mike@test.com", role: :admin))
+    member_b = User.create!(common.merge(nickname: "Bob", email_address: "bob@test.com", role: :member))
+    member_a = User.create!(common.merge(nickname: "Anna", email_address: "anna@test.com", role: :member))
+
+    expected = [ owner_a, owner_z, admin, member_a, member_b ]
+
+    assert_equal(
+      expected,
+      User.where(id: [ owner_z, owner_a, admin, member_b, member_a ].map(&:id)).ordered_by_role
+    )
+  end
 end

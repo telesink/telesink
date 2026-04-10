@@ -1,0 +1,41 @@
+<%
+  title = "join team"
+  content_for(:title, title)
+%>
+
+<div class="column">
+  <div class="column__header">
+    <h1 class="column__title">join team</h1>
+  </div>
+
+  <div class="column-data">
+    <p class="column-data__text">
+      You’ve been invited to join this Telesink team.<br>
+      Create your account below to get instant access.
+    </p>
+
+    <%= form_with model: @user, url: join_path(params[:join_code]), method: :post, class: "form" do |form| %>
+      <div class="form-field">
+        <%= form.label :nickname, "nickname", class: "form-field__label" %>
+        <%= form.text_field :nickname, required: true, class: "text-field", maxlength: 72 %>
+      </div>
+
+      <div class="form-field">
+        <%= form.label :email_address, "email address", class: "form-field__label" %>
+        <%= form.email_field :email_address, required: true, class: "text-field" %>
+      </div>
+
+      <div class="form-field">
+        <%= form.label :password, "password", class: "form-field__label" %>
+        <%= form.password_field :password, required: true, class: "text-field", autocomplete: "new-password" %>
+      </div>
+
+      <%= render "shared/banners" %>
+      <%= render "shared/form_errors", model: @user %>
+
+      <div>
+        <%= form.button "join team", type: :submit, class: "btn btn--primary" %>
+      </div>
+    <% end %>
+  </div>
+</div>

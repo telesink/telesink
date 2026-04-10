@@ -1,26 +1,65 @@
-<div class="column">
-  <div class="column__header">
-    <h2 class="column__title">
-      welcome to telesink
-    </h2>
+<% if Current.user.owner? %>
+
+  <div class="column">
+    <div class="column__header">
+      <h2 class="column__title">
+        welcome to telesink
+      </h2>
+    </div>
+
+    <div class="column-data">
+      <p class="column-data__text">
+        <strong>Sinks</strong> are live event streams for your product.
+      </p>
+
+      <p class="column-data__text">
+        You decide what to track and how to organize it. Track virtually anything:
+        signups, payments, renewals — whatever matters to you.
+      </p>
+
+      <p class="column-data__text">
+        Events are sent to your sink from your application via HTTP.
+      </p>
+
+      <p class="column-data__text">
+        Create your first sink by clicking "new sink" on the left.
+      </p>
+    </div>
   </div>
 
-  <div class="column-data">
-    <p class="column-data__text">
-      <strong>Sinks</strong> are live event streams for your product.
-    </p>
+<% else %>
 
-    <p class="column-data__text">
-      You decide what to track and how to organize it. Track virtually anything:
-      signups, payments, renewals — whatever matters to you.
-    </p>
+  <div class="column">
+    <div class="column__header">
+      <h2 class="column__title">
+        welcome to telesink
+      </h2>
+    </div>
 
-    <p class="column-data__text">
-      Events are sent to your sink from your application via HTTP.
-    </p>
+    <div class="column-data">
+      <p class="column-data__text">
+        <strong>You’ve been invited to this team.</strong>
+      </p>
 
-    <p class="column-data__text">
-      Create your first sink by clicking "new sink" on the left.
-    </p>
+      <p class="column-data__text">
+        You don’t have access to any sinks yet. <strong>Sinks</strong> are live
+        event streams for your product.
+      </p>
+
+      <p class="column-data__text">
+        Ask your team owner or an admin to add you to one (or more) sinks.
+      </p>
+
+      <p class="column-data__text">
+        Once they do, the sinks will appear here automatically.
+      </p>
+
+      <div>
+        <%= link_to settings_members_path, class: "btn btn--primary", data: { turbo_frame: "_top" } do %>
+          view team members
+        <% end %>
+      </div>
+    </div>
   </div>
-</div>
+
+<% end %>

@@ -1,0 +1,8 @@
+<li>
+  <%= link_to(
+    display_name(user),
+    settings_member_path(user),
+    class: "link",
+    data: { turbo_frame: "_top" },
+  ) %>
+</li>

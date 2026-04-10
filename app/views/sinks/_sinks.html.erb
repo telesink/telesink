@@ -6,7 +6,7 @@
   </div>
 
   <% if @sink_memberships.any? %>
-    <ul class="sidebar-list">
+    <ul class="list sidebar-list">
       <% @sink_memberships.each do |membership| %>
         <%= render(
           "sinks/sink",
@@ -22,15 +22,17 @@
     </div>
   <% end %>
 
-  <div class="column-data">
-    <p class="column-data__text">
-      <%= link_to(
-        new_sink_path,
-        data: { turbo_frame: :sinks },
-        class: "btn btn--#{@sink_memberships.any? ? 'secondary' : 'primary'}"
-      ) do %>
-        new sink
-      <% end %>
-    </p>
-  </div>
+  <% if Current.user.admin? || Current.user.owner? %>
+    <div class="column-data">
+      <p class="column-data__text">
+        <%= link_to(
+          new_sink_path,
+          data: { turbo_frame: :sinks },
+          class: "btn btn--#{@sink_memberships.any? ? 'secondary' : 'primary'}"
+        ) do %>
+          new sink
+        <% end %>
+      </p>
+    </div>
+  <% end %>
 <% end %>

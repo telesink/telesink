@@ -1,0 +1,51 @@
+<%
+  title = "invitations"
+  content_for(:title, title)
+%>
+
+<div class="column">
+  <div class="column__header">
+    <h1 class="column__title">invite new members</h1>
+  </div>
+
+  <div class="column-data">
+    <p class="column-data__text">
+      Share this link to let people join your team.
+    </p>
+
+    <div class="form-field">
+      <%= label_tag :invite_link, "invite link", class: "form-field__label" %>
+      <%= text_field_tag(
+        :invite_link,
+        @join_url,
+        readonly: true,
+        class: "text-field"
+      ) %>
+    </div>
+
+    <%= render "shared/banners" %>
+
+    <div>
+      <%= button_to_copy_to_clipboard(@join_url) do %>
+        copy link
+      <% end %>
+
+      <%= web_share_button(@join_url, "Join Telesink", "Join me in Telesink!") do %>
+        share link
+      <% end %>
+    </div>
+
+    <div>
+      <% if Current.user.owner? %>
+        <%= button_to(
+          account_join_code_path,
+          method: :post,
+          class: "btn btn--primary",
+          data: { turbo_confirm: "Generate a new invite link? The old one will stop working." }
+        ) do %>
+          regenerate link
+        <% end %>
+      <% end %>
+    </div>
+  </div>
+</div>

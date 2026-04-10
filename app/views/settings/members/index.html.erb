@@ -1,0 +1,31 @@
+<%
+  title = "members"
+  content_for(:title, title)
+%>
+
+<div class="column">
+  <div class="column__header">
+    <h2 class="column__title">team members</h2>
+  </div>
+
+  <div class="column-data">
+    <ul class="list">
+      <%= render partial: "user", collection: @users %>
+    </ul>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="column-data">
+    <h2 class="column__title">roles</h2>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="column-data">
+    <ul class="list">
+      <li>~owner</li>
+      <li>@admin</li>
+    </ul>
+  </div>
+</div>

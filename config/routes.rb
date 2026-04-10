@@ -29,5 +29,17 @@ Rails.application.routes.draw do
     resource :nickname, only: %i[edit update], controller: "settings/nicknames"
     resource :email, only: %i[edit update], controller: "settings/emails"
     resource :password, only: %i[edit update], controller: "settings/passwords"
+
+    resource :invitations, only: %i[show], controller: "settings/invitations"
+    resources :members, only: %i[index show], controller: "settings/members"
   end
+
+  resource :account do
+    scope module: "accounts" do
+      resource :join_code, only: %i[create]
+    end
+  end
+
+  get "join/:join_code", to: "joins#new", as: :join
+  post "join/:join_code", to: "joins#create"
 end
