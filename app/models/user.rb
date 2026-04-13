@@ -17,6 +17,10 @@ class User < ApplicationRecord
   after_initialize :ensure_nickname
   before_validation :ensure_nickname, on: :create
 
+  def self.role_options
+    roles.keys.map { |r| [ r, r ] }
+  end
+
   private
 
   def ensure_nickname

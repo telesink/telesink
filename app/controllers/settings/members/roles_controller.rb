@@ -1,0 +1,31 @@
+class Settings::Members::RolesController < ApplicationController
+  layout "settings"
+
+  before_action :set_user, only: %i[edit update]
+
+  def edit
+  end
+
+  def update
+    if @user == Current.user && Current.user.owner? && params[:user][:role] != "owner"
+      redirect_to settings_member_path(@user), alert: "you cannot demote yourself from owner."
+      return
+    end
+
+    if @user.update(user_params)
+      redirect_to edit_settings_member_role_path(@user), notice: "role updated."
+    else
+      render :edit, status: :unprocessable_entity
+    end
+  end
+
+  private
+
+  def user_params
+    params.require(:user).permit(:role)
+  end
+
+  def set_user
+    @user = Current.account.users.find(params[:member_id])
+  end
+end

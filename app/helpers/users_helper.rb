@@ -6,7 +6,7 @@ module UsersHelper
   }.freeze
 
   def role_symbol(user)
-    ROLE_SYMBOLS.fetch(user.role)
+    ROLE_SYMBOLS.fetch(user.role, "?")
   end
 
   def display_name(user)

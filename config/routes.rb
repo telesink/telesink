@@ -31,7 +31,10 @@ Rails.application.routes.draw do
     resource :password, only: %i[edit update], controller: "settings/passwords"
 
     resource :invitations, only: %i[show], controller: "settings/invitations"
-    resources :members, only: %i[index show], controller: "settings/members"
+
+    resources :members, only: %i[index show], controller: "settings/members" do
+      resource :role, only: %i[edit update], controller: "settings/members/roles"
+    end
   end
 
   resource :account do

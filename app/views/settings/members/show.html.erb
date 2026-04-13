@@ -5,13 +5,41 @@
 
 <div class="column">
   <div class="column__header">
-    <h2 class="column__title">
-      <%= title %>
-    </h2>
+    <div class="breadcrumbs">
+      <%= link_to "members", settings_members_path, class: "link" %> /
+      <h2 class="column__title">
+        <%= title %>
+      </h2>
+    </div>
     <%= link_to "close", settings_members_path, class: "link", data: { turbo_frame: "_top" } %>
   </div>
 
   <div class="column-data">
-    [<%= @user.role %>] <%= mail_to @user.email_address, class: "link" %>
+    <p class="column-data__text">
+      email:<br>
+      <%= mail_to @user.email_address, class: "link" %>
+    </p>
   </div>
+
+  <div class="divider"></div>
+
+  <div class="column-data">
+    <h2 class="column__title">manage user</h2>
+  </div>
+
+  <div class="divider"></div>
+
+  <% if Current.user.admin? || Current.user.owner? %>
+    <div class="column-data">
+      <ul class="list">
+        <% viewing_yourself = @user == Current.user %>
+
+        <% if Current.user.owner? && !viewing_yourself %>
+          <li class="list__item list__item--no-padding">
+            <%= link_to "change role", edit_settings_member_role_path(@user), class: "link" %>
+          </li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
 </div>

@@ -1,0 +1,18 @@
+<%= form_with model: @user, url: settings_member_role_path(@user), method: :patch, class: "form" do |form| %>
+  <div class="form-field">
+    <%= form.label :role, "role", class: "form-field__label" %>
+    <%= form.select(
+      :role,
+      User.role_options,
+      { selected: @user.role },
+      class: "text-field",
+    ) %>
+  </div>
+
+  <%= render "shared/banners" %>
+  <%= render "shared/form_errors", model: @user %>
+
+  <div>
+    <%= form.button "save", type: :submit, class: "btn btn--primary" %>
+  </div>
+<% end %>

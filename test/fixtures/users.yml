@@ -5,3 +5,10 @@ kyrylo:
   nickname: kyrylo
   email_address: kyrylo@telesink.com
   password_digest: <%= password_digest %>
+
+test_member:
+  account: telebugs
+  nickname: Test Member
+  email_address: testmember@example.com
+  password_digest: <%= password_digest %>
+  role: member
