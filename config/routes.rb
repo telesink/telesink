@@ -11,6 +11,8 @@ Rails.application.routes.draw do
   end
 
   resource :session
+  get "session/transfer/:id", to: "sessions/transfers#show", as: :session_transfer
+
   resources :passwords, param: :token
   resource :registration, only: %i[new create]
 
@@ -34,11 +36,14 @@ Rails.application.routes.draw do
 
     resources :members, only: %i[index show], controller: "settings/members" do
       resource :role, only: %i[edit update], controller: "settings/members/roles"
+
       resources :sinks, only: %i[index], controller: "settings/members/sinks" do
         collection do
           patch :update
         end
       end
+
+      resource :transfer, only: %i[show], controller: "settings/members/transfers"
     end
   end
 

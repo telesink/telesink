@@ -49,4 +49,17 @@ class UserTest < ActiveSupport::TestCase
       User.where(id: [ owner_z, owner_a, admin, member_b, member_a ].map(&:id)).ordered_by_role
     )
   end
+
+  test "generates a signed transfer_id that can be verified" do
+    token = users(:kyrylo).transfer_id
+    assert_equal users(:kyrylo), User.find_by_transfer_id(token)
+  end
+
+  test "transfer_id expires after 4 hours" do
+    token = users(:kyrylo).transfer_id
+
+    travel 4.hours + 1.minute do
+      assert_nil User.find_by_transfer_id(token)
+    end
+  end
 end

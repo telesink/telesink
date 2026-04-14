@@ -1,0 +1,54 @@
+<%
+  title = "account recovery"
+  content_for(:title, title)
+%>
+
+<div class="column">
+  <div class="column__header">
+    <div class="breadcrumbs">
+      <%= link_to display_name(@user), settings_member_path(@user), class: "link" %> /
+      <h2 class="column__title">account recovery</h2>
+    </div>
+    <%= link_to "close", settings_members_path, class: "link", data: { turbo_frame: "_top" } %>
+  </div>
+
+  <div class="column-data">
+    <p class="column-data__text">
+      <% if Current.user == @user %>
+        Use this link to quickly log in on another device.
+      <% else %>
+        Share this link to get them back into their account.
+      <% end %>
+    </p>
+
+    <p class="column-data__text">
+      Notes:
+    </p>
+
+    <ul class="list-disc">
+      <li class="list-disc__item">Expires in 4 hours</li>
+      <li class="list-disc__item">
+        <% if Current.user == @user %>
+          <strong>Do not share it</strong> with anyone
+        <% else %>
+          Share <strong>only</strong> with the profile owner
+        <% end %>
+      </li>
+    </ul>
+
+    <div class="form-field">
+      <%= label_tag :transfer_link, "sign-in link", class: "form-field__label" %>
+      <%= text_field_tag :transfer_link, @transfer_url, class: "text-field", readonly: true, disabled: true %>
+    </div>
+
+    <div>
+      <%= button_to_copy_to_clipboard(@transfer_url) do %>
+        copy link
+      <% end %>
+
+      <%= web_share_button(@transfer_url, "Join Telesink", "Join me in Telesink!") do %>
+        share link
+      <% end %>
+    </div>
+  </div>
+</div>

@@ -6,7 +6,6 @@
 <div class="column">
   <div class="column__header">
     <div class="breadcrumbs">
-      <%= link_to "members", settings_members_path, class: "link" %> /
       <h2 class="column__title">
         <%= title %>
       </h2>
@@ -43,6 +42,12 @@
         <li class="list__item list__item--no-padding">
           <%= link_to "sink access", settings_member_sinks_path(@user), class: "link", data: { turbo_frame: "_top" } %>
         </li>
+
+        <% if Current.user.owner? || Current.user.admin? %>
+          <li class="list__item list__item--no-padding">
+            <%= link_to "account recovery", settings_member_transfer_path(@user), class: "link", data: { turbo_frame: "_top" } %>
+          </li>
+        <% end %>
       </ul>
     </div>
   <% end %>

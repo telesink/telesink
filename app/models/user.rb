@@ -1,5 +1,5 @@
 class User < ApplicationRecord
-  include Role
+  include Role, Transferable
 
   belongs_to :account
 

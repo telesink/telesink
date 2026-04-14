@@ -35,6 +35,11 @@
     box-shadow: 0 0 0 3px
       light-dark(var(--color-blue-100), var(--color-blue-600));
   }
+
+  &:disabled {
+    cursor: not-allowed;
+    color: light-dark(var(--color-gray-400), var(--color-zinc-400));
+  }
 }
 
 .code-field {
