@@ -1,0 +1,22 @@
+<%
+  title = "sink access"
+  content_for(:title, title)
+%>
+
+<div class="column">
+  <div class="column__header">
+  <div class="breadcrumbs">
+    <%= link_to "members", settings_members_path, class: "link" %>/<%= link_to display_name(@user), settings_member_path(@user), class: "link" %>/
+    <h2 class="column__title">
+      <%= title %>
+    </h2>
+  </div>
+    <%= link_to "close", settings_members_path, class: "link" %>
+  </div>
+
+  <div class="column-data">
+    Check to grant access, uncheck to remove access.
+
+    <%= render "form" %>
+  </div>
+</div>

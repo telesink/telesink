@@ -1,0 +1,9 @@
+.checkbox {
+  display: flex;
+  gap: 0.5ch;
+  align-items: center;
+
+  &:hover {
+    cursor: pointer;
+  }
+}

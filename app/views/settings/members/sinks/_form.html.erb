@@ -1,0 +1,16 @@
+<%= form_with model: @user, url: settings_member_sinks_path(@user), method: :patch, class: "form" do |form| %>
+  <ul class="list">
+    <% @sinks.each do |sink| %>
+      <%= render partial: "settings/members/sinks/sink", locals: {
+        sink: sink,
+        accessible_sink_ids: @accessible_sink_ids
+      } %>
+    <% end %>
+  </ul>
+
+  <%= render "shared/banners" %>
+
+  <div>
+    <%= form.button "save", type: :submit, class: "btn btn--primary" %>
+  </div>
+<% end %>

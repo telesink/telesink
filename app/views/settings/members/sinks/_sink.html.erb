@@ -1,0 +1,6 @@
+<li class="list__item list__item--no-padding">
+  <label class="checkbox">
+    <%= check_box_tag "sink_ids[]", sink.id, accessible_sink_ids.include?(sink.id) %>
+    <%= sink.name %>
+  </label>
+</li>

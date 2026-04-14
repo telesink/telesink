@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_04_06_120336) do
+ActiveRecord::Schema[8.1].define(version: 2026_04_14_044811) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pg_trgm"
@@ -76,10 +76,12 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_06_120336) do
   end
 
   create_table "sinks", force: :cascade do |t|
+    t.bigint "account_id", null: false
     t.datetime "created_at", null: false
     t.string "name", null: false
     t.string "token"
     t.datetime "updated_at", null: false
+    t.index ["account_id"], name: "index_sinks_on_account_id"
     t.index ["name"], name: "index_sinks_on_name"
     t.index ["token"], name: "index_sinks_on_token", unique: true
   end
@@ -103,6 +105,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_06_120336) do
   add_foreign_key "sessions", "users"
   add_foreign_key "sink_memberships", "sinks"
   add_foreign_key "sink_memberships", "users"
+  add_foreign_key "sinks", "accounts"
   add_foreign_key "users", "accounts"
   add_foreign_key "users", "sinks", column: "current_sink_id", on_delete: :nullify
 end

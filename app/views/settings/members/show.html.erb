@@ -36,9 +36,13 @@
 
         <% if Current.user.owner? && !viewing_yourself %>
           <li class="list__item list__item--no-padding">
-            <%= link_to "change role", edit_settings_member_role_path(@user), class: "link" %>
+            <%= link_to "change role", edit_settings_member_role_path(@user), class: "link", data: { turbo_frame: "_top" } %>
           </li>
         <% end %>
+
+        <li class="list__item list__item--no-padding">
+          <%= link_to "sink access", settings_member_sinks_path(@user), class: "link", data: { turbo_frame: "_top" } %>
+        </li>
       </ul>
     </div>
   <% end %>

@@ -34,6 +34,11 @@ Rails.application.routes.draw do
 
     resources :members, only: %i[index show], controller: "settings/members" do
       resource :role, only: %i[edit update], controller: "settings/members/roles"
+      resources :sinks, only: %i[index], controller: "settings/members/sinks" do
+        collection do
+          patch :update
+        end
+      end
     end
   end
 

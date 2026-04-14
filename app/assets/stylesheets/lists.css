@@ -3,3 +3,13 @@
   padding: 0;
   list-style-type: none;
 }
+
+.list__item {
+  display: flex;
+  justify-content: space-between;
+  padding: 0 1ch;
+}
+
+.list__item--no-padding {
+  padding: 0;
+}
