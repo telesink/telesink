@@ -55,7 +55,7 @@ class SinksController < ApplicationController
   end
 
   def create
-    @sink = Sink.new(sink_params)
+    @sink = Current.account.sinks.new(sink_params)
 
     if @sink.save
       @sink.users << Current.user unless @sink.users.include?(Current.user)
