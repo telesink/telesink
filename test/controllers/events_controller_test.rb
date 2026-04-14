@@ -20,7 +20,7 @@ class EventsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "show returns not found for event from inaccessible sink" do
-    foreign_sink = Sink.create!(name: "Foreign Sink")
+    foreign_sink = Sink.create!(name: "Foreign Sink", account: accounts(:telebugs))
     event = foreign_sink.events.create!(
       event_type: "test_event",
       text: "Test event",
@@ -34,7 +34,7 @@ class EventsControllerTest < ActionDispatch::IntegrationTest
   test "show works even when user has no sinks" do
     @user.sinks.destroy_all
 
-    sink = @user.sinks.create!(name: "Test Sink")
+    sink = @user.sinks.create!(name: "Test Sink", account: accounts(:telebugs))
     column = sink.columns.create!(name: "all events")
     event = sink.events.create!(
       event_type: "test_event",

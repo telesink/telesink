@@ -7,7 +7,7 @@ class SinksControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "index redirects to user's last visited sink when available" do
-    sink = @user.sinks.create!(name: "Last Visited Sink")
+    sink = @user.sinks.create!(name: "Last Visited Sink", account: accounts(:telebugs))
     @user.update!(current_sink_id: sink.id)
 
     get sinks_path
@@ -22,7 +22,7 @@ class SinksControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "index falls back to first sink when current_sink_id points to a deleted sink" do
-    old_sink = @user.sinks.create!(name: "Old Sink")
+    old_sink = @user.sinks.create!(name: "Old Sink", account: accounts(:telebugs))
     @user.update!(current_sink_id: old_sink.id)
     old_sink.destroy!
 
@@ -37,13 +37,13 @@ class SinksControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "show" do
-    sink = @user.sinks.create!(name: "Test Sink")
+    sink = @user.sinks.create!(name: "Test Sink", account: accounts(:telebugs))
     get sink_path(sink)
     assert_response :success
   end
 
   test "show marks the sink as read for the current user (clears has_unread_events)" do
-    sink = @user.sinks.create!(name: "Unread Test Sink")
+    sink = @user.sinks.create!(name: "Unread Test Sink", account: accounts(:telebugs))
 
     membership = @user.sink_memberships.find_by(sink: sink)
     membership.update!(has_unread_events: true)
@@ -55,7 +55,7 @@ class SinksControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "show gracefully handles a sink that is already marked as read" do
-    sink = @user.sinks.create!(name: "Already Read Sink")
+    sink = @user.sinks.create!(name: "Already Read Sink", account: accounts(:telebugs))
 
     get sink_path(sink)
 
@@ -89,13 +89,13 @@ class SinksControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "edit" do
-    sink = @user.sinks.create!(name: "Edit Sink")
+    sink = @user.sinks.create!(name: "Edit Sink", account: accounts(:telebugs))
     get edit_sink_path(sink)
     assert_response :success
   end
 
   test "update with valid parameters" do
-    sink = @user.sinks.create!(name: "Old Name")
+    sink = @user.sinks.create!(name: "Old Name", account: accounts(:telebugs))
 
     patch sink_path(sink), params: { sink: { name: "New Name" } }
 
@@ -104,7 +104,7 @@ class SinksControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "update with invalid parameters" do
-    sink = @user.sinks.create!(name: "Old Name")
+    sink = @user.sinks.create!(name: "Old Name", account: accounts(:telebugs))
 
     patch sink_path(sink), params: { sink: { name: "" } }
 
@@ -112,7 +112,7 @@ class SinksControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "destroy redirects to next remaining sink" do
-    sink = @user.sinks.create!(name: "new sink")
+    sink = @user.sinks.create!(name: "new sink", account: accounts(:telebugs))
 
     assert_difference "Sink.count", -1 do
       delete sink_path(sink)
@@ -123,7 +123,7 @@ class SinksControllerTest < ActionDispatch::IntegrationTest
 
   test "destroy last sink redirects to index" do
     @user.sinks.destroy_all
-    last_sink = @user.sinks.create!(name: "Last Remaining Sink")
+    last_sink = @user.sinks.create!(name: "Last Remaining Sink", account: accounts(:telebugs))
 
     delete sink_path(last_sink)
 

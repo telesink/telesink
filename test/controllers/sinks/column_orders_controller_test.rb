@@ -7,7 +7,7 @@ class Sinks::ColumnOrdersControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "reorders columns when valid column_ids are supplied" do
-    sink = users(:kyrylo).sinks.create!(name: "Reorder Test Sink")
+    sink = users(:kyrylo).sinks.create!(name: "Reorder Test Sink", account: accounts(:telebugs))
 
     default_column = sink.columns.find_by!(name: "all events")
 
@@ -27,7 +27,7 @@ class Sinks::ColumnOrdersControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "gracefully accepts empty column_ids array" do
-    sink = users(:kyrylo).sinks.create!(name: "Empty Order Test")
+    sink = users(:kyrylo).sinks.create!(name: "Empty Order Test", account: accounts(:telebugs))
 
     default_column = sink.columns.find_by!(name: "all events")
 
@@ -42,7 +42,7 @@ class Sinks::ColumnOrdersControllerTest < ActionDispatch::IntegrationTest
   test "requires authentication" do
     sign_out
 
-    sink = users(:kyrylo).sinks.create!(name: "Auth Test Sink")
+    sink = users(:kyrylo).sinks.create!(name: "Auth Test Sink", account: accounts(:telebugs))
     column = sink.columns.create!(name: "Test Column")
 
     patch sink_column_order_path(sink), params: {

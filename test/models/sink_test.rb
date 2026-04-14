@@ -25,7 +25,7 @@ class SinkTest < ActiveSupport::TestCase
   end
 
   test "columns are ordered by position ascending" do
-    sink = Sink.create!(name: "Test Sink")
+    sink = Sink.create!(name: "Test Sink", account: accounts(:telebugs))
 
     sink.columns.create!(name: "Third",  position: 3)
     sink.columns.create!(name: "First",  position: 1)
