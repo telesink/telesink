@@ -12,7 +12,7 @@ class Settings::Members::RolesController < ApplicationController
       return
     end
 
-    role = user_params[:role]
+    role = params.dig(:user, :role)
     unless User.roles.key?(role)
       redirect_to edit_settings_member_role_path(@user), alert: "invalid role."
       return
@@ -26,10 +26,6 @@ class Settings::Members::RolesController < ApplicationController
   end
 
   private
-
-  def user_params
-    params.require(:user).permit(:role)
-  end
 
   def set_user
     @user = Current.account.users.find(params[:member_id])
