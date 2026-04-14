@@ -22,7 +22,7 @@ class Settings::Members::RolesControllerTest < ActionDispatch::IntegrationTest
 
     patch settings_member_role_path(users(:test_member)), params: { user: { role: "invalid" } }
 
-    assert_response :unprocessable_entity
+    assert_redirected_to edit_settings_member_role_path(users(:test_member))
     assert_equal original_role, users(:test_member).reload.role
   end
 

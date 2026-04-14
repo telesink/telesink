@@ -12,7 +12,13 @@ class Settings::Members::RolesController < ApplicationController
       return
     end
 
-    if @user.update(user_params)
+    role = user_params[:role]
+    unless User.roles.key?(role)
+      redirect_to edit_settings_member_role_path(@user), alert: "invalid role."
+      return
+    end
+
+    if @user.update(role: role)
       redirect_to edit_settings_member_role_path(@user), notice: "role updated."
     else
       render :edit, status: :unprocessable_entity
