@@ -17,13 +17,13 @@
       }
     ) %>
   <% end %>
-</div>
 
-<div class="add-column-column">
-  <%= button_to(
-    "add column",
-    sink_columns_path(@sink),
-    method: :post,
-    class: "btn btn--secondary btn--before-content whitespace-nowrap"
-  ) %>
+  <div class="add-column-column">
+    <%= button_to(
+      "add column",
+      sink_columns_path(@sink),
+      method: :post,
+      class: "btn btn--secondary btn--before-content whitespace-nowrap"
+    ) %>
+  </div>
 </div>
