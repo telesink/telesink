@@ -11,6 +11,8 @@
     <div class="column__header column__header--cast-shadow">
       <% if Current.user.admin? || Current.user.owner? %>
         <span class="column__drag-handle">⋮⋮</span>
+      <% else %>
+        <span></span>
       <% end %>
 
       <h2 class="column__title">
@@ -28,6 +30,8 @@
           data: { turbo_frame: dom_id(column) },
           class: "link link--subtle font-normal"
         ) %>
+      <% else %>
+        <span></span>
       <% end %>
     </div>
 
