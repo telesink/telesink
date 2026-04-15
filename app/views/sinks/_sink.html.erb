@@ -10,12 +10,15 @@
 >
   <% if is_current %>
     <span class="truncate"><%= sink.name %></span>
-    <%= link_to(
-      "edit",
-      edit_sink_path(sink),
-      class: "link link--subtle whitespace-nowrap",
-      data: { turbo_frame: :sinks },
-    ) %>
+
+    <% if can_administer %>
+      <%= link_to(
+        "edit",
+        edit_sink_path(sink),
+        class: "link link--subtle whitespace-nowrap",
+        data: { turbo_frame: :sinks },
+      ) %>
+    <% end %>
   <% else %>
     <%= link_to(
       sink.name,

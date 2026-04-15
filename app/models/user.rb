@@ -21,6 +21,10 @@ class User < ApplicationRecord
     roles.keys.map { |r| [ r, r ] }
   end
 
+  def can_administer?
+    admin? || owner?
+  end
+
   private
 
   def ensure_nickname

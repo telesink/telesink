@@ -1,3 +1,5 @@
+<% can_administer = Current.user.can_administer? %>
+
 <%= turbo_frame_tag :sinks do %>
   <div class="column__header">
     <h1 class="column__title">
@@ -12,7 +14,8 @@
           "sinks/sink",
           sink: membership.sink,
           current_sink_id: Current.user.current_sink_id,
-          membership: membership
+          membership: membership,
+          can_administer: can_administer,
         ) %>
       <% end %>
     </ul>
@@ -22,7 +25,7 @@
     </div>
   <% end %>
 
-  <% if Current.user.admin? || Current.user.owner? %>
+  <% if can_administer %>
     <div class="column-data">
       <p class="column-data__text">
         <%= link_to(
