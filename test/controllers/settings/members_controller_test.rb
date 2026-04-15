@@ -2,32 +2,51 @@ require "test_helper"
 
 class Settings::MembersControllerTest < ActionDispatch::IntegrationTest
   setup do
-    @user = users(:kyrylo)
-    sign_in_as(@user)
+    @owner  = users(:kyrylo)
+    @owner.update!(role: :owner)
+    @admin  = users(:test_admin)
+    @admin.update!(role: :admin)
+    @member = users(:test_member)
   end
 
-  test "index" do
+  test "owner can see members index" do
+    sign_in_as(@owner)
+    get settings_members_path
+    assert_response :success
+    assert_select "h1", "settings"
+  end
+
+  test "admin can see members index" do
+    sign_in_as(@admin)
     get settings_members_path
     assert_response :success
   end
 
-  test "show" do
-    get settings_member_path(@user)
+  test "regular member CANNOT see members index" do
+    sign_in_as(@member)
+    get settings_members_path
+    assert_response :forbidden
+  end
+
+  test "owner can see a member detail page" do
+    sign_in_as(@owner)
+    get settings_member_path(@member)
     assert_response :success
   end
 
-  test "show another member in the same account" do
-    other_user = @user.account.users.create!(
-      nickname: "Other Member",
-      email_address: "other.member@example.com",
-      password: "password123"
-    )
-
-    get settings_member_path(other_user)
+  test "admin can see a member detail page" do
+    sign_in_as(@admin)
+    get settings_member_path(@member)
     assert_response :success
   end
 
-  test "show returns not found for user belonging to another account" do
+  test "regular member CANNOT see any member detail page" do
+    sign_in_as(@member)
+    get settings_member_path(@member)
+    assert_response :forbidden
+  end
+
+  test "returns not found for user in another account" do
     other_account = Account.create!(join_code: "OTHER123")
     outsider = other_account.users.create!(
       nickname: "Outsider",
@@ -35,6 +54,7 @@ class Settings::MembersControllerTest < ActionDispatch::IntegrationTest
       password: "password123"
     )
 
+    sign_in_as(@owner)
     get settings_member_path(outsider)
     assert_response :not_found
   end

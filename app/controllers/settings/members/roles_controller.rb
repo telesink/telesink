@@ -1,7 +1,9 @@
 class Settings::Members::RolesController < ApplicationController
   layout "settings"
 
+  before_action :ensure_can_administer
   before_action :set_user, only: %i[edit update]
+  before_action :ensure_can_change_role
 
   def edit
   end
@@ -29,5 +31,17 @@ class Settings::Members::RolesController < ApplicationController
 
   def set_user
     @user = Current.account.users.find(params[:member_id])
+  end
+
+  def ensure_can_change_role
+    if @user.owner? && Current.user.admin?
+      redirect_to settings_member_path(@user), alert: "only the account owner can change owner roles."
+      return
+    end
+
+    if params.dig(:user, :role) == "owner" && Current.user.admin?
+      redirect_to edit_settings_member_role_path(@user), alert: "only the account owner can promote someone to owner."
+      nil
+    end
   end
 end

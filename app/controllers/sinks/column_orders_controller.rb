@@ -3,6 +3,8 @@ class Sinks::ColumnOrdersController < ApplicationController
 
   skip_demo_restrictions only: %i[update]
 
+  before_action :ensure_can_administer, only: :update
+
   def update
     column_ids = params.require(:column_order)[:column_ids] || []
     column_ids = column_ids.reject(&:blank?).map(&:to_i)

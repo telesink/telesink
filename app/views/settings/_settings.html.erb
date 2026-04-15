@@ -32,21 +32,23 @@
     </li>
   </ul>
 
-  <h2 class="sidebar__section-title">team</h2>
+  <% if Current.user.admin? || Current.user.owner? %>
+    <h2 class="sidebar__section-title">team</h2>
 
-  <ul class="list sidebar-list">
-    <li class="<%= class_names(
-      "sidebar-list__item",
-      "sidebar-list__item--current" => current_page?(settings_invitations_path)
-    ) %>">
-      <%= link_to_unless_current "invitations", settings_invitations_path, class: "link" %>
-    </li>
+    <ul class="list sidebar-list">
+      <li class="<%= class_names(
+        "sidebar-list__item",
+        "sidebar-list__item--current" => current_page?(settings_invitations_path)
+      ) %>">
+        <%= link_to_unless_current "invitations", settings_invitations_path, class: "link" %>
+      </li>
 
-    <li class="<%= class_names(
-      "sidebar-list__item",
-      "sidebar-list__item--current" => current_page?(settings_members_path)
-    ) %>">
-      <%= link_to_unless_current "members", settings_members_path, class: "link" %>
-    </li>
-  </ul>
+      <li class="<%= class_names(
+        "sidebar-list__item",
+        "sidebar-list__item--current" => current_page?(settings_members_path)
+      ) %>">
+        <%= link_to_unless_current "members", settings_members_path, class: "link" %>
+      </li>
+    </ul>
+  <% end %>
 </nav>

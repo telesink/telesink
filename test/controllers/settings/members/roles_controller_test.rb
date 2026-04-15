@@ -2,36 +2,87 @@ require "test_helper"
 
 class Settings::Members::RolesControllerTest < ActionDispatch::IntegrationTest
   setup do
-    sign_in_as(users(:kyrylo))
+    @owner = users(:kyrylo)
+    @owner.update!(role: :owner)
+    @admin = users(:test_admin)
+    @admin.update!(role: :admin)
+    @member = users(:test_member)
   end
 
-  test "edit" do
-    get edit_settings_member_role_path(users(:test_member))
+  test "owner can view edit form" do
+    sign_in_as(@owner)
+    get edit_settings_member_role_path(@member)
     assert_response :success
   end
 
-  test "update with valid parameters" do
-    patch settings_member_role_path(users(:test_member)), params: { user: { role: "admin" } }
+  test "admin can view edit form" do
+    sign_in_as(@admin)
+    get edit_settings_member_role_path(@member)
+    assert_response :success
+  end
 
-    assert_redirected_to edit_settings_member_role_path(users(:test_member))
-    assert_equal "admin", users(:test_member).reload.role
+  test "regular member cannot view edit form" do
+    sign_in_as(@member)
+    get edit_settings_member_role_path(@member)
+    assert_response :forbidden
+  end
+
+  test "owner can promote member to admin" do
+    sign_in_as(@owner)
+    patch settings_member_role_path(@member), params: { user: { role: "admin" } }
+
+    assert_redirected_to edit_settings_member_role_path(@member)
+    assert_equal "admin", @member.reload.role
+  end
+
+  test "admin can promote member to admin" do
+    sign_in_as(@admin)
+    patch settings_member_role_path(@member), params: { user: { role: "admin" } }
+
+    assert_redirected_to edit_settings_member_role_path(@member)
+    assert_equal "admin", @member.reload.role
+  end
+
+  test "admin CANNOT promote anyone to owner" do
+    sign_in_as(@admin)
+    patch settings_member_role_path(@member), params: { user: { role: "owner" } }
+
+    assert_redirected_to edit_settings_member_role_path(@member)
+    assert_equal "member", @member.reload.role # unchanged
+  end
+
+  test "owner CAN promote someone to owner" do
+    sign_in_as(@owner)
+    patch settings_member_role_path(@member), params: { user: { role: "owner" } }
+
+    assert_redirected_to edit_settings_member_role_path(@member)
+    assert_equal "owner", @member.reload.role
+  end
+
+  test "admin CANNOT change an owner's role" do
+    sign_in_as(@admin)
+    patch settings_member_role_path(@owner), params: { user: { role: "admin" } }
+
+    assert_redirected_to settings_member_path(@owner)
+    assert_equal "owner", @owner.reload.role # unchanged
   end
 
   test "update with invalid role" do
-    original_role = users(:test_member).role
+    sign_in_as(@owner)
+    original_role = @member.role
 
-    patch settings_member_role_path(users(:test_member)), params: { user: { role: "invalid" } }
+    patch settings_member_role_path(@member), params: { user: { role: "invalid" } }
 
-    assert_redirected_to edit_settings_member_role_path(users(:test_member))
-    assert_equal original_role, users(:test_member).reload.role
+    assert_redirected_to edit_settings_member_role_path(@member)
+    assert_equal original_role, @member.reload.role
   end
 
   test "update prevents demoting yourself from owner" do
-    users(:kyrylo).update!(role: "owner")
+    sign_in_as(@owner)
 
-    patch settings_member_role_path(users(:kyrylo)), params: { user: { role: "member" } }
+    patch settings_member_role_path(@owner), params: { user: { role: "member" } }
 
-    assert_redirected_to settings_member_path(users(:kyrylo))
-    assert_equal "owner", users(:kyrylo).reload.role
+    assert_redirected_to settings_member_path(@owner)
+    assert_equal "owner", @owner.reload.role
   end
 end

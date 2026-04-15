@@ -2,16 +2,36 @@ require "test_helper"
 
 class Settings::Members::SinksControllerTest < ActionDispatch::IntegrationTest
   setup do
-    sign_in_as(users(:kyrylo))
+    @owner = users(:kyrylo)
+    @owner.update!(role: :owner)
+    @admin = users(:test_admin)
+    @admin.update!(role: :admin)
+    @member = users(:test_member)
   end
 
-  test "index" do
-    get settings_member_sinks_path(users(:test_member))
+  # ── Access control ─────────────────────────────────────────────────────
+
+  test "owner can view sink access page" do
+    sign_in_as(@owner)
+    get settings_member_sinks_path(@member)
     assert_response :success
   end
 
-  test "update with valid parameters" do
-    member = users(:test_member)
+  test "admin can view sink access page" do
+    sign_in_as(@admin)
+    get settings_member_sinks_path(@member)
+    assert_response :success
+  end
+
+  test "regular member cannot view sink access page" do
+    sign_in_as(@member)
+    get settings_member_sinks_path(@member)
+    assert_response :forbidden
+  end
+
+  test "owner can update sink access" do
+    sign_in_as(@owner)
+    member = @member
     sink1 = member.account.sinks.create!(name: "Sink One")
     sink2 = member.account.sinks.create!(name: "Sink Two")
 
@@ -22,8 +42,22 @@ class Settings::Members::SinksControllerTest < ActionDispatch::IntegrationTest
     assert_equal [ sink1.id, sink2.id ].sort, member.reload.sink_ids.sort
   end
 
+  test "admin can update sink access" do
+    sign_in_as(@admin)
+    member = @member
+    sink1 = member.account.sinks.create!(name: "Sink One")
+    sink2 = member.account.sinks.create!(name: "Sink Two")
+
+    patch settings_member_sinks_path(member), params: { sink_ids: [ sink1.id ] }
+
+    assert_redirected_to settings_member_sinks_url(member)
+    assert_equal "sink access updated.", flash[:notice]
+    assert_equal [ sink1.id ], member.reload.sink_ids
+  end
+
   test "update removes all access when no sinks are selected" do
-    member = users(:test_member)
+    sign_in_as(@owner)
+    member = @member
     sink = member.account.sinks.create!(name: "Test Sink")
     member.sink_memberships.create!(sink: sink)
 
@@ -35,7 +69,8 @@ class Settings::Members::SinksControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "update adds and removes sinks in one request" do
-    member = users(:test_member)
+    sign_in_as(@owner)
+    member = @member
     keep_sink = member.account.sinks.create!(name: "Keep Sink")
     remove_sink = member.account.sinks.create!(name: "Remove Sink")
     add_sink = member.account.sinks.create!(name: "Add Sink")

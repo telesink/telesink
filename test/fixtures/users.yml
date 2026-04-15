@@ -9,6 +9,13 @@ kyrylo:
 test_member:
   account: telebugs
   nickname: Test Member
-  email_address: testmember@example.com
+  email_address: test_member@example.com
   password_digest: <%= password_digest %>
   role: member
+
+test_admin:
+  account: telebugs
+  nickname: Test Admin
+  email_address: test_admin@example.com
+  password_digest: <%= password_digest %>
+  role: admin

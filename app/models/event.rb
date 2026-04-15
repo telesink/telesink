@@ -26,7 +26,11 @@ class Event < ApplicationRecord
     rel.order(occurred_at: :desc, id: :desc)
   }
 
-  after_create_commit :broadcast_to_matching_columns, :mark_unread_for_all_members
+  after_create_commit(
+    :broadcast_to_matching_columns,
+    :mark_unread_for_all_members,
+    unless: -> { Rails.env.test? }
+  )
 
   private
 

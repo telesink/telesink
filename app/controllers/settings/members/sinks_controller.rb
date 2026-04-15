@@ -1,6 +1,7 @@
 class Settings::Members::SinksController < ApplicationController
   layout "settings"
 
+  before_action :ensure_can_administer
   before_action :set_user, only: %i[index update]
 
   def index
