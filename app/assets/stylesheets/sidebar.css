@@ -1,4 +1,9 @@
 .sidebar {
+  flex: 0 0 var(--sidebar-width);
+  width: var(--sidebar-width);
+  min-width: var(--sidebar-width);
+  max-width: var(--sidebar-width);
+
   background-color: light-dark(var(--color-gray-100), var(--color-zinc-800));
   border-right: 1px solid var(--border-color);
   z-index: 1;

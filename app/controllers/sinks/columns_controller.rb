@@ -14,7 +14,7 @@ class Sinks::ColumnsController < ApplicationController
       respond_to do |format|
         format.turbo_stream do
           render turbo_stream: turbo_stream.append(
-            "columns-container",
+            "columns",
             partial: "sinks/columns/column",
             locals: { column: @column }
           )

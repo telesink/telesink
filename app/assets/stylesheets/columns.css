@@ -1,20 +1,24 @@
 #columns-container {
   display: flex;
+  flex-shrink: 0;
+  min-width: fit-content;
+  height: 100%;
   flex-direction: row;
   align-items: stretch;
   gap: 0;
-  flex-shrink: 0;
   background-color: light-dark(var(--color-gray-200), var(--color-zinc-950));
 }
 
 .column {
   flex: 0 0 var(--column-width);
-  min-width: 0;
+  min-width: var(--column-width);
+  width: var(--column-width);
   height: 100%;
   overflow-y: auto;
   overflow-x: hidden;
   border-right: 1px solid var(--border-color);
   scrollbar-width: thin;
+  box-sizing: border-box;
 
   &.dragging {
     opacity: 0.4;
@@ -79,6 +83,7 @@
 
 .add-column-column {
   display: flex;
+  flex-shrink: 0;
   align-items: center;
   padding: 0 var(--space-xl);
   background-color: light-dark(var(--color-gray-200), var(--color-zinc-950));

@@ -7,18 +7,20 @@
   data-controller="sortable-columns"
   data-sortable-columns-url-value="<%= sink_column_order_path(@sink) %>"
 >
-  <% @sink.columns.each do |column| %>
-    <%= render(
-      partial: column.has_events? ? "sinks/columns/column" : "sinks/columns/config_column",
-      locals: {
-        column: column,
-        membership: @membership,
-        seen_cutoffs: @seen_cutoffs
-      }
-    ) %>
-  <% end %>
+  <div id="columns">
+    <% @sink.columns.each do |column| %>
+      <%= render(
+        partial: column.has_events? ? "sinks/columns/column" : "sinks/columns/config_column",
+        locals: {
+          column: column,
+          membership: @membership,
+          seen_cutoffs: @seen_cutoffs
+        }
+      ) %>
+    <% end %>
+  </div>
 
-  <div class="add-column-column">
+  <div id="add-column-column" class="add-column-column">
     <% if Current.user.can_administer? %>
       <%= button_to(
         "add column",
