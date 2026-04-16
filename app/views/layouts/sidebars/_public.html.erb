@@ -1,19 +1,10 @@
 <header class="column">
   <div class="column-data">
     <%= link_to root_path, class: "logo link" do %>
-      <picture>
-        <source srcset="<%= image_path('logo.webp') %> 1x, <%= image_path('logo@2x.webp') %> 2x" type="image/webp">
-        <%= image_tag(
-          "logo.png",
-          srcset: {
-            "logo.png" => "1x",
-            "logo@2x.png" => "2x"
-          },
-          width: 24,
-          height: 24,
-          alt: "Telesink"
-        ) %>
-      </picture>
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20" width="16" height="16">
+        <path fill="#0064e6" d="M0 0h20v20H0z"></path>
+        <path fill="#fff" d="M6.76 3.16H9V16.8H6.76zM10.961 3.16h2.24V16.8h-2.24zM15.16 3.16h2.24V16.8h-2.24zM2.561 3.16h2.24V16.8h-2.24z"></path>
+      </svg>
       telesink
     <% end %>
     <p class="column-data__text">

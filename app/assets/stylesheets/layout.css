@@ -14,7 +14,6 @@ body {
   display: inline-flex;
   align-items: center;
   gap: 0.25rem;
-  font-size: var(--text-2xl);
 
   filter: var(--logo-filter-default);
 

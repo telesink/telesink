@@ -23,3 +23,14 @@
   margin-top: auto;
   text-align: center;
 }
+
+.footer-logo {
+  display: flex;
+  justify-content: center;
+  gap: 1ch;
+}
+
+.footer-logo__svg {
+  width: 2ch;
+  height: 2ch;
+}
