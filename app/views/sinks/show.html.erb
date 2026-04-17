@@ -7,7 +7,7 @@
   data-controller="sortable-columns"
   data-sortable-columns-url-value="<%= sink_column_order_path(@sink) %>"
 >
-  <div id="columns">
+  <div id="columns" class="columns">
     <% @sink.columns.each do |column| %>
       <%= render(
         partial: column.has_events? ? "sinks/columns/column" : "sinks/columns/config_column",

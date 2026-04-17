@@ -9,6 +9,10 @@
   background-color: light-dark(var(--color-gray-200), var(--color-zinc-950));
 }
 
+.columns {
+  display: flex;
+}
+
 .column {
   flex: 0 0 var(--column-width);
   min-width: var(--column-width);
