@@ -74,7 +74,8 @@ class Event < ApplicationRecord
         locals: {
           current_sink_id: membership.user.current_sink_id,
           sink: membership.sink,
-          membership: membership
+          membership: membership,
+          can_administer: membership.user.can_administer?
         }
       )
     end
