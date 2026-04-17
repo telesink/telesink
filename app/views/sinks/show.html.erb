@@ -1,4 +1,4 @@
-<% content_for(:title, @sink.name) %>
+<% content_for(:title, sink_title(@sink)) %>
 
 <%= turbo_stream_from @sink %>
 
