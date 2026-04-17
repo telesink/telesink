@@ -21,7 +21,9 @@ export default class extends Controller {
   }
 
   #saveOrder() {
-    const columnIds = Array.from(this.element.querySelectorAll(".column"))
+    const columnIds = Array.from(
+      this.element.querySelectorAll("[data-controller~='column']"),
+    )
       .map((el) => {
         const columnCtrl =
           this.application.getControllerForElementAndIdentifier(el, "column");

@@ -2,12 +2,13 @@
 
 <%= turbo_stream_from @sink %>
 
-<div
-  id="columns-container"
-  data-controller="sortable-columns"
-  data-sortable-columns-url-value="<%= sink_column_order_path(@sink) %>"
->
-  <div id="columns" class="columns">
+<div id="columns-container">
+  <div
+    id="columns"
+    class="columns"
+    data-controller="sortable-columns"
+    data-sortable-columns-url-value="<%= sink_column_order_path(@sink) %>"
+  >
     <% @sink.columns.each do |column| %>
       <%= render(
         partial: column.has_events? ? "sinks/columns/column" : "sinks/columns/config_column",
