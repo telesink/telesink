@@ -9,8 +9,9 @@
   ) %>"
 >
   <% if is_current %>
-    <span class="truncate"><%= sink.name %></span>
-
+    <span>
+      <%= prefix %><span class="truncate"><%= sink.name %></span>
+    </span>
     <% if can_administer %>
       <%= link_to(
         "edit",
@@ -20,12 +21,15 @@
       ) %>
     <% end %>
   <% else %>
-    <%= link_to(
-      sink.name,
-      sink_path(sink),
-      title: sink.name,
-      class: "link truncate",
-      data: { turbo_frame: "_top" },
-    ) %>
+    <span>
+      <%= prefix %><%= link_to(
+        sink.name,
+        sink_path(sink),
+        title: sink.name,
+        class: "link truncate",
+        data: { turbo_frame: "_top" }
+      ) %>
+    </span>
   <% end %>
+
 </li>

@@ -7,7 +7,7 @@ class SinksController < ApplicationController
 
   def index
     if turbo_frame_request? && turbo_frame_request_id == "sinks"
-      render partial: "sinks/sinks", layout: false
+      render turbo_stream: turbo_stream.update(:sinks, partial: "sinks/sinks")
       return
     end
 
@@ -23,7 +23,7 @@ class SinksController < ApplicationController
 
   def show
     if turbo_frame_request? && turbo_frame_request_id == "sinks"
-      render partial: "sinks/sinks", layout: false
+      render turbo_stream: turbo_stream.update(:sinks, partial: "sinks/sinks")
       return
     end
 
@@ -115,6 +115,6 @@ class SinksController < ApplicationController
   end
 
   def sink_params
-    params.require(:sink).permit(:name)
+    params.require(:sink).permit(:name, :folder_id)
   end
 end

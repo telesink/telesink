@@ -2,6 +2,7 @@ class Sink < ApplicationRecord
   has_secure_token :token
 
   belongs_to :account
+  belongs_to :folder, optional: true
 
   has_many :events, dependent: :destroy
 

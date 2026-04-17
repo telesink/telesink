@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_04_14_044811) do
+ActiveRecord::Schema[8.1].define(version: 2026_04_17_075423) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pg_trgm"
@@ -54,6 +54,14 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_14_044811) do
     t.index ["text"], name: "index_events_on_text_trgm", opclass: :gin_trgm_ops, using: :gin
   end
 
+  create_table "folders", force: :cascade do |t|
+    t.bigint "account_id", null: false
+    t.datetime "created_at", null: false
+    t.string "name"
+    t.datetime "updated_at", null: false
+    t.index ["account_id"], name: "index_folders_on_account_id"
+  end
+
   create_table "sessions", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.string "ip_address"
@@ -78,10 +86,12 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_14_044811) do
   create_table "sinks", force: :cascade do |t|
     t.bigint "account_id", null: false
     t.datetime "created_at", null: false
+    t.bigint "folder_id"
     t.string "name", null: false
     t.string "token"
     t.datetime "updated_at", null: false
     t.index ["account_id"], name: "index_sinks_on_account_id"
+    t.index ["folder_id"], name: "index_sinks_on_folder_id"
     t.index ["name"], name: "index_sinks_on_name"
     t.index ["token"], name: "index_sinks_on_token", unique: true
   end
@@ -102,10 +112,12 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_14_044811) do
 
   add_foreign_key "columns", "sinks"
   add_foreign_key "events", "sinks"
+  add_foreign_key "folders", "accounts"
   add_foreign_key "sessions", "users"
   add_foreign_key "sink_memberships", "sinks"
   add_foreign_key "sink_memberships", "users"
   add_foreign_key "sinks", "accounts"
+  add_foreign_key "sinks", "folders"
   add_foreign_key "users", "accounts"
   add_foreign_key "users", "sinks", column: "current_sink_id", on_delete: :nullify
 end

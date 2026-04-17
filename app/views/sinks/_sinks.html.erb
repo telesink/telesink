@@ -1,14 +1,63 @@
 <% can_administer = Current.user.can_administer? %>
 
-
 <div class="column__header">
   <h1 class="column__title">
     <span class="truncate">sinks</span>
   </h1>
+
+  <% if can_administer %>
+    <span>
+      <%= link_to "+folder", new_folder_path, data: { turbo_frame: :sinks }, class: "link" %>
+      <%= link_to "+sink",   new_sink_path,  data: { turbo_frame: :sinks }, class: "link" %>
+    </span>
+  <% end %>
 </div>
 
-<% if @sink_memberships.any? %>
-  <ul class="list sidebar-list">
+<ul class="list sidebar-list">
+
+  <% if Current.account.folders.any? %>
+    <% Current.account.folders.ordered.each do |folder| %>
+      <% current_in_this_folder = folder.sinks.any? { |s| s.id == Current.user.current_sink_id } %>
+      <% show_edit_link = can_administer && (folder.sinks.empty? || current_in_this_folder) %>
+
+      <li class="sidebar-list__item">
+        <span class="tree-folder"><%= folder.name %>/</span>
+        <% if show_edit_link %>
+          <%= link_to(
+            "edit", edit_folder_path(folder),
+            data: { turbo_frame: :sinks },
+            class: "link link--subtle whitespace-nowrap"
+          ) %>
+        <% end %>
+      </li>
+
+      <% folder.sinks.each_with_index do |sink, index| %>
+        <% is_last = index == folder.sinks.size - 1 %>
+        <% prefix = is_last ? "└─" : "├─" %>
+        <%= render(
+          "sinks/sink",
+          sink: sink,
+          current_sink_id: Current.user.current_sink_id,
+          membership: @sink_memberships.find { |m| m.sink_id == sink.id },
+          can_administer: can_administer,
+          prefix: prefix
+        ) %>
+      <% end %>
+    <% end %>
+
+    <% ungrouped = @sink_memberships.select { |m| m.sink.folder_id.nil? } %>
+    <% ungrouped.each do |membership| %>
+      <%= render(
+        "sinks/sink",
+        sink: membership.sink,
+        current_sink_id: Current.user.current_sink_id,
+        membership: membership,
+        can_administer: can_administer,
+        prefix: ""
+      ) %>
+    <% end %>
+
+  <% else %>
     <% @sink_memberships.each do |membership| %>
       <%= render(
         "sinks/sink",
@@ -16,26 +65,9 @@
         current_sink_id: Current.user.current_sink_id,
         membership: membership,
         can_administer: can_administer,
+        prefix: ""
       ) %>
     <% end %>
-  </ul>
-<% else %>
-  <div class="column-data">
-    <p class="column-data__text italic">no sinks yet</p>
-  </div>
-<% end %>
+  <% end %>
 
-<% if can_administer %>
-  <div class="column-data">
-    <p class="column-data__text">
-      <%= link_to(
-        new_sink_path,
-        data: { turbo_frame: :sinks },
-        class: "btn btn--#{@sink_memberships.any? ? 'secondary' : 'primary'}"
-      ) do %>
-        new sink
-      <% end %>
-    </p>
-  </div>
-<% end %>
-
+</ul>
