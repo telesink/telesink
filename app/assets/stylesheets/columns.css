@@ -33,6 +33,12 @@
   }
 }
 
+.column--narrow {
+  flex: 0 0 var(--narrow-column-width);
+  min-width: var(--narrow-column-width);
+  width: var(--narrow-column-width);
+}
+
 .column__header {
   position: sticky;
   top: 0;

@@ -287,6 +287,7 @@
 
   --sidebar-width: 27ch;
   --column-width: 50ch;
+  --narrow-column-width: 27ch;
   --footer-width: 22ch;
 
   --border-color: light-dark(var(--color-gray-300), var(--color-zinc-700));
