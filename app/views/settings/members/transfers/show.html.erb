@@ -1,5 +1,6 @@
 <%
-  title = "account recovery"
+  column_title = "account recovery"
+  title = "#{display_name(@user)}/#{column_title}"
   content_for(:title, title)
 %>
 
@@ -7,7 +8,7 @@
   <div class="column__header">
     <div class="breadcrumbs">
       <%= link_to display_name(@user), settings_member_path(@user), class: "link" %> /
-      <h2 class="column__title">account recovery</h2>
+      <h2 class="column__title"><%= column_title %></h2>
     </div>
     <%= link_to "close", settings_members_path, class: "link", data: { turbo_frame: "_top" } %>
   </div>

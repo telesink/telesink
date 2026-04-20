@@ -1,5 +1,6 @@
 <%
-  title = "role"
+  column_title = "role"
+  title = "#{display_name(@user)}/#{column_title}"
   content_for(:title, title)
 %>
 
@@ -8,7 +9,7 @@
     <div class="breadcrumbs">
       <%= link_to display_name(@user), settings_member_path(@user), class: "link" %>/
       <h2 class="column__title">
-        <%= title %>
+        <%= column_title %>
       </h2>
     </div>
 
