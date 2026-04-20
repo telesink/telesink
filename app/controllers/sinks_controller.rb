@@ -106,8 +106,8 @@ class SinksController < ApplicationController
       Current
         .user
         .sink_memberships
-        .includes(:sink)
-        .order(sinks: { name: :asc })
+        .includes(sink: :folder)
+        .order("folders.name ASC NULLS LAST, sinks.name ASC")
   end
 
   def set_sink

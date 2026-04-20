@@ -14,14 +14,19 @@
 </div>
 
 <ul class="list sidebar-list">
-
   <% if Current.account.folders.any? %>
+    <% memberships_by_folder = @sink_memberships.group_by { |m| m.sink.folder_id } %>
+
     <% Current.account.folders.ordered.each do |folder| %>
-      <% current_in_this_folder = folder.sinks.any? { |s| s.id == Current.user.current_sink_id } %>
-      <% show_edit_link = can_administer && (folder.sinks.empty? || current_in_this_folder) %>
+      <% folder_memberships = memberships_by_folder[folder.id] || [] %>
+      <% next if folder_memberships.empty? %>
 
       <li class="sidebar-list__item">
         <span class="tree-folder"><%= folder.name %>/</span>
+
+        <% current_in_this_folder = folder_memberships.any? { |m| m.sink_id == Current.user.current_sink_id } %>
+        <% show_edit_link = can_administer && (folder.sinks.empty? || current_in_this_folder) %>
+
         <% if show_edit_link %>
           <%= link_to(
             "edit", edit_folder_path(folder),
@@ -31,21 +36,22 @@
         <% end %>
       </li>
 
-      <% folder.sinks.each_with_index do |sink, index| %>
-        <% is_last = index == folder.sinks.size - 1 %>
+      <% folder_memberships.each_with_index do |membership, index| %>
+        <% is_last = index == folder_memberships.size - 1 %>
         <% nesting_prefix = is_last ? "└─" : "├─" %>
+
         <%= render(
           "sinks/sink",
-          sink: sink,
+          sink: membership.sink,
           current_sink_id: Current.user.current_sink_id,
-          membership: @sink_memberships.find { |m| m.sink_id == sink.id },
+          membership: membership,
           can_administer: can_administer,
           nesting_prefix: nesting_prefix
         ) %>
       <% end %>
     <% end %>
 
-    <% ungrouped = @sink_memberships.select { |m| m.sink.folder_id.nil? } %>
+    <% ungrouped = memberships_by_folder[nil] || [] %>
     <% ungrouped.each do |membership| %>
       <%= render(
         "sinks/sink",
@@ -69,5 +75,4 @@
       ) %>
     <% end %>
   <% end %>
-
 </ul>
