@@ -33,14 +33,14 @@
 
       <% folder.sinks.each_with_index do |sink, index| %>
         <% is_last = index == folder.sinks.size - 1 %>
-        <% prefix = is_last ? "└─" : "├─" %>
+        <% nesting_prefix = is_last ? "└─" : "├─" %>
         <%= render(
           "sinks/sink",
           sink: sink,
           current_sink_id: Current.user.current_sink_id,
           membership: @sink_memberships.find { |m| m.sink_id == sink.id },
           can_administer: can_administer,
-          prefix: prefix
+          nesting_prefix: nesting_prefix
         ) %>
       <% end %>
     <% end %>
@@ -53,7 +53,7 @@
         current_sink_id: Current.user.current_sink_id,
         membership: membership,
         can_administer: can_administer,
-        prefix: ""
+        nesting_prefix: ""
       ) %>
     <% end %>
 
@@ -65,7 +65,7 @@
         current_sink_id: Current.user.current_sink_id,
         membership: membership,
         can_administer: can_administer,
-        prefix: ""
+        nesting_prefix: ""
       ) %>
     <% end %>
   <% end %>
