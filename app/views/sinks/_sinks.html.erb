@@ -22,7 +22,7 @@
       <% next if folder_memberships.empty? %>
 
       <li class="sidebar-list__item">
-        <span class="tree-folder"><%= folder.name %>/</span>
+        <%= folder.name %>/
 
         <% current_in_this_folder = folder_memberships.any? { |m| m.sink_id == Current.user.current_sink_id } %>
         <% show_edit_link = can_administer && (folder.sinks.empty? || current_in_this_folder) %>
@@ -36,17 +36,14 @@
         <% end %>
       </li>
 
-      <% folder_memberships.each_with_index do |membership, index| %>
-        <% is_last = index == folder_memberships.size - 1 %>
-        <% nesting_prefix = is_last ? "└─" : "├─" %>
-
+      <% folder_memberships.each do |membership| %>
         <%= render(
           "sinks/sink",
           sink: membership.sink,
           current_sink_id: Current.user.current_sink_id,
           membership: membership,
           can_administer: can_administer,
-          nesting_prefix: nesting_prefix
+          nesting_prefix: membership.nesting_prefix
         ) %>
       <% end %>
     <% end %>
@@ -59,7 +56,7 @@
         current_sink_id: Current.user.current_sink_id,
         membership: membership,
         can_administer: can_administer,
-        nesting_prefix: ""
+        nesting_prefix: membership.nesting_prefix
       ) %>
     <% end %>
 
@@ -71,7 +68,7 @@
         current_sink_id: Current.user.current_sink_id,
         membership: membership,
         can_administer: can_administer,
-        nesting_prefix: ""
+        nesting_prefix: membership.nesting_prefix
       ) %>
     <% end %>
   <% end %>

@@ -76,7 +76,7 @@ class Event < ApplicationRecord
           sink: membership.sink,
           membership: membership,
           can_administer: membership.user.can_administer?,
-          nesting_prefix: ""
+          nesting_prefix: membership.nesting_prefix
         }
       )
     end

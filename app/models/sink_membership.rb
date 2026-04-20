@@ -15,4 +15,18 @@ class SinkMembership < ApplicationRecord
 
     save!
   end
+
+  def nesting_prefix
+    return "" unless sink.folder_id
+
+    all_memberships = user.sink_memberships
+      .includes(sink: :folder)
+      .order("folders.name ASC NULLS LAST, sinks.name ASC")
+      .to_a
+
+    folder_memberships = all_memberships.select { |m| m.sink.folder_id == sink.folder_id }
+
+    index = folder_memberships.index(self)
+    index == folder_memberships.size - 1 ? "└─" : "├─"
+  end
 end
