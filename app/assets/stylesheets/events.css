@@ -21,7 +21,7 @@
 .event-preview {
   display: flex;
   gap: 1ch;
-  height: 7ch;
+  max-height: 7ch;
   padding: 1ch;
   word-wrap: break-word;
 }
