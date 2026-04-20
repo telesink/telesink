@@ -35,9 +35,21 @@
 
 .sidebar-list__item {
   display: flex;
-  justify-content: space-between;
   padding: 0 1ch;
   color: light-dark(var(--color-gray-500), var(--color-zinc-400));
+}
+
+.sidebar-list__name {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.sidebar-list__action {
+  flex-shrink: 0;
+  white-space: nowrap;
 }
 
 .sidebar-list__item--has-new-events .link {

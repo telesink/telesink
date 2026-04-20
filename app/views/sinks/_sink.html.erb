@@ -8,28 +8,22 @@
     "sidebar-list__item--has-new-events" => membership.has_unread_events && !is_current,
   ) %>"
 >
-  <% if is_current %>
-    <span>
-      <%= nesting_prefix %><span class="truncate"><%= sink.name %></span>
-    </span>
-    <% if can_administer %>
-      <%= link_to(
-        "edit",
-        edit_sink_path(sink),
-        class: "link link--subtle whitespace-nowrap",
-        data: { turbo_frame: :sinks },
-      ) %>
-    <% end %>
-  <% else %>
-    <span>
-      <%= nesting_prefix %><%= link_to(
-        sink.name,
-        sink_path(sink),
-        title: sink.name,
-        class: "link truncate",
-        data: { turbo_frame: "_top" }
-      ) %>
-    </span>
-  <% end %>
+  <span class="sidebar-list__name">
+    <%= nesting_prefix -%><% if is_current %><%= sink.name %><% else %><%= link_to(
+      sink.name,
+      sink_path(sink),
+      title: sink.name,
+      class: "link",
+      data: { turbo_frame: "_top" }
+    ) %><% end %>
+  </span>
 
+  <% if is_current && can_administer %>
+    <%= link_to(
+      "edit",
+      edit_sink_path(sink),
+      class: "link link--subtle sidebar-list__action",
+      data: { turbo_frame: :sinks },
+    ) %>
+  <% end %>
 </li>

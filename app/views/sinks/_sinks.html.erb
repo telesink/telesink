@@ -24,7 +24,9 @@
       <% folder_memberships = memberships_by_folder[folder.id] || [] %>
 
       <li class="sidebar-list__item">
-        <%= folder.name %>/
+        <span class="sidebar-list__name">
+          <%= folder.name %>/
+        </span>
 
         <% current_in_this_folder = folder_memberships.any? { |m| m.sink_id == Current.user.current_sink_id } %>
         <% show_edit_link = can_administer && (folder.sinks.empty? || current_in_this_folder) %>
@@ -33,7 +35,7 @@
           <%= link_to(
             "edit", edit_folder_path(folder),
             data: { turbo_frame: :sinks },
-            class: "link link--subtle whitespace-nowrap"
+            class: "link link--subtle sidebar-list__action"
           ) %>
         <% end %>
       </li>
