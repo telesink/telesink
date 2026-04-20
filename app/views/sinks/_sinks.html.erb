@@ -1,4 +1,7 @@
-<% can_administer = Current.user.can_administer? %>
+<%
+  can_administer = Current.user.can_administer?
+  has_content = Current.account.folders.any? || @sink_memberships.any?
+%>
 
 <div class="column__header">
   <h1 class="column__title">
@@ -8,18 +11,17 @@
   <% if can_administer %>
     <span>
       <%= link_to "+folder", new_folder_path, data: { turbo_frame: :sinks }, class: "link" %>
-      <%= link_to "+sink",   new_sink_path,  data: { turbo_frame: :sinks }, class: "link" %>
+      <%= link_to "+sink", new_sink_path,  data: { turbo_frame: :sinks }, class: "link" %>
     </span>
   <% end %>
 </div>
 
-<ul class="list sidebar-list">
-  <% if Current.account.folders.any? %>
-    <% memberships_by_folder = @sink_memberships.group_by { |m| m.sink.folder_id } %>
+<% if has_content %>
+  <% memberships_by_folder = @sink_memberships.group_by { |m| m.sink.folder_id } %>
 
+  <ul class="list sidebar-list">
     <% Current.account.folders.ordered.each do |folder| %>
       <% folder_memberships = memberships_by_folder[folder.id] || [] %>
-      <% next if folder_memberships.empty? %>
 
       <li class="sidebar-list__item">
         <%= folder.name %>/
@@ -59,17 +61,9 @@
         nesting_prefix: membership.nesting_prefix
       ) %>
     <% end %>
-
-  <% else %>
-    <% @sink_memberships.each do |membership| %>
-      <%= render(
-        "sinks/sink",
-        sink: membership.sink,
-        current_sink_id: Current.user.current_sink_id,
-        membership: membership,
-        can_administer: can_administer,
-        nesting_prefix: membership.nesting_prefix
-      ) %>
-    <% end %>
-  <% end %>
-</ul>
+  </ul>
+<% else %>
+  <div class="column-data">
+    <p class="column-data__text italic">no sinks yet</p>
+  </div>
+<% end %>
