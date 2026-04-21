@@ -26,7 +26,7 @@
       <%= form.label :event_types, "filter by event", class: "form-field__label" %>
       <%= form.select(
         :event_types,
-        options_for_select(@available_event_types.map { |t| [t.humanize, t] }, column.event_types),
+        options_for_select(@available_event_types.map { |t| [t, t] }, column.event_types),
         {
           include_blank: "(show all events)"
         },
