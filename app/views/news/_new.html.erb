@@ -1,0 +1,25 @@
+<div class="column__header">
+  <h1 class="column__title">
+    create what?
+  </h1>
+
+  <%= link_to "back", root_path, class: "link" %>
+</div>
+
+<nav>
+  <ul class="list sidebar-list">
+    <li class="<%= class_names(
+      "sidebar-list__item",
+      "sidebar-list__item--current" => current_page?(new_folder_path)
+    ) %>">
+      <%= link_to_unless_current "folder", new_folder_path, class: "link" %>
+    </li>
+
+    <li class="<%= class_names(
+      "sidebar-list__item",
+      "sidebar-list__item--current" => current_page?(new_sink_path)
+    ) %>">
+      <%= link_to_unless_current "sink", new_sink_path, class: "link" %>
+    </li>
+  </ul>
+</nav>

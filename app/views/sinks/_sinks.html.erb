@@ -10,8 +10,7 @@
 
   <% if can_administer %>
     <span>
-      <%= link_to "+folder", new_folder_path, data: { turbo_frame: :sinks }, class: "link" %>
-      <%= link_to "+sink", new_sink_path,  data: { turbo_frame: :sinks }, class: "link" %>
+      <%= link_to "create", new_sink_path, data: { turbo_frame: :sinks }, class: "link" %>
     </span>
   <% end %>
 </div>

@@ -16,6 +16,8 @@ Rails.application.routes.draw do
   resources :passwords, param: :token
   resource :registration, only: %i[new create]
 
+  resource :new, only: :show
+
   resources :sinks do
     resources :columns, only: %i[create show edit update destroy], controller: "sinks/columns" do
       resources :events, only: %i[index], controller: "sinks/columns/events"

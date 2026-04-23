@@ -1,0 +1,17 @@
+<aside class="column sidebar">
+   <div class="sidebar-account">
+    <span class="truncate">
+      <%= display_name(Current.user) %>
+    </span>
+
+    <%= button_to(
+      "sign out",
+      session_path,
+      method: :delete,
+      data: { turbo_confirm: "sign out?" },
+      class: "link link--subtle whitespace-nowrap text-base",
+    ) %>
+  </div>
+
+  <%= render partial: "news/new" %>
+</aside>

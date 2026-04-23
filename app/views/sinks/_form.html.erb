@@ -2,85 +2,66 @@
   url = "#{request.base_url}#{api_v1_sink_events_path(sink.token)}"
 %>
 
-<div class="column__header">
-  <h2 class="column__title">
-    <% if sink.persisted? %>
-      <span class="truncate">edit "<%= sink.name.presence || sink.name_was %>"</span>
-    <% else %>
-      add a sink
-    <% end %>
-  </h2>
+<%= form_with(model: sink, class: "form", data: { turbo: sink.persisted? }) do |form| %>
+  <div class="form-field">
+    <%= form.label :name, "name", class: "form-field__label" %>
+    <%= form.text_field :name, required: true, autofocus: true, class: "text-field" %>
+  </div>
 
-  <%= link_to(
-    "back",
-    @back_path,
-    data: { turbo_frame: :sinks },
-    class: "link"
-  ) %>
-</div>
+  <div class="form-field">
+    <%= form.label :folder_id, "folder (optional)", class: "form-field__label" %>
+    <%= form.collection_select(
+      :folder_id,
+      Current.account.folders.ordered,
+      :id,
+      :name,
+      { include_blank: "(no folder)" },
+      class: "text-field"
+    ) %>
+  </div>
 
-<div class="column-data">
-  <%= form_with(model: sink, class: "form", data: { turbo: sink.persisted? }) do |form| %>
-    <div class="form-field">
-      <%= form.label :name, "name", class: "form-field__label" %>
-      <%= form.text_field :name, required: true, autofocus: true, class: "text-field" %>
-    </div>
+  <%= render "shared/banners" %>
+  <%= render "shared/form_errors", model: sink %>
 
-    <div class="form-field">
-      <%= form.label :folder_id, "folder (optional)", class: "form-field__label" %>
-      <%= form.collection_select(
-        :folder_id,
-        Current.account.folders.ordered,
-        :id,
-        :name,
-        { include_blank: "(no folder)" },
-        class: "text-field"
-      ) %>
-    </div>
+  <div>
+    <%= form.button "#{sink.persisted? ? "update" : "create" } sink", type: :submit, class: "btn btn--primary" %>
+  </div>
+<% end %>
 
-    <%= render "shared/banners" %>
-    <%= render "shared/form_errors", model: sink %>
+<% if sink.persisted? %>
+  <div class="divider"></div>
 
-    <div>
-      <%= form.button "save sink", type: :submit, class: "btn btn--primary" %>
-    </div>
-  <% end %>
+  <details>
+    <summary class="link">more</summary>
 
-  <% if sink.persisted? %>
-    <div class="divider"></div>
-
-    <details>
-      <summary class="link">more</summary>
-
-      <div class="form">
-        <div class="form-field">
-          <%= label_tag :endpoint, "endpoint", class: "form-field__label" %>
-          <%= text_field_tag(
-            :endpoint,
-            url,
-            readonly: true,
-            class: "text-field",
-            onclick: "this.select()"
-          ) %>
-        </div>
-
-        <div>
-          <%= button_to_copy_to_clipboard(url) { "copy url" } %>
-        </div>
-
-        <div class="divider"></div>
-
-        <%= button_to(
-          "delete sink",
-          sink_path(sink),
-          method: :delete,
-          data: {
-            turbo_frame: "_top",
-            turbo_confirm: "delete '#{sink.name}' and all its events? this cannot be undone."
-          },
-          class: "btn btn--danger"
+    <div class="form">
+      <div class="form-field">
+        <%= label_tag :endpoint, "endpoint", class: "form-field__label" %>
+        <%= text_field_tag(
+          :endpoint,
+          url,
+          readonly: true,
+          class: "text-field",
+          onclick: "this.select()"
         ) %>
       </div>
-    </details>
-  <% end %>
-</div>
+
+      <div>
+        <%= button_to_copy_to_clipboard(url) { "copy url" } %>
+      </div>
+
+      <div class="divider"></div>
+
+      <%= button_to(
+        "delete sink",
+        sink_path(sink),
+        method: :delete,
+        data: {
+          turbo_frame: "_top",
+          turbo_confirm: "delete '#{sink.name}' and all its events? this cannot be undone."
+        },
+        class: "btn btn--danger"
+      ) %>
+    </div>
+  </details>
+<% end %>

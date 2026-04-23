@@ -1,8 +1,10 @@
 class FoldersController < ApplicationController
+  layout "news", only: %i[new]
+
   before_action :ensure_can_administer
   before_action :set_folder, only: %i[edit update destroy]
   before_action :set_sink_memberships, only: %i[new edit create update destroy]
-  before_action :set_back_path, only: %i[new edit]
+  before_action :set_back_path, only: %i[edit]
 
   def new
     @folder = Current.account.folders.new
