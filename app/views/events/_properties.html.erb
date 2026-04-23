@@ -7,7 +7,27 @@
           <%= key %>
         </dt>
         <dd class="event-properties__item-value">
-          <%= value || "<null>" %>
+          <% if long_property?(value) %>
+            <div class="property-value" data-controller="property-value">
+              <div class="property-value__teaser" data-property-value-target="teaser">
+                <%= property_teaser(value) %>
+              </div>
+
+              <button
+                class="link"
+                data-property-value-target="toggle"
+                data-action="click->property-value#toggle"
+              >
+                show more
+              </button>
+
+              <div class="property-value__full hidden" data-property-value-target="full">
+                <%= property_full(value) %>
+              </div>
+            </div>
+          <% else %>
+            <%= property_full(value) %>
+          <% end %>
         </dd>
       </div>
     <% end %>

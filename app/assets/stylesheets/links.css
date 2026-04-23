@@ -6,6 +6,7 @@
   color: light-dark(var(--color-blue-600), var(--color-blue-400));
   text-decoration: none;
   background: none;
+  cursor: pointer;
 
   &:hover {
     text-decoration: underline;

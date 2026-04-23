@@ -29,4 +29,24 @@ module EventsHelper
       occurred_at.strftime("%A, %B %d, %Y")
     end
   end
+
+  TOO_LONG = 120
+
+  def long_property?(value)
+    str = value.to_s.strip
+    return false if str.blank?
+
+    str.length > TOO_LONG
+  end
+
+  def property_teaser(value)
+    return unless value
+
+    str = value.to_s
+    str.length > TOO_LONG ? str[0...(TOO_LONG-1)] + "…" : str
+  end
+
+  def property_full(value)
+    value.nil? ? nil : value.to_s
+  end
 end
