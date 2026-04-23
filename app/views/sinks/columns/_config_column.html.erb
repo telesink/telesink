@@ -40,7 +40,7 @@
           curl -X POST #{url} \\
             -H "Content-Type: application/json" \\
             -d '{
-              "event": "user.signed.up",
+              "event": "User signed up",
               "text": "user@example.com",
               "emoji": "👤",
               "properties": {
@@ -48,7 +48,7 @@
                 "email_address": "user@example.com"
               },
               "occurred_at": "#{occurred_at}",
-              "idempotency_key": "user.signed_up:42"
+              "idempotency_key": "user-signed-up:42"
             }'
         CURL
       %>
