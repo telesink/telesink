@@ -4,17 +4,15 @@
     <%= render "layouts/head" %>
   </head>
 
-  <body>
-    <div class="app">
-      <%= render "layouts/sidebars/sinks" %>
+  <body class="app">
+    <%= render "layouts/sidebars/sinks" %>
 
-      <main class="main">
-        <%= turbo_frame_tag :main_content, class: "contents" do %>
-          <%= yield %>
-        <% end %>
+    <main class="main">
+      <%= turbo_frame_tag :main_content, class: "contents" do %>
+        <%= yield %>
+      <% end %>
 
-        <%= render "layouts/footer" %>
-      </main>
-    </div>
+      <%= render "layouts/footer" %>
+    </main>
   </body>
 </html>
