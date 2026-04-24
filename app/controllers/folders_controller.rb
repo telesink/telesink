@@ -1,6 +1,7 @@
 class FoldersController < ApplicationController
   layout :set_layout
 
+  skip_demo_restrictions only: %i[show]
   before_action :ensure_can_administer
   before_action :set_folder, only: %i[show edit update destroy]
   before_action :set_sink_memberships, only: %i[new edit create update destroy show]
