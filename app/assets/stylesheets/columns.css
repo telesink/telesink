@@ -11,6 +11,40 @@
 
 .columns {
   display: flex;
+
+  background-color: light-dark(var(--color-gray-100), var(--color-zinc-900));
+  background-image: repeating-linear-gradient(
+    135deg,
+    transparent 0px,
+    transparent 7px,
+    rgba(0, 100, 230, 0.09) 7px,
+    rgba(0, 100, 230, 0.09) 8px
+  );
+}
+
+.columns {
+  background-color: light-dark(var(--color-gray-100), var(--color-zinc-900));
+
+  /* Thin, frequent diagonal stripes */
+  background-image: repeating-linear-gradient(
+    135deg,
+    transparent 0px,
+    transparent 7px,
+    rgba(0, 100, 230, 0.09) 7px,
+    rgba(0, 100, 230, 0.09) 8px
+  );
+}
+
+@media (prefers-color-scheme: dark) {
+  .columns {
+    background-image: repeating-linear-gradient(
+      135deg,
+      transparent 0px,
+      transparent 7px,
+      rgba(255, 255, 255, 0.1) 7px,
+      rgba(255, 255, 255, 0.1) 8px
+    );
+  }
 }
 
 .column {
