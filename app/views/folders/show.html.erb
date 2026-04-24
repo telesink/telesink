@@ -6,6 +6,8 @@
 <div class="folder-view">
   <div class="folder-view__content">
     <% @sinks.each do |sink| %>
+      <%= turbo_stream_from sink %>
+
       <div class="folder-view__sink-row">
 
         <div class="column__header column__header--cast-shadow column__header--slim">
