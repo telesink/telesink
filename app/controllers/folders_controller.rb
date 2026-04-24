@@ -30,12 +30,7 @@ class FoldersController < ApplicationController
 
   def update
     if @folder.update(folder_params)
-      respond_to do |format|
-        format.turbo_stream do
-          render turbo_stream: turbo_stream.update(:sinks, partial: "sinks/sinks")
-        end
-        format.html { redirect_to sinks_path }
-      end
+      redirect_to sinks_path
     else
       render :edit, layout: "editable_sinks", status: :unprocessable_entity
     end
@@ -44,14 +39,7 @@ class FoldersController < ApplicationController
   def destroy
     @folder.destroy
 
-    set_sink_memberships
-
-    respond_to do |format|
-      format.turbo_stream do
-        render turbo_stream: turbo_stream.update(:sinks, partial: "sinks/sinks")
-      end
-      format.html { redirect_to sinks_path }
-    end
+    redirect_to sinks_path
   end
 
   private
