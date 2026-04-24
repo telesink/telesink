@@ -1,0 +1,18 @@
+<li
+  id="<%= dom_id(sink, "list_item") %>"
+  class="<%= class_names(
+    "sidebar-list__item",
+    "italic",
+    "sidebar-list__item--current" => current_page?(edit_sink_path(sink)),
+  ) %>"
+>
+  <span class="sidebar-list__name">
+    <%= nesting_prefix -%><%= link_to_unless_current(
+      sink.name,
+      edit_sink_path(sink),
+      title: sink.name,
+      class: "link",
+      data: { turbo_frame: "_top" },
+    ) %>
+  </span>
+</li>

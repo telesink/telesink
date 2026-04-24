@@ -58,10 +58,17 @@
 
 .sidebar-list__item--current {
   color: light-dark(var(--color-black), var(--color-white));
-  background-color: light-dark(var(--color-blue-100), var(--color-zinc-700));
+  background-color: light-dark(
+    var(--color-blue-100),
+    var(--color-zinc-700)
+  ) !important;
 }
 
 .sidebar-list__item--current .link {
   font-weight: 400;
   color: light-dark(var(--color-slate-400), var(--color-blue-400));
+}
+
+.sidebar-list--striped .sidebar-list__item:nth-child(odd) {
+  background-color: light-dark(var(--color-gray-50), var(--color-zinc-900));
 }

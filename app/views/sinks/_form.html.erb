@@ -2,7 +2,7 @@
   url = "#{request.base_url}#{api_v1_sink_events_path(sink.token)}"
 %>
 
-<%= form_with(model: sink, class: "form", data: { turbo: sink.persisted? }) do |form| %>
+<%= form_with(model: sink, class: "form", data: { turbo: false }) do |form| %>
   <div class="form-field">
     <%= form.label :name, "name", class: "form-field__label" %>
     <%= form.text_field :name, required: true, autofocus: true, class: "text-field" %>

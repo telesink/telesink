@@ -1,0 +1,54 @@
+<%
+  memberships_by_folder = @sink_memberships.group_by { |m| m.sink.folder_id }
+%>
+
+<div class="column__header">
+  <h1 class="column__title">
+    <span class="truncate">edit what?</span>
+  </h1>
+
+  <span>
+    <%= link_to "back", sinks_path, class: "link" %>
+  </span>
+</div>
+
+<ul class="list sidebar-list sidebar-list--striped">
+  <% Current.account.folders.ordered.each do |folder| %>
+    <% folder_memberships = memberships_by_folder[folder.id] || [] %>
+
+    <li class="<%= class_names(
+      "sidebar-list__item",
+      "italic",
+      "sidebar-list__item--current" => current_page?(edit_folder_path(folder)),
+    ) %>">
+      <span class="sidebar-list__name">
+        <%= link_to_unless_current(
+          "#{folder.name}/",
+          edit_folder_path(folder),
+          class: "link sidebar-list__action",
+        ) %>
+      </span>
+    </li>
+
+    <% folder_memberships.each do |membership| %>
+      <%= render(
+        "sinks/editable_sink",
+        sink: membership.sink,
+        current_sink_id: Current.user.current_sink_id,
+        membership: membership,
+        nesting_prefix: membership.nesting_prefix,
+      ) %>
+    <% end %>
+  <% end %>
+
+  <% ungrouped = memberships_by_folder[nil] || [] %>
+  <% ungrouped.each do |membership| %>
+    <%= render(
+      "sinks/editable_sink",
+      sink: membership.sink,
+      current_sink_id: Current.user.current_sink_id,
+      membership: membership,
+      nesting_prefix: membership.nesting_prefix,
+    ) %>
+  <% end %>
+</ul>

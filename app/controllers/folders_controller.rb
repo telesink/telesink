@@ -1,5 +1,5 @@
 class FoldersController < ApplicationController
-  layout "news", only: %i[new]
+  layout :set_layout
 
   before_action :ensure_can_administer
   before_action :set_folder, only: %i[edit update destroy]
@@ -21,7 +21,7 @@ class FoldersController < ApplicationController
         format.html { redirect_to sinks_path }
       end
     else
-      render :new, status: :unprocessable_entity
+      render :new, layout: "news", status: :unprocessable_entity
     end
   end
 
@@ -37,7 +37,7 @@ class FoldersController < ApplicationController
         format.html { redirect_to sinks_path }
       end
     else
-      render :edit, status: :unprocessable_entity
+      render :edit, layout: "editable_sinks", status: :unprocessable_entity
     end
   end
 
@@ -76,5 +76,16 @@ class FoldersController < ApplicationController
   def set_back_path
     @back_path = request.referer.presence
     @back_path ||= (@sink_memberships.first&.sink ? sink_path(@sink_memberships.first.sink) : root_path)
+  end
+
+  def set_layout
+    case action_name
+    when "new"
+      "news"
+    when "edit"
+      "editable_sinks"
+    else
+      "application"
+    end
   end
 end

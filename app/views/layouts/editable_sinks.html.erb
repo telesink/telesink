@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <%= render "layouts/head" %>
+  </head>
+
+  <body class="app">
+    <%= render "layouts/sidebars/editable_sinks" %>
+
+    <main class="main">
+      <%= turbo_frame_tag :main_content, class: "contents" do %>
+        <%= yield %>
+      <% end %>
+
+      <%= render "layouts/footer" %>
+    </main>
+  </body>
+</html>

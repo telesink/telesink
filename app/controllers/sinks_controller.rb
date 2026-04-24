@@ -1,5 +1,5 @@
 class SinksController < ApplicationController
-  layout "news", only: %i[new]
+  layout :set_layout
 
   skip_demo_restrictions only: %i[index show]
   before_action :ensure_can_administer, only: %i[new create edit update destroy]
@@ -69,7 +69,7 @@ class SinksController < ApplicationController
         format.html { redirect_to @sink }
       end
     else
-      render :new, status: :unprocessable_entity
+      render :new, layout: "news", status: :unprocessable_entity
     end
   end
 
@@ -81,7 +81,7 @@ class SinksController < ApplicationController
     if @sink.update(sink_params)
       redirect_to @sink
     else
-      render :edit, status: :unprocessable_entity
+      render :edit, layout: "editable_sinks", status: :unprocessable_entity
     end
   end
 
@@ -114,5 +114,16 @@ class SinksController < ApplicationController
 
   def sink_params
     params.require(:sink).permit(:name, :folder_id)
+  end
+
+  def set_layout
+    case action_name
+    when "new"
+      "news"
+    when "edit"
+      "editable_sinks"
+    else
+      "application"
+    end
   end
 end

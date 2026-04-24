@@ -17,13 +17,4 @@
       data: { turbo_frame: "_top" }
     ) %><% end %>
   </span>
-
-  <% if is_current && can_administer %>
-    <%= link_to(
-      "edit",
-      edit_sink_path(sink),
-      class: "link link--subtle sidebar-list__action",
-      data: { turbo_frame: :sinks },
-    ) %>
-  <% end %>
 </li>
