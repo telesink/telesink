@@ -2,9 +2,25 @@ class FoldersController < ApplicationController
   layout :set_layout
 
   before_action :ensure_can_administer
-  before_action :set_folder, only: %i[edit update destroy]
-  before_action :set_sink_memberships, only: %i[new edit create update destroy]
+  before_action :set_folder, only: %i[show edit update destroy]
+  before_action :set_sink_memberships, only: %i[new edit create update destroy show]
   before_action :set_back_path, only: %i[edit]
+
+  def show
+    @sinks = @folder.sinks
+      .order(:name)
+      .includes(:columns)
+
+    @sinks.each do |sink|
+      membership = sink.sink_memberships.find_by(user: Current.user)
+      next unless membership
+
+      membership.update!(has_unread_events: false)
+      membership.mark_all_columns_viewed
+    end
+
+    @highlight_current_sink = false
+  end
 
   def new
     @folder = Current.account.folders.new

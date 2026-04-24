@@ -1,4 +1,4 @@
-<% is_current = current_sink_id == sink.id %>
+<% is_current = local_assigns[:highlight_current_sink] && current_sink_id == sink.id %>
 
 <li
   id="<%= dom_id(sink, "list_item") %>"

@@ -27,7 +27,7 @@ Rails.application.routes.draw do
     resource :column_order, only: %i[update], controller: "sinks/column_orders"
   end
 
-  resources :folders, only: %i[new create edit update destroy]
+  resources :folders, only: %i[new create show edit update destroy]
   resources :events, only: %i[show]
 
   resource :settings, only: %i[show] do

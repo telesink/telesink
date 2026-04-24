@@ -5,17 +5,18 @@
       column_column_id_value: column.id,
       column_sink_id_value: column.sink_id,
       column_cutoff_value: local_assigns[:seen_cutoffs]&.[](column.id)&.iso8601
-  } do %>
-    <% events = column.recent_events %>
+    } do %>
 
     <div class="column__header column__header--cast-shadow">
-      <% if Current.user.admin? || Current.user.owner? %>
-        <span class="column__drag-handle">⋮⋮</span>
-      <% else %>
-        <span></span>
+      <% unless local_assigns[:folder_view] %>
+        <% if Current.user.admin? || Current.user.owner? %>
+          <span class="column__drag-handle">⋮⋮</span>
+        <% else %>
+          <span></span>
+        <% end %>
       <% end %>
 
-      <h2 class="column__title">
+      <h2 class="column__title <%= local_assigns[:folder_view] ? 'column__title--centered' : '' %>">
         <% if column.search_term %>
           🔎 "<%= column.search_term %>"
         <% else %>
@@ -23,36 +24,24 @@
         <% end %>
       </h2>
 
-      <% if Current.user.admin? || Current.user.owner? %>
-        <%= link_to(
-          "edit",
-          edit_sink_column_path(column.sink, column),
-          data: { turbo_frame: dom_id(column) },
-          class: "link link--subtle font-normal"
-        ) %>
-      <% else %>
-        <span></span>
+      <% unless local_assigns[:folder_view] %>
+        <% if Current.user.admin? || Current.user.owner? %>
+          <%= link_to(
+            "edit",
+            edit_sink_column_path(column.sink, column),
+            data: { turbo_frame: dom_id(column) },
+            class: "link link--subtle font-normal"
+          ) %>
+        <% else %>
+          <span></span>
+        <% end %>
       <% end %>
     </div>
 
-    <div
-      data-column-target="jumpBar"
-      data-action="click->column#jumpToTop"
-      class="jump-bar hidden"
-      data-turbo-permanent
-    >
-      ⇡ back to top
-      <span data-column-target="newCount" class="hidden"></span>
+    <div id="events_list_<%= column.id %>" class="events-list" data-column-target="list">
+      <%= render "events/batch", events: column.recent_events, column: column %>
     </div>
 
-    <div
-      id="events_list_<%= column.id %>"
-      class="events-list"
-      data-column-target="list"
-    >
-      <%= render "events/batch", events: events, column: column %>
-    </div>
-
-    <%= render "events/more", column: column, events: events %>
+    <%= render "events/more", column: column, events: column.recent_events %>
   <% end %>
 </div>

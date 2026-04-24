@@ -1,0 +1,36 @@
+<%
+  title = @folder.name
+  content_for(:title, title)
+%>
+
+<div class="folder-view">
+  <div class="folder-view__content">
+    <% @sinks.each do |sink| %>
+      <div class="folder-view__sink-row">
+
+        <div class="column__header column__header--cast-shadow column__header--slim">
+          <h2 class="column__title"><%= sink.name %></h2>
+        </div>
+
+        <% membership = Current.user.sink_memberships.find_by(sink: sink) %>
+        <% seen_cutoffs = {} %>
+        <% if membership&.column_last_viewed_at.present? %>
+          <% membership.column_last_viewed_at.each do |col_id, ts| %>
+            <% seen_cutoffs[col_id.to_i] = Time.zone.parse(ts) if ts.present? %>
+          <% end %>
+        <% end %>
+
+        <div class="columns">
+          <%= render(
+            partial: "sinks/columns/column",
+            collection: sink.columns,
+            locals: { seen_cutoffs: seen_cutoffs, folder_view: true }
+          ) %>
+        </div>
+
+      </div>
+    <% end %>
+  </div>
+
+  <div class="add-column-column"></div>
+</div>
