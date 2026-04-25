@@ -3,7 +3,7 @@ class FoldersController < ApplicationController
   helper NavigationHelper
 
   skip_demo_restrictions only: %i[show]
-  before_action :ensure_can_administer
+  before_action :ensure_can_administer, only: %i[new create edit update destroy]
   before_action :set_folder, only: %i[show edit update destroy]
   before_action :set_sink_memberships, only: %i[new edit create update destroy show]
   before_action :set_current_context, only: %i[show edit]
