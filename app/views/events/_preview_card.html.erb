@@ -1,6 +1,9 @@
 <%= link_to(
   event_path(event, column_id: column.id),
-  data: { turbo_frame: dom_id(column) },
+  data: {
+    turbo_frame: dom_id(column),
+    turbo_prefetch: false,
+  },
   class: "event-preview-card",
   title: event.text,
 ) do %>
