@@ -32,18 +32,6 @@ class Event < ApplicationRecord
     unless: -> { Rails.env.test? }
   )
 
-  def currently_viewing?(resource)
-    return false unless resource
-
-    if resource.is_a?(Sink)
-      current_sink_id == resource.id
-    elsif resource.is_a?(Folder)
-      current_folder_id == resource.id
-    else
-      false
-    end
-  end
-
   private
 
   def broadcast_to_matching_columns
@@ -81,21 +69,37 @@ class Event < ApplicationRecord
 
       unless currently_viewing
         membership.update!(has_unread_events: true)
-      end
 
-      # Broadcast stays exactly the same
-      Turbo::StreamsChannel.broadcast_replace_to(
-        "user_#{membership.user_id}_sinks",
-        target: ActionView::RecordIdentifier.dom_id(membership.sink, "list_item"),
-        partial: "sinks/sink",
-        locals: {
-          current_sink_id: membership.user.current_sink_id,
-          sink: membership.sink,
-          membership: membership,
-          can_administer: membership.user.can_administer?,
-          nesting_prefix: membership.nesting_prefix
-        }
-      )
+        Turbo::StreamsChannel.broadcast_replace_to(
+          "user_#{membership.user_id}_sinks",
+          target: ActionView::RecordIdentifier.dom_id(membership.sink, "list_item"),
+          partial: "sinks/sink",
+          locals: {
+            current_sink_id: membership.user.current_sink_id,
+            sink: membership.sink,
+            membership: membership,
+            can_administer: membership.user.can_administer?,
+            nesting_prefix: membership.nesting_prefix
+          }
+        )
+
+        if membership.sink.folder.present?
+          folder = membership.sink.folder
+          folder_memberships = membership.user.sink_memberships.where(sink: { folder_id: folder.id })
+
+          Turbo::StreamsChannel.broadcast_replace_to(
+            "user_#{membership.user_id}_sinks",
+            target: ActionView::RecordIdentifier.dom_id(folder, "list_item"),
+            partial: "sinks/folder_list_item",
+            locals: {
+              folder: folder,
+              folder_memberships: folder_memberships,
+              has_new_events: true,
+              is_current: membership.user.current_folder_id == folder.id
+            }
+          )
+        end
+      end
     end
   end
 end

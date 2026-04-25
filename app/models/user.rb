@@ -25,6 +25,18 @@ class User < ApplicationRecord
     admin? || owner?
   end
 
+  def currently_viewing?(resource)
+    return false unless resource
+
+    if resource.is_a?(Sink)
+      current_sink_id == resource.id
+    elsif resource.is_a?(Folder)
+      current_folder_id == resource.id
+    else
+      false
+    end
+  end
+
   private
 
   def ensure_nickname

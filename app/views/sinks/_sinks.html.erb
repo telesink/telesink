@@ -27,19 +27,15 @@
   <ul class="list sidebar-list sidebar-list--striped">
     <% Current.account.folders.ordered.each do |folder| %>
       <% folder_memberships = memberships_by_folder[folder.id] || [] %>
+      <% has_new_events = folder_has_new_events?(folder, folder_memberships) %>
 
-      <li class="<%= class_names(
-        "sidebar-list__item",
-        "sidebar-list__item--current" => current_page?(folder_path(folder))
-      ) %>">
-        <span class="sidebar-list__name">
-          <%= link_to_unless_current(
-            "#{folder.name}/",
-            folder_path(folder),
-            class: "link"
-          ) %>
-        </span>
-      </li>
+      <%= render(
+        "sinks/folder_list_item",
+        folder: folder,
+        folder_memberships: folder_memberships,
+        has_new_events: has_new_events,
+        is_current: current_page?(folder_path(folder))
+      ) %>
 
       <% folder_memberships.each do |membership| %>
         <%= render(
