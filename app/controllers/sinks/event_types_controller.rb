@@ -17,9 +17,8 @@ class Sinks::EventTypesController < ApplicationController
   end
 
   def destroy
-    @event_types = @sink.events.distinct.pluck(:event_type).sort
-
     @sink.events.where(event_type: @event_type).delete_all
+    @event_types = @sink.events.distinct.pluck(:event_type).sort
 
     respond_to do |format|
       format.turbo_stream do
