@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_04_17_075423) do
+ActiveRecord::Schema[8.1].define(version: 2026_04_25_044225) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pg_trgm"
@@ -99,6 +99,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_17_075423) do
   create_table "users", force: :cascade do |t|
     t.bigint "account_id"
     t.datetime "created_at", null: false
+    t.bigint "current_folder_id"
     t.bigint "current_sink_id"
     t.string "email_address", null: false
     t.string "nickname"
@@ -106,6 +107,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_17_075423) do
     t.integer "role", default: 0, null: false
     t.datetime "updated_at", null: false
     t.index ["account_id"], name: "index_users_on_account_id"
+    t.index ["current_folder_id"], name: "index_users_on_current_folder_id"
     t.index ["current_sink_id"], name: "index_users_on_current_sink_id"
     t.index ["email_address"], name: "index_users_on_email_address", unique: true
   end
@@ -119,5 +121,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_17_075423) do
   add_foreign_key "sinks", "accounts"
   add_foreign_key "sinks", "folders"
   add_foreign_key "users", "accounts"
+  add_foreign_key "users", "folders", column: "current_folder_id", on_delete: :nullify
   add_foreign_key "users", "sinks", column: "current_sink_id", on_delete: :nullify
 end

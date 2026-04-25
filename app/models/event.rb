@@ -32,6 +32,18 @@ class Event < ApplicationRecord
     unless: -> { Rails.env.test? }
   )
 
+  def currently_viewing?(resource)
+    return false unless resource
+
+    if resource.is_a?(Sink)
+      current_sink_id == resource.id
+    elsif resource.is_a?(Folder)
+      current_folder_id == resource.id
+    else
+      false
+    end
+  end
+
   private
 
   def broadcast_to_matching_columns
@@ -63,10 +75,15 @@ class Event < ApplicationRecord
     sink.sink_memberships.includes(:user).each do |membership|
       next if membership.has_unread_events?
 
-      unless membership.user.current_sink_id == membership.sink.id
+      currently_viewing =
+        membership.user.currently_viewing?(membership.sink) ||
+        membership.user.currently_viewing?(membership.sink.folder)
+
+      unless currently_viewing
         membership.update!(has_unread_events: true)
       end
 
+      # Broadcast stays exactly the same
       Turbo::StreamsChannel.broadcast_replace_to(
         "user_#{membership.user_id}_sinks",
         target: ActionView::RecordIdentifier.dom_id(membership.sink, "list_item"),

@@ -93,5 +93,10 @@ class FoldersController < ApplicationController
   def set_current_context
     Current.folder = @folder
     Current.sink = nil
+
+    Current.user.update_columns(
+      current_sink_id: nil,
+      current_folder_id: @folder.id
+    )
   end
 end

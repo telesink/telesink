@@ -45,10 +45,6 @@ class SinksController < ApplicationController
       membership.update!(has_unread_events: false)
       membership.mark_all_columns_viewed
     end
-
-    if Current.user.current_sink_id != @sink.id
-      Current.user.update!(current_sink_id: @sink.id)
-    end
   end
 
   def new
@@ -131,5 +127,10 @@ class SinksController < ApplicationController
   def set_current_context
     Current.sink = @sink
     Current.folder = nil
+
+    Current.user.update_columns(
+      current_sink_id: @sink.id,
+      current_folder_id: nil
+    )
   end
 end
