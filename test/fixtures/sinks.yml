@@ -1,4 +1,5 @@
 telebugs:
   account: telebugs
+  folder: my_projects
   name: telebugs
   token: 123456abcdef

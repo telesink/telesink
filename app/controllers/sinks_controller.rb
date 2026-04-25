@@ -72,6 +72,7 @@ class SinksController < ApplicationController
   end
 
   def edit
+    @event_types = @sink.events.distinct.pluck(:event_type).sort
   end
 
   def update

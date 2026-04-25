@@ -5,6 +5,7 @@ kyrylo:
   nickname: kyrylo
   email_address: kyrylo@telesink.com
   password_digest: <%= password_digest %>
+  role: owner
 
 test_member:
   account: telebugs

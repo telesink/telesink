@@ -1,0 +1,24 @@
+<%= turbo_frame_tag "event_types" do %>
+  <div class="column">
+    <div class="column__header column__header--cast-shadow">
+      <h2 class="column__title">event "<%= @event_type %>"</h2>
+
+      <%= link_to(
+        "close",
+        edit_sink_path(@sink),
+        data: { turbo_frame: "event_types" },
+        class: "link"
+      ) %>
+    </div>
+
+    <div class="column-data">
+      <%= button_to(
+        "delete this event",
+        sink_event_type_path(@sink, @event_type),
+        method: :delete,
+        data: { turbo_confirm: "delete all events of type #{@event_type}?" },
+        class: "btn btn--danger"
+      ) %>
+    </div>
+  </div>
+<% end %>

@@ -1,3 +1,11 @@
 kyrylo_telebugs:
   sink: telebugs
   user: kyrylo
+
+test_member_telebugs:
+  sink: telebugs
+  user: test_member
+
+test_admin_telebugs:
+  sink: telebugs
+  user: test_admin

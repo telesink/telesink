@@ -25,6 +25,7 @@ Rails.application.routes.draw do
     end
 
     resource :column_order, only: %i[update], controller: "sinks/column_orders"
+    resources :event_types, only: %i[index show destroy], controller: "sinks/event_types", constraints: { id: /[^\/]+/ }
   end
 
   resources :folders, only: %i[new create show edit update destroy]

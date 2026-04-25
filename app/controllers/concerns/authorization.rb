@@ -2,6 +2,9 @@ module Authorization
   private
 
   def ensure_can_administer
-    head :forbidden unless Current.user.admin? || Current.user.owner?
+    return if Current.user.admin?
+    return if Current.user.owner?
+
+    head :forbidden
   end
 end

@@ -3,9 +3,7 @@ require "test_helper"
 class SinksControllerTest < ActionDispatch::IntegrationTest
   setup do
     @owner  = users(:kyrylo)
-    @owner.update!(role: :owner)
     @admin  = users(:test_admin)
-    @admin.update!(role: :admin)
     @member = users(:test_member)
     @account = accounts(:telebugs)
   end
@@ -176,6 +174,8 @@ class SinksControllerTest < ActionDispatch::IntegrationTest
 
   test "owner can destroy a sink and is redirected to the next remaining sink" do
     sign_in_as(@owner)
+
+    @owner.sinks.delete_all
 
     # Ensure there will be a "next" sink after deletion
     sink_to_delete = @owner.sinks.create!(name: "To Be Deleted", account: @account)
