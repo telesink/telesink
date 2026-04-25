@@ -1,6 +1,5 @@
 <%
   url = "#{request.base_url}#{api_v1_sink_events_path(column.sink.token)}"
-  occurred_at = Time.current.utc.iso8601
 %>
 
 <div class="column">
@@ -47,7 +46,7 @@
                 "user_id": 42,
                 "email_address": "user@example.com"
               },
-              "occurred_at": "#{occurred_at}",
+              "occurred_at": "'$(date -u +"%Y-%m-%dT%H:%M:%SZ")'",
               "idempotency_key": "user-signed-up:42"
             }'
         CURL
