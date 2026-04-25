@@ -11,8 +11,10 @@
 
   <% if can_administer %>
     <span>
-      <% if Current.user.current_sink_id %>
-        <%= link_to "edit", edit_sink_path(Current.user.current_sink_id), class: "link" %>
+      <% if Current.folder %>
+        <%= link_to "edit", edit_folder_path(Current.folder), class: "link" %>
+      <% elsif Current.sink %>
+        <%= link_to "edit", edit_sink_path(Current.sink), class: "link" %>
       <% elsif has_content %>
         <%= link_to "edit", edit_folder_path(Current.user.account.folders.first), class: "link" %>
       <% end %>

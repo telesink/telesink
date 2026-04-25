@@ -1,10 +1,12 @@
 class SinksController < ApplicationController
   layout :set_layout
+  helper NavigationHelper
 
   skip_demo_restrictions only: %i[index show]
   before_action :ensure_can_administer, only: %i[new create edit update destroy]
   before_action :set_sink_memberships, only: %i[index show new edit create update destroy]
   before_action :set_sink, only: %i[show edit update destroy]
+  before_action :set_current_context, only: %i[show edit]
 
   def index
     if turbo_frame_request? && turbo_frame_request_id == "sinks"
@@ -74,7 +76,6 @@ class SinksController < ApplicationController
   end
 
   def edit
-    @back_path = sink_path(@sink)
   end
 
   def update
@@ -125,5 +126,10 @@ class SinksController < ApplicationController
     else
       "application"
     end
+  end
+
+  def set_current_context
+    Current.sink = @sink
+    Current.folder = nil
   end
 end

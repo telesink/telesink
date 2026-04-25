@@ -1,11 +1,12 @@
 class FoldersController < ApplicationController
   layout :set_layout
+  helper NavigationHelper
 
   skip_demo_restrictions only: %i[show]
   before_action :ensure_can_administer
   before_action :set_folder, only: %i[show edit update destroy]
   before_action :set_sink_memberships, only: %i[new edit create update destroy show]
-  before_action :set_back_path, only: %i[edit]
+  before_action :set_current_context, only: %i[show edit]
 
   def show
     @sinks = @folder.sinks
@@ -78,11 +79,6 @@ class FoldersController < ApplicationController
         .order(sinks: { name: :asc })
   end
 
-  def set_back_path
-    @back_path = request.referer.presence
-    @back_path ||= (@sink_memberships.first&.sink ? sink_path(@sink_memberships.first.sink) : root_path)
-  end
-
   def set_layout
     case action_name
     when "new"
@@ -92,5 +88,10 @@ class FoldersController < ApplicationController
     else
       "application"
     end
+  end
+
+  def set_current_context
+    Current.folder = @folder
+    Current.sink = nil
   end
 end

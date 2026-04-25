@@ -5,6 +5,7 @@ class Current < ActiveSupport::CurrentAttributes
   delegate :account, to: :user
 
   attribute :sink
+  attribute :folder
 
   def sink
     super || (user&.current_sink_id ? Sink.find_by(id: user.current_sink_id) : nil)
