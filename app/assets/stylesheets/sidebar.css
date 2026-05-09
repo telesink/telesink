@@ -72,3 +72,8 @@
 .sidebar-list--striped .sidebar-list__item:nth-child(odd) {
   background-color: light-dark(var(--color-gray-50), var(--color-zinc-900));
 }
+
+.sink-actions {
+  display: flex;
+  gap: 1ch;
+}

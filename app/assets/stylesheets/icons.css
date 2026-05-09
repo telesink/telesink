@@ -1,0 +1,6 @@
+.icon {
+  display: block;
+  flex-shrink: 0;
+  width: 1.75ch;
+  height: 1.75ch;
+}

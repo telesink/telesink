@@ -80,6 +80,7 @@
   background-color: light-dark(var(--color-gray-100), var(--color-zinc-800));
   display: flex;
   justify-content: space-between;
+  align-items: center;
   padding: 1ch;
   border-bottom: 1px solid var(--border-color);
 }
