@@ -6,7 +6,6 @@
   flex-direction: row;
   align-items: stretch;
   gap: 0;
-  background-color: light-dark(var(--color-gray-200), var(--color-zinc-950));
 }
 
 .columns {
@@ -135,5 +134,4 @@
   flex-shrink: 0;
   align-items: center;
   padding: 0 var(--space-xl);
-  background-color: light-dark(var(--color-gray-200), var(--color-zinc-950));
 }

@@ -49,6 +49,11 @@ body {
   overflow: hidden;
   margin: 0;
   background-color: light-dark(var(--color-gray-200), var(--color-zinc-950));
+  background-image: radial-gradient(
+    light-dark(var(--color-gray-600), var(--color-zinc-700)) 0.5px,
+    light-dark(var(--color-gray-200), var(--color-zinc-950)) 0.5px
+  );
+  background-size: 11px 11px;
 }
 
 .main {
