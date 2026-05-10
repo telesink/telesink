@@ -42,6 +42,19 @@ body {
   }
 }
 
+.logo--dark {
+  display: none;
+}
+
+@media (prefers-color-scheme: dark) {
+  .logo--light {
+    display: none;
+  }
+  .logo--dark {
+    display: block;
+  }
+}
+
 .app {
   display: grid;
   grid-template-columns: var(--sidebar-width) 1fr;
