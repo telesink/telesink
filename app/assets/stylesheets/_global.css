@@ -295,4 +295,8 @@
   --logo-filter-default: none;
   --logo-filter-hover: saturate(2);
   --logo-filter-active: saturate(1);
+
+  --font-stack:
+    -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica,
+    Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
 }

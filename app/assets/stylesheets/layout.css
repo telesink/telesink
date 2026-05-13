@@ -5,7 +5,7 @@ body {
 }
 
 body {
-  font: var(--text-base) monospace;
+  font: var(--text-base) var(--font-stack);
   line-height: 1.5;
   background-color: light-dark(var(--color-white), var(--color-black));
 }
