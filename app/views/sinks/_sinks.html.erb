@@ -64,7 +64,6 @@
           current_sink_id: Current.user.current_sink_id,
           membership: membership,
           can_administer: can_administer,
-          nesting_prefix: membership.nesting_prefix,
           highlight_current_sink: @highlight_current_sink.nil? ? true : @highlight_current_sink
         ) %>
       <% end %>
@@ -78,7 +77,6 @@
         current_sink_id: Current.user.current_sink_id,
         membership: membership,
         can_administer: can_administer,
-        nesting_prefix: membership.nesting_prefix,
         highlight_current_sink: @highlight_current_sink.nil? ? true : @highlight_current_sink
       ) %>
     <% end %>

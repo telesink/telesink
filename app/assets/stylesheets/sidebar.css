@@ -40,11 +40,18 @@
 }
 
 .sidebar-list__name {
-  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 0.5ch;
   min-width: 0;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+.sidebar-list__icon {
+  width: 0.75rem;
+  height: 0.75rem;
 }
 
 .sidebar-list__action {
