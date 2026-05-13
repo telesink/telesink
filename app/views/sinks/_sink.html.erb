@@ -5,6 +5,7 @@
   class="<%= class_names(
     "sidebar-list__item",
     "sidebar-list__item--current" => is_current,
+    "sidebar-list__item--in-folder" => sink.folder_id?,
     "sidebar-list__item--has-new-events" => membership.has_unread_events && !is_current,
   ) %>"
 >

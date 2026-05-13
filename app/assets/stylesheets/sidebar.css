@@ -39,6 +39,10 @@
   color: light-dark(var(--color-gray-500), var(--color-zinc-400));
 }
 
+.sidebar-list__item--in-folder {
+  padding-left: 2ch;
+}
+
 .sidebar-list__name {
   display: flex;
   align-items: center;

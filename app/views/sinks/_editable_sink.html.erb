@@ -4,6 +4,7 @@
     "sidebar-list__item",
     "italic",
     "sidebar-list__item--current" => current_page?(edit_sink_path(sink)),
+    "sidebar-list__item--in-folder" => sink.folder_id?,
   ) %>"
 >
   <span class="sidebar-list__name">
