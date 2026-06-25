@@ -1,0 +1,27 @@
+<nav
+  id="event_filters_<%= variant %>"
+  class="event-filters event-filters--<%= variant %>"
+  aria-label="event filters"
+>
+  <ul id="event_type_filter_list_<%= variant %>" class="list event-filters__list">
+    <%= render(
+      "sinks/event_filter_item",
+      sink: sink,
+      event_type: nil,
+      count: event_type_counts.values.sum,
+      current_event_type: current_event_type,
+      variant: variant
+    ) %>
+
+    <% event_type_counts.each do |event_type, count| %>
+      <%= render(
+        "sinks/event_filter_item",
+        sink: sink,
+        event_type: event_type,
+        count: count,
+        current_event_type: current_event_type,
+        variant: variant
+      ) %>
+    <% end %>
+  </ul>
+</nav>

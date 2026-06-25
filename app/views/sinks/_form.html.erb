@@ -8,18 +8,6 @@
     <%= form.text_field :name, required: true, autofocus: true, class: "text-field" %>
   </div>
 
-  <div class="form-field">
-    <%= form.label :folder_id, "folder (optional)", class: "form-field__label" %>
-    <%= form.collection_select(
-      :folder_id,
-      Current.account.folders.ordered,
-      :id,
-      :name,
-      { include_blank: "(no folder)" },
-      class: "text-field"
-    ) %>
-  </div>
-
   <%= render "shared/banners" %>
   <%= render "shared/form_errors", model: sink %>
 

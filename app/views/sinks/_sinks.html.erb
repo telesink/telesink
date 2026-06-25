@@ -1,7 +1,6 @@
 <%
   can_administer = Current.user.can_administer?
-  has_content = Current.account.folders.any? || @sink_memberships.any?
-  memberships_by_folder = @sink_memberships.group_by { |m| m.sink.folder_id }
+  has_content = @sink_memberships.any?
 %>
 
 <div class="column__header">
@@ -11,22 +10,8 @@
 
   <% if can_administer %>
     <span class="sink-actions">
-      <% if Current.folder %>
-        <%= link_to edit_folder_path(Current.folder), title: "edit", class: "link link--subtle" do %>
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="icon">
-            <path d="M13.488 2.513a1.75 1.75 0 0 0-2.475 0L6.75 6.774a2.75 2.75 0 0 0-.596.892l-.848 2.047a.75.75 0 0 0 .98.98l2.047-.848a2.75 2.75 0 0 0 .892-.596l4.261-4.262a1.75 1.75 0 0 0 0-2.474Z" />
-            <path d="M4.75 3.5c-.69 0-1.25.56-1.25 1.25v6.5c0 .69.56 1.25 1.25 1.25h6.5c.69 0 1.25-.56 1.25-1.25V9A.75.75 0 0 1 14 9v2.25A2.75 2.75 0 0 1 11.25 14h-6.5A2.75 2.75 0 0 1 2 11.25v-6.5A2.75 2.75 0 0 1 4.75 2H7a.75.75 0 0 1 0 1.5H4.75Z" />
-          </svg>
-        <% end %>
-      <% elsif Current.sink %>
+      <% if Current.sink %>
         <%= link_to edit_sink_path(Current.sink), title: "edit", class: "link link--subtle" do %>
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="icon">
-            <path d="M13.488 2.513a1.75 1.75 0 0 0-2.475 0L6.75 6.774a2.75 2.75 0 0 0-.596.892l-.848 2.047a.75.75 0 0 0 .98.98l2.047-.848a2.75 2.75 0 0 0 .892-.596l4.261-4.262a1.75 1.75 0 0 0 0-2.474Z" />
-            <path d="M4.75 3.5c-.69 0-1.25.56-1.25 1.25v6.5c0 .69.56 1.25 1.25 1.25h6.5c.69 0 1.25-.56 1.25-1.25V9A.75.75 0 0 1 14 9v2.25A2.75 2.75 0 0 1 11.25 14h-6.5A2.75 2.75 0 0 1 2 11.25v-6.5A2.75 2.75 0 0 1 4.75 2H7a.75.75 0 0 1 0 1.5H4.75Z" />
-          </svg>
-        <% end %>
-      <% elsif has_content %>
-        <%= link_to edit_folder_path(Current.user.account.folders.first), title: "edit", class: "link link--subtle" do %>
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="icon">
             <path d="M13.488 2.513a1.75 1.75 0 0 0-2.475 0L6.75 6.774a2.75 2.75 0 0 0-.596.892l-.848 2.047a.75.75 0 0 0 .98.98l2.047-.848a2.75 2.75 0 0 0 .892-.596l4.261-4.262a1.75 1.75 0 0 0 0-2.474Z" />
             <path d="M4.75 3.5c-.69 0-1.25.56-1.25 1.25v6.5c0 .69.56 1.25 1.25 1.25h6.5c.69 0 1.25-.56 1.25-1.25V9A.75.75 0 0 1 14 9v2.25A2.75 2.75 0 0 1 11.25 14h-6.5A2.75 2.75 0 0 1 2 11.25v-6.5A2.75 2.75 0 0 1 4.75 2H7a.75.75 0 0 1 0 1.5H4.75Z" />
@@ -45,32 +30,7 @@
 
 <% if has_content %>
   <ul class="list sidebar-list sidebar-list--striped">
-    <% Current.account.folders.ordered.each do |folder| %>
-      <% folder_memberships = memberships_by_folder[folder.id] || [] %>
-      <% has_new_events = folder_has_new_events?(folder, folder_memberships) %>
-
-      <%= render(
-        "sinks/folder_list_item",
-        folder: folder,
-        folder_memberships: folder_memberships,
-        has_new_events: has_new_events,
-        is_current: current_page?(folder_path(folder))
-      ) %>
-
-      <% folder_memberships.each do |membership| %>
-        <%= render(
-          "sinks/sink",
-          sink: membership.sink,
-          current_sink_id: Current.user.current_sink_id,
-          membership: membership,
-          can_administer: can_administer,
-          highlight_current_sink: @highlight_current_sink.nil? ? true : @highlight_current_sink
-        ) %>
-      <% end %>
-    <% end %>
-
-    <% ungrouped = memberships_by_folder[nil] || [] %>
-    <% ungrouped.each do |membership| %>
+    <% @sink_memberships.each do |membership| %>
       <%= render(
         "sinks/sink",
         sink: membership.sink,

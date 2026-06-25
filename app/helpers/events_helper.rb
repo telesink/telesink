@@ -1,4 +1,6 @@
 module EventsHelper
+  PROPERTY_SUMMARY_LIMIT = 3
+
   def highlighted_event_body(event, column, length: 87)
     text = event.text
     if column.single_event_type?
@@ -48,5 +50,28 @@ module EventsHelper
 
   def property_full(value)
     value.nil? ? nil : value.to_s
+  end
+
+  def event_property_summary(event, limit: PROPERTY_SUMMARY_LIMIT)
+    return if event.properties.blank?
+
+    event
+      .properties
+      .first(limit)
+      .map { |key, value| "#{key}: #{compact_property_value(value)}" }
+      .join(" / ")
+  end
+
+  def compact_property_value(value)
+    case value
+    when Hash, Array
+      value.to_json
+    else
+      value.to_s
+    end.squish
+  end
+
+  def event_type_count_dom_id(event_type, variant:)
+    Event.event_type_count_dom_id(event_type, variant: variant)
   end
 end

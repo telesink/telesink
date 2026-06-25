@@ -1,32 +1,32 @@
-<%= turbo_frame_tag dom_id(@column) do %>
-  <div class="column__header column__header--cast-shadow">
-    <h2 class="column__title">
-      <span><%= @event.emoji %></span>
-      <span><%= @event.event_type %></span>
-    </h2>
-
-    <%= link_to(
-      sink_column_path(@column.sink, @column),
-      data: {
-        turbo_frame: dom_id(@column),
-        turbo_prefetch: false,
-      },
-      class: "link link--subtle",
-      title: "close",
-    ) do %>
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="icon">
-        <path d="M5.28 4.22a.75.75 0 0 0-1.06 1.06L6.94 8l-2.72 2.72a.75.75 0 1 0 1.06 1.06L8 9.06l2.72 2.72a.75.75 0 1 0 1.06-1.06L9.06 8l2.72-2.72a.75.75 0 0 0-1.06-1.06L8 6.94 5.28 4.22Z" />
-      </svg>
-    <% end %>
-  </div>
-
+<%= turbo_frame_tag dom_id(@event, :detail) do %>
   <div class="event-detail">
+    <div class="event-detail__header">
+      <h2 class="event-detail__title">
+        <span><%= @event.emoji %></span>
+        <span><%= @event.event_type %></span>
+      </h2>
+
+      <button
+        type="button"
+        class="link link--subtle"
+        title="close"
+        data-action="click->event-feed#collapseDetail"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="icon">
+          <path d="M5.28 4.22a.75.75 0 0 0-1.06 1.06L6.94 8l-2.72 2.72a.75.75 0 1 0 1.06 1.06L8 9.06l2.72 2.72a.75.75 0 1 0 1.06-1.06L9.06 8l2.72-2.72a.75.75 0 0 0-1.06-1.06L8 6.94 5.28 4.22Z" />
+        </svg>
+      </button>
+    </div>
+
     <div class="event-detail__meta">
       <time datetime="<%= @event.occurred_at.iso8601 %>">
-        <%= @event.occurred_at.strftime("%b %d, %Y at %I:%M %p") %>
+        <%= @event.occurred_at.strftime("%b %d, %Y at %I:%M:%S %p") %>
       </time>
 
-      #<%= @event.id %>
+      <span>#<%= @event.id %></span>
+      <% if @event.sdk_name.present? %>
+        <span><%= @event.sdk_name %><%= " #{@event.sdk_version}" if @event.sdk_version.present? %></span>
+      <% end %>
     </div>
 
     <p class="event-detail__body">

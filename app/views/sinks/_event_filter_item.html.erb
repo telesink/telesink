@@ -1,0 +1,20 @@
+<li class="event-filters__item">
+  <%= link_to(
+    event_type.presence || "all",
+    sink_path(sink, event_type: event_type),
+    class: class_names(
+      "event-filters__link",
+      "event-filters__link--current" => current_event_type == event_type
+    ),
+    title: event_type.presence || "all events",
+    aria: { current: current_event_type == event_type ? "page" : nil },
+    data: { turbo_frame: :main_content }
+  ) %>
+
+  <%= render(
+    "sinks/event_filter_count",
+    event_type: event_type,
+    count: count,
+    variant: variant
+  ) %>
+</li>

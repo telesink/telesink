@@ -1,0 +1,13 @@
+<% if events.size == Event::FEED_BATCH_SIZE && events.first %>
+  <%= turbo_frame_tag(
+    "events_older_loader",
+    src: sink_events_path(sink, before_id: events.first.id, event_type: event_type),
+    loading: :lazy
+  ) do %>
+    <div class="events__loading">↑ loading older events&hellip;</div>
+  <% end %>
+<% else %>
+  <div id="events_older_loader" class="events__end-of-feed">
+    <%= initial && events.empty? ? "no events yet" : "start" %>
+  </div>
+<% end %>

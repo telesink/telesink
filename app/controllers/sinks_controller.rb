@@ -30,21 +30,11 @@ class SinksController < ApplicationController
       return
     end
 
-    membership = @sink.sink_memberships.find_by(user: Current.user)
-    @membership = membership
-
-    if membership
-      @seen_cutoffs = {}
-
-      if membership.column_last_viewed_at.present?
-        membership.column_last_viewed_at.each do |col_id, ts|
-          @seen_cutoffs[col_id.to_i] = Time.zone.parse(ts) if ts.present?
-        end
-      end
-
-      membership.update!(has_unread_events: false)
-      membership.mark_all_columns_viewed
-    end
+    @membership = @sink.sink_memberships.find_by(user: Current.user)
+    @membership&.mark_sink_viewed!
+    @event_type = params[:event_type].to_s.strip.presence
+    @events = Event.feed_batch(@sink, event_type: @event_type)
+    @event_type_counts = @sink.events.group(:event_type).order(:event_type).count
   end
 
   def new
@@ -56,6 +46,13 @@ class SinksController < ApplicationController
 
     if @sink.save
       @sink.users << Current.user unless @sink.users.include?(Current.user)
+      set_current_context
+      set_sink_memberships
+      @membership = @sink.sink_memberships.find_by(user: Current.user)
+      @membership&.mark_sink_viewed!
+      @event_type = nil
+      @events = Event.feed_batch(@sink)
+      @event_type_counts = @sink.events.group(:event_type).order(:event_type).count
 
       respond_to do |format|
         format.turbo_stream do
@@ -102,8 +99,9 @@ class SinksController < ApplicationController
       Current
         .user
         .sink_memberships
-        .includes(sink: :folder)
-        .order("folders.name ASC NULLS LAST, sinks.name ASC")
+        .joins(:sink)
+        .includes(:sink)
+        .order("sinks.name ASC")
   end
 
   def set_sink
@@ -111,7 +109,7 @@ class SinksController < ApplicationController
   end
 
   def sink_params
-    params.require(:sink).permit(:name, :folder_id)
+    params.require(:sink).permit(:name)
   end
 
   def set_layout

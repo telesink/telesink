@@ -1,0 +1,13 @@
+<%= turbo_stream.prepend "events_feed" do %>
+  <%= render "events/feed_batch", events: @events %>
+<% end %>
+
+<%= turbo_stream.replace "events_older_loader" do %>
+  <%= render(
+    "events/older_loader",
+    sink: @sink,
+    events: @events,
+    event_type: @event_type,
+    initial: false
+  ) %>
+<% end %>

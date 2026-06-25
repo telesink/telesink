@@ -1,0 +1,13 @@
+<aside class="event-type-rail">
+  <div class="event-type-rail__header">
+    <h2 class="event-type-rail__title">events</h2>
+  </div>
+
+  <%= render(
+    "sinks/event_filters",
+    sink: sink,
+    event_type_counts: event_type_counts,
+    current_event_type: current_event_type,
+    variant: "desktop"
+  ) %>
+</aside>

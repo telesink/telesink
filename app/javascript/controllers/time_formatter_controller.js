@@ -3,6 +3,10 @@ import { Controller } from "@hotwired/stimulus";
 const MILLISECONDS_PER_DAY = 86_400_000;
 
 export default class extends Controller {
+  static values = {
+    mode: String,
+  };
+
   connect() {
     this.#update();
   }
@@ -18,6 +22,14 @@ export default class extends Controller {
   }
 
   #format(date) {
+    if (this.modeValue === "clock") {
+      return date.toLocaleTimeString([], {
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+      });
+    }
+
     const now = new Date();
 
     if (date.toDateString() === now.toDateString()) {

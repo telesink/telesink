@@ -35,6 +35,8 @@
 
 .sidebar-list__item {
   display: flex;
+  align-items: baseline;
+  gap: 0.5ch;
   padding: 0 1ch;
   color: light-dark(var(--color-gray-500), var(--color-zinc-400));
 }
@@ -46,11 +48,18 @@
 .sidebar-list__name {
   display: flex;
   align-items: center;
+  flex: 1;
   gap: 0.5ch;
   min-width: 0;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+.sidebar-list__prefix {
+  flex: 0 0 1ch;
+  color: light-dark(var(--color-gray-400), var(--color-zinc-500));
+  text-align: center;
 }
 
 .sidebar-list__icon {
@@ -65,6 +74,13 @@
 
 .sidebar-list__item--has-new-events .link {
   font-weight: 700;
+}
+
+.sidebar-list__unread {
+  flex: 0 0 auto;
+  min-width: 2ch;
+  color: light-dark(var(--color-blue-700), var(--color-cyan-300));
+  text-align: right;
 }
 
 .sidebar-list__item--current {
@@ -87,4 +103,19 @@
 .sink-actions {
   display: flex;
   gap: 1ch;
+}
+
+@media (max-width: 760px) {
+  .sidebar,
+  .column.sidebar {
+    flex: none;
+    width: 100%;
+    min-width: 0;
+    max-width: none;
+    height: auto;
+    max-height: 30vh;
+    overflow-y: auto;
+    border-right: 0;
+    border-bottom: 1px solid var(--border-color);
+  }
 }

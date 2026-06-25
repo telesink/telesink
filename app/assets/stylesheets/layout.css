@@ -76,3 +76,15 @@ body {
   height: 100%;
   min-width: 0;
 }
+
+@media (max-width: 760px) {
+  .app {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto minmax(0, 1fr);
+  }
+
+  .main {
+    min-height: 0;
+    overflow: hidden;
+  }
+}

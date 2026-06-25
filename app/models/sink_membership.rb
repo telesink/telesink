@@ -2,6 +2,23 @@ class SinkMembership < ApplicationRecord
   belongs_to :user
   belongs_to :sink
 
+  def mark_sink_viewed!
+    update!(
+      has_unread_events: false,
+      unread_count: 0,
+      last_viewed_at: Time.current
+    )
+  end
+
+  def increment_unread!
+    with_lock do
+      update!(
+        has_unread_events: true,
+        unread_count: unread_count + 1
+      )
+    end
+  end
+
   def last_viewed_at_for(column)
     return unless column_last_viewed_at[column.id.to_s]
 
