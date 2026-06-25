@@ -82,4 +82,8 @@ module EventsHelper
   def event_type_count_dom_id(event_type, variant:)
     Event.event_type_count_dom_id(event_type, variant: variant)
   end
+
+  def event_type_color_class(event_type)
+    "event-type-color-#{event_type.to_s.each_byte.sum % 12}"
+  end
 end

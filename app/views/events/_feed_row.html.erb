@@ -30,7 +30,7 @@
     ></time>
 
     <span class="event-row__emoji"><%= event.emoji %></span>
-    <strong class="event-row__type"><%= event.event_type %></strong>
+    <span class="event-row__type <%= event_type_color_class(event.event_type) %>"><%= event.event_type %></span>
     <span class="event-row__text"><%= event.text %></span>
 
     <% if property_summary.present? %>

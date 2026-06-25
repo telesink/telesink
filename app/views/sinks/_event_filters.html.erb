@@ -10,6 +10,7 @@
       event_type: nil,
       count: event_type_counts.values.sum,
       current_event_type: current_event_type,
+      event_date: event_date,
       variant: variant
     ) %>
 
@@ -20,6 +21,7 @@
         event_type: event_type,
         count: count,
         current_event_type: current_event_type,
+        event_date: event_date,
         variant: variant
       ) %>
     <% end %>

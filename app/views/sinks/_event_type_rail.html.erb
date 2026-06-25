@@ -8,6 +8,16 @@
     sink: sink,
     event_type_counts: event_type_counts,
     current_event_type: current_event_type,
+    event_date: event_date,
     variant: "desktop"
+  ) %>
+
+  <%= render(
+    "sinks/event_calendar",
+    sink: sink,
+    calendar_month: calendar_month,
+    event_dates: event_dates,
+    current_event_type: current_event_type,
+    selected_date: event_date
   ) %>
 </aside>

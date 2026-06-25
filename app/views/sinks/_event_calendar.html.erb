@@ -1,0 +1,40 @@
+<%
+  month_start = calendar_month.beginning_of_month
+  month_end = calendar_month.end_of_month
+  first_day_offset = month_start.wday
+  days = (month_start..month_end).to_a
+  cells = Array.new(first_day_offset) + days
+  rows = cells.each_slice(7).to_a
+  previous_month = month_start.prev_month
+  next_month = month_start.next_month
+%>
+
+<section class="event-calendar" aria-label="event calendar">
+  <pre class="event-calendar__clock"><%= Time.current.utc.strftime("%H:%M UTC") %></pre>
+  <pre class="event-calendar__month"><%= link_to("<", sink_path(sink, event_type: current_event_type, date: previous_month.iso8601), class: "event-calendar__nav") %><span class="event-calendar__header"><%= calendar_month.strftime("%B %Y").center(18) %></span><%= link_to(">", sink_path(sink, event_type: current_event_type, date: next_month.iso8601), class: "event-calendar__nav") %>
+<span class="event-calendar__header">Su Mo Tu We Th Fr Sa</span>
+<% rows.each do |week| %><%= safe_join(week.map { |date|
+  if date.nil?
+    "  "
+  elsif event_dates.key?(date)
+    link_to(
+      date.day.to_s.rjust(2),
+      sink_path(sink, event_type: current_event_type, date: date.iso8601),
+      class: class_names(
+        "event-calendar__day",
+        "event-calendar__day--selected" => selected_date == date
+      )
+    )
+  else
+    tag.span(
+      date.day.to_s.rjust(2),
+      class: class_names(
+        "event-calendar__day",
+        "event-calendar__day--muted",
+        "event-calendar__day--selected" => selected_date == date
+      )
+    )
+  end
+}, " ") %>
+<% end %></pre>
+</section>

@@ -1,6 +1,6 @@
 <% content_for(:title, sink_title(@sink)) %>
 
-<%= turbo_stream_from @sink, "events", Event.feed_stream_key(@event_type) %>
+<%= turbo_stream_from @sink, "events", Event.feed_stream_key(@event_type, date: @event_date) %>
 <%= turbo_stream_from @sink, "event_type_counts" %>
 
 <div class="sink-feed-layout">
@@ -13,9 +13,6 @@
     <header class="event-feed__header">
       <h1 class="event-feed__title">
         <span class="event-feed__channel">#<%= @sink.name %></span>
-        <% if @event_type.present? %>
-          <span class="event-feed__filter-label"><%= @event_type %></span>
-        <% end %>
       </h1>
 
       <% if Current.user.can_administer? %>
@@ -33,6 +30,7 @@
       sink: @sink,
       event_type_counts: @event_type_counts,
       current_event_type: @event_type,
+      event_date: @event_date,
       variant: "mobile"
     ) %>
 
@@ -51,6 +49,7 @@
         sink: @sink,
         events: @events,
         event_type: @event_type,
+        event_date: @event_date,
         initial: true
       ) %>
 
@@ -58,12 +57,22 @@
         <%= render "events/feed_batch", events: @events %>
       </div>
     </div>
+
+    <%= render(
+      "sinks/event_status",
+      sink: @sink,
+      current_event_type: @event_type,
+      event_date: @event_date
+    ) %>
   </section>
 
   <%= render(
     "sinks/event_type_rail",
     sink: @sink,
     event_type_counts: @event_type_counts,
-    current_event_type: @event_type
+    current_event_type: @event_type,
+    event_date: @event_date,
+    calendar_month: @calendar_month,
+    event_dates: @event_dates
   ) %>
 </div>

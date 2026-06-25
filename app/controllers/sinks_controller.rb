@@ -34,8 +34,10 @@ class SinksController < ApplicationController
     @seen_cutoff = @membership&.last_viewed_at
     @membership&.mark_sink_viewed!
     @event_type = params[:event_type].to_s.strip.presence
-    @events = Event.feed_batch(@sink, event_type: @event_type)
+    @event_date = parsed_event_date
+    @events = Event.feed_batch(@sink, event_type: @event_type, date: @event_date)
     @event_type_counts = @sink.events.group(:event_type).order(:event_type).count
+    set_event_calendar
   end
 
   def new
@@ -52,8 +54,10 @@ class SinksController < ApplicationController
       @membership = @sink.sink_memberships.find_by(user: Current.user)
       @membership&.mark_sink_viewed!
       @event_type = nil
+      @event_date = nil
       @events = Event.feed_batch(@sink)
       @event_type_counts = @sink.events.group(:event_type).order(:event_type).count
+      set_event_calendar
 
       respond_to do |format|
         format.turbo_stream do
@@ -132,5 +136,25 @@ class SinksController < ApplicationController
       current_sink_id: @sink.id,
       current_folder_id: nil
     )
+  end
+
+  def parsed_event_date
+    return if params[:date].blank?
+
+    Date.iso8601(params[:date])
+  rescue Date::Error
+    nil
+  end
+
+  def set_event_calendar
+    @calendar_month = (@event_date || Time.zone.today).beginning_of_month
+    month_range = @calendar_month.beginning_of_day..@calendar_month.end_of_month.end_of_day
+
+    @event_dates = @sink
+      .events
+      .where(occurred_at: month_range)
+      .group(Arel.sql("DATE(occurred_at)"))
+      .count
+      .transform_keys { |date| Date.parse(date.to_s) }
   end
 end

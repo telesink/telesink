@@ -3,7 +3,7 @@
     id="events_older_loader"
     class="events__older-loader"
     data-event-feed-target="olderLoader"
-    data-url="<%= sink_events_path(sink, before_id: events.first.id, event_type: event_type) %>"
+    data-url="<%= sink_events_path(sink, before_id: events.first.id, event_type: event_type, date: event_date) %>"
   ></div>
 <% else %>
   <div id="events_older_loader" class="events__older-loader events__older-loader--empty">

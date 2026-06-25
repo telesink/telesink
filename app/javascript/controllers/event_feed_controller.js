@@ -2,6 +2,7 @@ import { Controller } from "@hotwired/stimulus";
 
 const MAX_ITEMS = 400;
 const MAX_PENDING = 200;
+const MAX_AUTOFILL_PAGES = 3;
 const BOTTOM_THRESHOLD = 80;
 const TOP_THRESHOLD = 120;
 
@@ -23,6 +24,7 @@ export default class extends Controller {
     this.pendingEvents = [];
     this.newEventCount = 0;
     this.isAtBottom = true;
+    this.autofillPages = 0;
     this.canLoadOlder = false;
     this.seenCutoffTime = this.#parseSeenCutoff();
     this.isFlushing = false;
@@ -53,6 +55,7 @@ export default class extends Controller {
       this.#updateJumpBar();
       setTimeout(() => {
         this.canLoadOlder = true;
+        this.#ensureScrollable();
       }, 250);
     });
   }
@@ -118,6 +121,7 @@ export default class extends Controller {
     if (shouldRebuildDelimiters) {
       this.#rebuildDayDelimiters();
       this.#rebuildUnreadDelimiter();
+      this.#ensureScrollable();
     }
   }
 
@@ -200,10 +204,23 @@ export default class extends Controller {
     this.#updateJumpBar();
   }
 
-  #loadOlderIfNeeded() {
+  #ensureScrollable() {
+    if (!this.canLoadOlder) return;
+    if (this.#isScrollable()) return;
+    if (this.autofillPages >= MAX_AUTOFILL_PAGES) return;
+
+    this.autofillPages += 1;
+    this.#loadOlderIfNeeded({ force: true });
+  }
+
+  #isScrollable() {
+    return this.scrollTarget.scrollHeight > this.scrollTarget.clientHeight + 1;
+  }
+
+  #loadOlderIfNeeded({ force = false } = {}) {
     if (this.isLoadingOlder || !this.hasOlderLoaderTarget) return;
     if (!this.olderLoaderTarget.dataset.url) return;
-    if (this.scrollTarget.scrollTop > TOP_THRESHOLD) return;
+    if (!force && this.scrollTarget.scrollTop > TOP_THRESHOLD) return;
 
     this.isLoadingOlder = true;
     this.olderLoaderTarget.textContent = "loading older events...";
@@ -218,6 +235,9 @@ export default class extends Controller {
         return response.text();
       })
       .then((html) => window.Turbo.renderStreamMessage(html))
+      .then(() => {
+        if (force) requestAnimationFrame(() => this.#ensureScrollable());
+      })
       .catch((e) => {
         this.olderLoaderTarget.textContent = "could not load older events";
         console.error("Failed to load older events", e);

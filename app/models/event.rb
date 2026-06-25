@@ -30,9 +30,10 @@ class Event < ApplicationRecord
     rel.order(occurred_at: :desc, id: :desc)
   }
 
-  def self.feed_batch(sink, limit: FEED_BATCH_SIZE, before_id: nil, event_type: nil)
+  def self.feed_batch(sink, limit: FEED_BATCH_SIZE, before_id: nil, event_type: nil, date: nil)
     rel = where(sink_id: sink.id)
     rel = rel.where(event_type: event_type) if event_type.present?
+    rel = rel.where(occurred_at: date.all_day) if date.present?
 
     if before_id.present?
       before_event = rel.find_by(id: before_id)
@@ -48,8 +49,11 @@ class Event < ApplicationRecord
     rel.order(occurred_at: :desc, id: :desc).limit(limit).to_a.reverse
   end
 
-  def self.feed_stream_key(event_type)
-    event_type.present? ? event_type : "all"
+  def self.feed_stream_key(event_type, date: nil)
+    [
+      event_type.presence || "all",
+      date&.iso8601 || "live"
+    ].join(":")
   end
 
   def self.event_type_dom_key(event_type)
@@ -74,15 +78,19 @@ class Event < ApplicationRecord
   private
 
   def broadcast_to_feed_streams
+    event_date = occurred_at.in_time_zone.to_date
+
     [ nil, event_type ].each do |feed_event_type|
-      Turbo::StreamsChannel.broadcast_append_to(
-        sink,
-        "events",
-        Event.feed_stream_key(feed_event_type),
-        target: "events_feed",
-        partial: "events/feed_row",
-        locals: { event: self, new_event: true }
-      )
+      [ nil, event_date ].each do |feed_date|
+        Turbo::StreamsChannel.broadcast_append_to(
+          sink,
+          "events",
+          Event.feed_stream_key(feed_event_type, date: feed_date),
+          target: "events_feed",
+          partial: "events/feed_row",
+          locals: { event: self, new_event: true }
+        )
+      end
     end
   end
 
@@ -110,6 +118,7 @@ class Event < ApplicationRecord
             event_type: event_type,
             count: event_type_count,
             current_event_type: nil,
+            event_date: nil,
             variant: variant
           }
         )

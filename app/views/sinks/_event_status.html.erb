@@ -1,0 +1,27 @@
+<div class="event-status" aria-label="sink status">
+  <div class="event-status__items">
+    <span class="event-status__channel">#<%= sink.name %></span>
+
+    <% if current_event_type.present? %>
+      <span class="event-status__filter <%= event_type_color_class(current_event_type) %>"><%= current_event_type %></span>
+    <% end %>
+
+    <% if event_date.present? %>
+      <span class="event-status__filter"><%= event_date.iso8601 %></span>
+    <% end %>
+
+    <% unless current_event_type.present? || event_date.present? %>
+      <span class="event-status__filter">all events</span>
+    <% end %>
+  </div>
+
+  <% if current_event_type.present? || event_date.present? %>
+    <%= link_to(
+      "clear",
+      sink_path(sink),
+      class: "event-status__clear",
+      title: "clear filters",
+      data: { turbo_frame: :main_content }
+    ) %>
+  <% end %>
+</div>

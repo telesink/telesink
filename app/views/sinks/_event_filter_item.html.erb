@@ -1,9 +1,12 @@
+<% filter_date = local_assigns[:event_date] %>
+
 <li class="event-filters__item">
   <%= link_to(
     event_type.presence || "all",
-    sink_path(sink, event_type: event_type),
+    sink_path(sink, event_type: event_type, date: event_type.present? ? filter_date : nil),
     class: class_names(
       "event-filters__link",
+      event_type_color_class(event_type) => event_type.present?,
       "event-filters__link--current" => current_event_type == event_type
     ),
     title: event_type.presence || "all events",
