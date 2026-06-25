@@ -79,7 +79,7 @@
 .sidebar-list__unread {
   flex: 0 0 auto;
   min-width: 2ch;
-  color: light-dark(var(--color-blue-700), var(--color-cyan-300));
+  color: light-dark(var(--color-blue-700), var(--color-blue-300));
   text-align: right;
 }
 

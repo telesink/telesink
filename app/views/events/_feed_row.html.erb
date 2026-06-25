@@ -29,15 +29,11 @@
       title="<%= event.occurred_at.iso8601 %>"
     ></time>
 
-    <span class="event-row__separator">|</span>
     <span class="event-row__emoji"><%= event.emoji %></span>
-    <span class="event-row__separator">|</span>
     <strong class="event-row__type"><%= event.event_type %></strong>
-    <span class="event-row__separator">|</span>
     <span class="event-row__text"><%= event.text %></span>
 
     <% if property_summary.present? %>
-      <span class="event-row__separator event-row__separator--properties">|</span>
       <span class="event-row__properties"><%= property_summary %></span>
     <% end %>
   <% end %>

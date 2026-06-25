@@ -23,11 +23,13 @@ export default class extends Controller {
 
   #format(date) {
     if (this.modeValue === "clock") {
-      return date.toLocaleTimeString([], {
-        hour: "2-digit",
-        minute: "2-digit",
-        second: "2-digit",
-      });
+      return [
+        date.getHours(),
+        date.getMinutes(),
+        date.getSeconds(),
+      ]
+        .map((part) => String(part).padStart(2, "0"))
+        .join(":");
     }
 
     const now = new Date();

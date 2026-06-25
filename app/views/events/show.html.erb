@@ -6,24 +6,20 @@
         <span><%= @event.event_type %></span>
       </h2>
 
-      <button
-        type="button"
-        class="link link--subtle"
-        title="close"
-        data-action="click->event-feed#collapseDetail"
-      >
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="icon">
-          <path d="M5.28 4.22a.75.75 0 0 0-1.06 1.06L6.94 8l-2.72 2.72a.75.75 0 1 0 1.06 1.06L8 9.06l2.72 2.72a.75.75 0 1 0 1.06-1.06L9.06 8l2.72-2.72a.75.75 0 0 0-1.06-1.06L8 6.94 5.28 4.22Z" />
-        </svg>
-      </button>
+      <%= link_to(
+        "##{@event.id}",
+        event_path(@event),
+        data: { turbo_frame: "_top" },
+        class: "event-detail__permalink link link--subtle",
+        title: "permalink"
+      ) %>
     </div>
 
     <div class="event-detail__meta">
       <time datetime="<%= @event.occurred_at.iso8601 %>">
-        <%= @event.occurred_at.strftime("%b %d, %Y at %I:%M:%S %p") %>
+        <%= @event.occurred_at.strftime("%b %d, %Y at %H:%M:%S") %>
       </time>
 
-      <span>#<%= @event.id %></span>
       <% if @event.sdk_name.present? %>
         <span><%= @event.sdk_name %><%= " #{@event.sdk_version}" if @event.sdk_version.present? %></span>
       <% end %>

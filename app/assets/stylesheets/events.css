@@ -100,7 +100,6 @@
 
 .event-properties__list {
   margin: 0;
-  border-bottom: 1px solid var(--border-color);
 }
 
 .event-properties__title {
@@ -114,20 +113,34 @@
 }
 
 .event-properties__item {
-  padding: 1ch 1ch;
+  display: flex;
+  gap: 1ch;
+  min-width: 0;
+  padding: 0 1ch;
   background-color: light-dark(var(--color-white), var(--color-zinc-900));
-
-  &:nth-child(even) {
-    background-color: light-dark(var(--color-gray-100), var(--color-zinc-800));
-  }
 }
 
 .event-properties__item-key {
+  flex: 0 0 auto;
   font-weight: 700;
 }
 
+.event-properties__item-key::after {
+  content: ":";
+}
+
 .event-properties__item-value {
-  margin: 0 0 0 1ch;
+  min-width: 0;
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+.property-value__teaser {
+  display: inline;
+}
+
+.property-value__full {
+  margin-top: 0.5ch;
 }
 
 .event-preview--new-event {
@@ -146,20 +159,16 @@
   }
 }
 
-.events__loading {
-  position: relative;
+.events__older-loader {
+  min-height: 1px;
   padding: 0 1ch;
-  background-color: light-dark(var(--color-gray-100), var(--color-zinc-800));
-  border-top: 1px solid var(--border-color);
-}
-
-.events__end-of-feed {
-  height: 1px;
-  background-color: light-dark(var(--color-gray-300), var(--color-zinc-700));
-  margin-bottom: 12ch;
   font-style: italic;
   text-align: center;
   color: light-dark(var(--color-gray-400), var(--color-zinc-500));
+}
+
+.events__older-loader--loading {
+  min-height: 1.5rem;
 }
 
 .jump-bar {
@@ -193,13 +202,10 @@
 }
 
 .day-delimiter {
+  padding: 0.75ch 1ch 0.25ch;
   color: light-dark(var(--color-gray-500), var(--color-zinc-500));
-  background-color: light-dark(var(--color-gray-100), var(--color-zinc-800));
-  border-bottom: 1px solid
-    light-dark(var(--color-gray-200), var(--color-zinc-950));
   font-size: var(--text-sm);
   font-weight: 500;
-  text-transform: lowercase;
   text-align: center;
 }
 
@@ -213,6 +219,8 @@
   width: 100%;
   height: 100%;
   min-width: 0;
+  min-height: 0;
+  overflow: hidden;
   background-color: light-dark(var(--color-white), var(--color-black));
 }
 
@@ -221,13 +229,15 @@
   display: flex;
   flex-direction: column;
   min-width: 0;
+  min-height: 0;
   height: 100%;
+  overflow: hidden;
   border-right: 1px solid var(--border-color);
   background-color: light-dark(var(--color-white), var(--color-black));
 }
 
 .event-feed__header,
-.event-type-rail__header {
+.filter-rail__header {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -238,7 +248,7 @@
 }
 
 .event-feed__title,
-.event-type-rail__title {
+.filter-rail__title {
   display: flex;
   min-width: 0;
   gap: 1ch;
@@ -256,7 +266,7 @@
 }
 
 .event-feed__filter-label {
-  color: light-dark(var(--color-blue-700), var(--color-cyan-300));
+  color: light-dark(var(--color-blue-700), var(--color-blue-300));
   font-weight: 400;
 }
 
@@ -268,9 +278,6 @@
   overflow-x: hidden;
   overflow-y: auto;
   scrollbar-width: thin;
-  font-family:
-    ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace,
-    "Apple Color Emoji", "Segoe UI Emoji";
   font-size: var(--text-sm);
   line-height: 1.35;
 }
@@ -286,10 +293,9 @@
 
 .event-row {
   display: flex;
-  align-items: baseline;
+  align-items: center;
   gap: 0.5ch;
   min-width: 0;
-  min-height: 1.5rem;
   padding: 0 1ch;
   color: light-dark(var(--color-gray-950), var(--color-zinc-100));
   text-decoration: none;
@@ -307,13 +313,9 @@
 }
 
 .event-row__time {
-  flex: 0 0 11ch;
+  flex: 0 0 8ch;
   color: light-dark(var(--color-gray-500), var(--color-zinc-500));
-}
-
-.event-row__separator {
-  flex: 0 0 auto;
-  color: light-dark(var(--color-gray-300), var(--color-zinc-700));
+  font-variant-numeric: tabular-nums;
 }
 
 .event-row__emoji {
@@ -332,21 +334,41 @@
 
 .event-row__type {
   flex: 0 1 24ch;
-  color: light-dark(var(--color-blue-700), var(--color-cyan-300));
+  color: light-dark(var(--color-blue-700), var(--color-blue-300));
   font-weight: 700;
 }
 
 .event-row__text {
   flex: 1 1 24ch;
+  padding-left: 1ch;
+  border-left: 1px solid light-dark(var(--color-gray-200), var(--color-zinc-800));
 }
 
 .event-row__properties {
   flex: 0 1 42ch;
+  padding-left: 1ch;
+  border-left: 1px solid light-dark(var(--color-gray-200), var(--color-zinc-800));
   color: light-dark(var(--color-gray-600), var(--color-zinc-400));
+}
+
+.event-row__property-key {
+  color: light-dark(var(--color-gray-700), var(--color-zinc-300));
+  font-weight: 700;
+}
+
+.event-row__property-divider {
+  margin: 0 0.75ch;
+  color: light-dark(var(--color-gray-400), var(--color-zinc-600));
 }
 
 .event-feed__item--new .event-row {
   animation: newEventHighlight 3000ms ease-out forwards;
+}
+
+.unread-delimiter {
+  height: 1px;
+  margin: 0.5ch 1ch;
+  background-color: light-dark(var(--color-red-600), var(--color-red-400));
 }
 
 .event-feed__jump {
@@ -355,8 +377,8 @@
   bottom: 1ch;
   z-index: 2;
   padding: 0 1ch;
-  border: 1px solid light-dark(var(--color-blue-500), var(--color-cyan-400));
-  color: light-dark(var(--color-blue-800), var(--color-cyan-200));
+  border: 1px solid light-dark(var(--color-blue-500), var(--color-blue-400));
+  color: light-dark(var(--color-blue-800), var(--color-blue-300));
   background-color: light-dark(var(--color-blue-50), var(--color-zinc-900));
   box-shadow: 0 1px 4px light-dark(var(--color-gray-300), var(--color-black));
   cursor: pointer;
@@ -382,6 +404,11 @@
   background-color: light-dark(var(--color-gray-100), var(--color-zinc-900));
 }
 
+.event-detail__permalink {
+  flex: 0 0 auto;
+  font-variant-numeric: tabular-nums;
+}
+
 .event-detail__title {
   display: flex;
   gap: 0.75ch;
@@ -398,13 +425,16 @@
   gap: 0.5ch 2ch;
   padding: 0 1ch;
   background-color: light-dark(var(--color-gray-50), var(--color-zinc-950));
+  font-variant-numeric: tabular-nums;
 }
 
 .event-detail__body {
+  margin: 0;
+  padding: 0.5ch 1ch;
   white-space: pre-wrap;
 }
 
-.event-type-rail {
+.filter-rail {
   min-width: 0;
   height: 100%;
   overflow-y: auto;
@@ -413,15 +443,12 @@
 }
 
 .event-filters__list {
-  font-family:
-    ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace,
-    "Apple Color Emoji", "Segoe UI Emoji";
   font-size: var(--text-sm);
 }
 
 .event-filters__item {
   display: flex;
-  align-items: baseline;
+  align-items: center;
   gap: 1ch;
   min-width: 0;
   padding: 0 1ch;
@@ -438,19 +465,21 @@
 }
 
 .event-filters__link::before {
-  content: "@";
+  content: "⌕";
+  margin-right: 0.5ch;
   color: light-dark(var(--color-gray-400), var(--color-zinc-600));
 }
 
 .event-filters__link:hover,
 .event-filters__link:focus,
 .event-filters__link--current {
-  color: light-dark(var(--color-blue-700), var(--color-cyan-300));
+  color: light-dark(var(--color-blue-700), var(--color-blue-300));
 }
 
 .event-filters__count {
   flex: 0 0 auto;
   color: light-dark(var(--color-gray-400), var(--color-zinc-500));
+  font-variant-numeric: tabular-nums;
 }
 
 .event-filters--mobile {
@@ -466,7 +495,7 @@
     border-right: 0;
   }
 
-  .event-type-rail {
+  .filter-rail {
     display: none;
   }
 
@@ -509,8 +538,7 @@
     flex-basis: 16ch;
   }
 
-  .event-row__properties,
-  .event-row__separator--properties {
+  .event-row__properties {
     display: none;
   }
 }

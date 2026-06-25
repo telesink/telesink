@@ -3,10 +3,19 @@ import { Controller } from "@hotwired/stimulus";
 const MAX_ITEMS = 400;
 const MAX_PENDING = 200;
 const BOTTOM_THRESHOLD = 80;
+const TOP_THRESHOLD = 120;
 
 export default class extends Controller {
-  static targets = ["detail", "jumpBar", "list", "newCount", "scroll"];
+  static targets = [
+    "detail",
+    "jumpBar",
+    "list",
+    "newCount",
+    "olderLoader",
+    "scroll",
+  ];
   static values = {
+    seenCutoff: String,
     viewUrl: String,
   };
 
@@ -14,7 +23,10 @@ export default class extends Controller {
     this.pendingEvents = [];
     this.newEventCount = 0;
     this.isAtBottom = true;
+    this.canLoadOlder = false;
+    this.seenCutoffTime = this.#parseSeenCutoff();
     this.isFlushing = false;
+    this.isLoadingOlder = false;
     this._viewTimer = null;
 
     this.scrollHandler = this.#onScroll.bind(this);
@@ -35,9 +47,13 @@ export default class extends Controller {
 
     requestAnimationFrame(() => {
       this.#rebuildDayDelimiters();
+      this.#rebuildUnreadDelimiter();
       this.#scrollToBottom();
       this.#scheduleMarkViewed();
       this.#updateJumpBar();
+      setTimeout(() => {
+        this.canLoadOlder = true;
+      }, 250);
     });
   }
 
@@ -50,16 +66,19 @@ export default class extends Controller {
     if (this.isAtBottom) this.#markViewed();
   }
 
-  openDetail({ params }) {
+  openDetail(event) {
+    const { params } = event;
+    const frame = document.getElementById(params.detailFrame);
+
+    if (frame?.innerHTML.trim()) {
+      event.preventDefault();
+      frame.innerHTML = "";
+      return;
+    }
+
     this.detailTargets.forEach((frame) => {
       if (frame.id !== params.detailFrame) frame.innerHTML = "";
     });
-  }
-
-  collapseDetail(event) {
-    event.preventDefault();
-    const frame = event.target.closest("turbo-frame");
-    if (frame) frame.innerHTML = "";
   }
 
   jumpToBottom() {
@@ -79,6 +98,8 @@ export default class extends Controller {
       for (const node of mutation.addedNodes) {
         if (node.nodeType !== Node.ELEMENT_NODE) continue;
         if (node.classList.contains("day-delimiter")) continue;
+        if (node.classList.contains("events__older-loader")) continue;
+        if (node.classList.contains("unread-delimiter")) continue;
 
         shouldRebuildDelimiters = true;
 
@@ -96,6 +117,7 @@ export default class extends Controller {
 
     if (shouldRebuildDelimiters) {
       this.#rebuildDayDelimiters();
+      this.#rebuildUnreadDelimiter();
     }
   }
 
@@ -134,6 +156,7 @@ export default class extends Controller {
     this.newEventCount = 0;
     this.#trimTop();
     this.#rebuildDayDelimiters();
+    this.#rebuildUnreadDelimiter();
     this.#updateJumpBar();
   }
 
@@ -147,6 +170,10 @@ export default class extends Controller {
     }
 
     this.#updateJumpBar();
+
+    if (this.canLoadOlder) {
+      this.#loadOlderIfNeeded();
+    }
   }
 
   #onVisibilityChange() {
@@ -171,6 +198,33 @@ export default class extends Controller {
     });
     this.isAtBottom = true;
     this.#updateJumpBar();
+  }
+
+  #loadOlderIfNeeded() {
+    if (this.isLoadingOlder || !this.hasOlderLoaderTarget) return;
+    if (!this.olderLoaderTarget.dataset.url) return;
+    if (this.scrollTarget.scrollTop > TOP_THRESHOLD) return;
+
+    this.isLoadingOlder = true;
+    this.olderLoaderTarget.textContent = "loading older events...";
+    this.olderLoaderTarget.classList.add("events__older-loader--loading");
+
+    fetch(this.olderLoaderTarget.dataset.url, {
+      headers: { Accept: "text/vnd.turbo-stream.html" },
+      credentials: "same-origin",
+    })
+      .then((response) => {
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        return response.text();
+      })
+      .then((html) => window.Turbo.renderStreamMessage(html))
+      .catch((e) => {
+        this.olderLoaderTarget.textContent = "could not load older events";
+        console.error("Failed to load older events", e);
+      })
+      .finally(() => {
+        this.isLoadingOlder = false;
+      });
   }
 
   #trimTop() {
@@ -212,6 +266,15 @@ export default class extends Controller {
     }).catch((e) => console.error("Failed to mark sink as viewed", e));
   }
 
+  #parseSeenCutoff() {
+    if (!this.hasSeenCutoffValue) return null;
+
+    const parsed = new Date(this.seenCutoffValue);
+    if (isNaN(parsed.getTime())) return null;
+
+    return parsed;
+  }
+
   #rebuildDayDelimiters() {
     this.listTarget
       .querySelectorAll(".day-delimiter")
@@ -235,6 +298,35 @@ export default class extends Controller {
         lastDateKey = dateKey;
       }
     });
+  }
+
+  #rebuildUnreadDelimiter() {
+    this.listTarget
+      .querySelectorAll(".unread-delimiter")
+      .forEach((el) => el.remove());
+
+    if (!this.seenCutoffTime) return;
+
+    const events = Array.from(
+      this.listTarget.querySelectorAll(".event-feed__item"),
+    );
+
+    const firstUnread = events.find((eventEl) => {
+      const timeEl = eventEl.querySelector("time");
+      if (!timeEl) return false;
+
+      const eventTime = new Date(timeEl.getAttribute("datetime"));
+      if (isNaN(eventTime.getTime())) return false;
+
+      return eventTime > this.seenCutoffTime;
+    });
+
+    if (!firstUnread) return;
+
+    const div = document.createElement("div");
+    div.className = "unread-delimiter";
+    div.title = "unread events";
+    firstUnread.before(div);
   }
 
   #createDayDelimiter(date) {

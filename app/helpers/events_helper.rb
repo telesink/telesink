@@ -55,11 +55,19 @@ module EventsHelper
   def event_property_summary(event, limit: PROPERTY_SUMMARY_LIMIT)
     return if event.properties.blank?
 
-    event
+    pairs = event
       .properties
       .first(limit)
-      .map { |key, value| "#{key}: #{compact_property_value(value)}" }
-      .join(" / ")
+      .map do |key, value|
+        tag.span(class: "event-row__property") do
+          safe_join([
+            tag.strong("#{key}: ", class: "event-row__property-key"),
+            compact_property_value(value)
+          ])
+        end
+      end
+
+    safe_join(pairs, tag.span("·", class: "event-row__property-divider"))
   end
 
   def compact_property_value(value)

@@ -31,6 +31,7 @@ class SinksController < ApplicationController
     end
 
     @membership = @sink.sink_memberships.find_by(user: Current.user)
+    @seen_cutoff = @membership&.last_viewed_at
     @membership&.mark_sink_viewed!
     @event_type = params[:event_type].to_s.strip.presence
     @events = Event.feed_batch(@sink, event_type: @event_type)
