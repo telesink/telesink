@@ -67,6 +67,40 @@ module EventsHelper
     Event.property_filter_value(value)
   end
 
+  def property_filter_label(property_key, property_op, property_value)
+    return unless property_key.present?
+
+    if property_op == "exists"
+      "#{property_key} exists"
+    elsif !property_value.nil?
+      "#{property_key}=#{property_value}"
+    end
+  end
+
+  def event_feed_empty_label(
+    event_type:,
+    event_date:,
+    property_key:,
+    property_op:,
+    property_value:
+  )
+    filters = []
+    filters << event_type if event_type.present?
+    filters << event_date.iso8601 if event_date.present?
+
+    property_label = property_filter_label(property_key, property_op, property_value)
+
+    if property_label.present?
+      filters << truncate(property_label, length: 48, omission: "…")
+    end
+
+    if filters.any?
+      "no events matching #{filters.join(" ")}"
+    else
+      "no events yet"
+    end
+  end
+
   def event_property_summary(event, limit: PROPERTY_SUMMARY_LIMIT)
     return if event.properties.blank?
 

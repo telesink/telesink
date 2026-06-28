@@ -7,6 +7,7 @@
     @event_type,
     date: @event_date,
     property_key: @property_key,
+    property_op: @property_op,
     property_value: @property_value
   )
 ) %>
@@ -26,17 +27,44 @@
 
       <div class="event-feed__context">
         <% if @event_type.present? %>
-          <span class="event-feed__filter <%= event_type_color_class(@event_type) %>"><%= @event_type %></span>
+          <%= link_to(
+            @event_type,
+            sink_path(
+              @sink,
+              date: @event_date,
+              property_key: @property_key,
+              property_op: @property_op,
+              property_value: @property_value
+            ),
+            class: "event-feed__filter event-feed__filter--event #{event_type_color_class(@event_type)}",
+            title: "remove event filter",
+            data: { turbo_frame: :main_content }
+          ) %>
         <% end %>
 
         <% if @event_date.present? %>
-          <span class="event-feed__filter"><%= @event_date.iso8601 %></span>
+          <%= link_to(
+            @event_date.iso8601,
+            sink_path(
+              @sink,
+              event_type: @event_type,
+              property_key: @property_key,
+              property_op: @property_op,
+              property_value: @property_value
+            ),
+            class: "event-feed__filter event-feed__filter--date",
+            title: "remove date filter",
+            data: { turbo_frame: :main_content }
+          ) %>
         <% end %>
 
-        <% if @property_key.present? && !@property_value.nil? %>
-          <span class="event-feed__filter" title="<%= @property_key %>=<%= @property_value %>">
-            <%= @property_key %>=<%= @property_value %>
-          </span>
+        <% if (property_label = property_filter_label(@property_key, @property_op, @property_value)) %>
+          <%= link_to sink_path(@sink, event_type: @event_type, date: @event_date),
+            class: "event-feed__filter event-feed__filter--property",
+            title: "remove property filter",
+            data: { turbo_frame: :main_content } do %>
+            <%= property_label %>
+          <% end %>
         <% end %>
 
         <% if @event_type.present? || @event_date.present? || @property_key.present? %>
@@ -67,6 +95,7 @@
       current_event_type: @event_type,
       event_date: @event_date,
       property_key: @property_key,
+      property_op: @property_op,
       property_value: @property_value,
       variant: "mobile"
     ) %>
@@ -79,6 +108,7 @@
         event_type: @event_type,
         event_date: @event_date,
         property_key: @property_key,
+        property_op: @property_op,
         property_value: @property_value,
         initial: true
       ) %>
@@ -102,6 +132,7 @@
     current_event_type: @event_type,
     event_date: @event_date,
     property_key: @property_key,
+    property_op: @property_op,
     property_value: @property_value,
     calendar_month: @calendar_month,
     event_dates: @event_dates

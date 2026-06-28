@@ -41,6 +41,7 @@ class SinksController < ApplicationController
       event_type: @event_type,
       date: @event_date,
       property_key: @property_key,
+      property_op: @property_op,
       property_value: @property_value
     )
     @event_type_counts = @sink.events.group(:event_type).order(:event_type).count
@@ -63,6 +64,7 @@ class SinksController < ApplicationController
       @event_type = nil
       @event_date = nil
       @property_key = nil
+      @property_op = nil
       @property_value = nil
       @events = Event.feed_batch(@sink)
       @event_type_counts = @sink.events.group(:event_type).order(:event_type).count
@@ -157,8 +159,22 @@ class SinksController < ApplicationController
 
   def set_property_filter
     @property_key = params[:property_key].to_s.strip.presence
+    @property_op = params[:property_op].to_s.strip.presence || "eq"
     @property_value = params[:property_value].to_s if @property_key && params.key?(:property_value)
-    @property_key = nil if @property_value.nil?
+
+    unless @property_key && %w[eq exists].include?(@property_op)
+      @property_key = nil
+      @property_op = nil
+      @property_value = nil
+      return
+    end
+
+    if @property_op == "eq" && @property_value.nil?
+      @property_key = nil
+      @property_op = nil
+    elsif @property_op == "exists"
+      @property_value = nil
+    end
   end
 
   def set_event_calendar

@@ -5,13 +5,45 @@
         <span class="event-properties__item-key"><%= key %></span>
         <span class="event-properties__item-value">
           <% if property_filterable?(value) %>
-            <%= link_to(
-              property_teaser(value),
-              sink_path(event.sink, property_key: key, property_value: property_filter_value(value)),
-              class: "event-properties__filter",
-              title: "filter by #{key}=#{property_filter_value(value)}",
-              data: { turbo_frame: :main_content }
-            ) %>
+            <details class="property-filter-menu">
+              <summary class="property-filter-menu__summary" title="property actions for <%= key %>">
+                <%= property_teaser(value) %>
+              </summary>
+
+              <span class="property-filter-menu__items">
+                <%= link_to(
+                  "has key",
+                  sink_path(event.sink, property_key: key, property_op: "exists"),
+                  class: "property-filter-menu__item",
+                  title: "filter by events with #{key}",
+                  data: { turbo_frame: :main_content }
+                ) %>
+
+                <%= link_to(
+                  "equals",
+                  sink_path(
+                    event.sink,
+                    property_key: key,
+                    property_op: "eq",
+                    property_value: property_filter_value(value)
+                  ),
+                  class: "property-filter-menu__item",
+                  title: "filter by #{key}=#{property_filter_value(value)}",
+                  data: { turbo_frame: :main_content }
+                ) %>
+
+                <button
+                  type="button"
+                  class="property-filter-menu__item"
+                  title="copy value"
+                  data-controller="copy-to-clipboard"
+                  data-action="copy-to-clipboard#copy"
+                  data-copy-to-clipboard-content-value="<%= property_filter_value(value) %>"
+                >
+                  copy
+                </button>
+              </span>
+            </details>
           <% elsif long_property?(value) %>
             <span class="property-value" data-controller="property-value">
               <span class="property-value__teaser" data-property-value-target="teaser">

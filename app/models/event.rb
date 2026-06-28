@@ -37,12 +37,16 @@ class Event < ApplicationRecord
     event_type: nil,
     date: nil,
     property_key: nil,
+    property_op: nil,
     property_value: nil
   )
     rel = where(sink_id: sink.id)
     rel = rel.where(event_type: event_type) if event_type.present?
     rel = rel.where(occurred_at: date.all_day) if date.present?
-    if property_key.present? && !property_value.nil?
+
+    if property_key.present? && property_op == "exists"
+      rel = rel.where("properties ? :property_key", property_key: property_key)
+    elsif property_key.present? && !property_value.nil?
       rel = rel.where("properties ->> ? = ?", property_key, property_value.to_s)
     end
 
@@ -60,13 +64,22 @@ class Event < ApplicationRecord
     rel.order(occurred_at: :desc, id: :desc).limit(limit).to_a.reverse
   end
 
-  def self.feed_stream_key(event_type, date: nil, property_key: nil, property_value: nil)
+  def self.feed_stream_key(
+    event_type,
+    date: nil,
+    property_key: nil,
+    property_op: nil,
+    property_value: nil
+  )
     parts = [
       event_type.presence || "all",
       date&.iso8601 || "live"
     ]
 
-    if property_key.present? && !property_value.nil?
+    if property_key.present? && property_op == "exists"
+      parts << "property"
+      parts << event_type_dom_key("#{property_key}:exists")
+    elsif property_key.present? && !property_value.nil?
       parts << "property"
       parts << event_type_dom_key("#{property_key}=#{property_value}")
     end
@@ -121,6 +134,24 @@ class Event < ApplicationRecord
     end
 
     properties.each do |key, value|
+      [ nil, event_type ].each do |feed_event_type|
+        [ nil, event_date ].each do |feed_date|
+          Turbo::StreamsChannel.broadcast_append_to(
+            sink,
+            "events",
+            Event.feed_stream_key(
+              feed_event_type,
+              date: feed_date,
+              property_key: key,
+              property_op: "exists"
+            ),
+            target: "events_feed",
+            partial: "events/feed_row",
+            locals: { event: self, new_event: true }
+          )
+        end
+      end
+
       property_value = Event.property_filter_value(value)
       next if property_value.nil?
 
@@ -133,6 +164,7 @@ class Event < ApplicationRecord
               feed_event_type,
               date: feed_date,
               property_key: key,
+              property_op: "eq",
               property_value: property_value
             ),
             target: "events_feed",

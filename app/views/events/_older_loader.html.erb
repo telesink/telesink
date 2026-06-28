@@ -9,11 +9,20 @@
       event_type: event_type,
       date: event_date,
       property_key: local_assigns[:property_key],
+      property_op: local_assigns[:property_op],
       property_value: local_assigns[:property_value]
     ) %>"
   ></div>
 <% else %>
   <div id="events_older_loader" class="events__older-loader events__older-loader--empty">
-    <%= "no events yet" if initial && events.empty? %>
+    <% if initial && events.empty? %>
+      <%= event_feed_empty_label(
+        event_type: event_type,
+        event_date: event_date,
+        property_key: local_assigns[:property_key],
+        property_op: local_assigns[:property_op],
+        property_value: local_assigns[:property_value]
+      ) %>
+    <% end %>
   </div>
 <% end %>
