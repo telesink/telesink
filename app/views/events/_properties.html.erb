@@ -1,34 +1,33 @@
 <div class="event-properties">
-  <dl class="event-properties__list">
+  <div class="event-properties__list">
     <% properties.each do |key, value| %>
       <div class="event-properties__item">
-        <dt class="event-properties__item-key">
-          <%= key %>
-        </dt>
-        <dd class="event-properties__item-value">
+        <span class="event-properties__item-key"><%= key %></span>
+        <span class="event-properties__item-value">
           <% if long_property?(value) %>
-            <div class="property-value" data-controller="property-value">
-              <div class="property-value__teaser" data-property-value-target="teaser">
+            <span class="property-value" data-controller="property-value">
+              <span class="property-value__teaser" data-property-value-target="teaser">
                 <%= property_teaser(value) %>
-              </div>
+              </span>
 
               <button
-                class="link"
+                type="button"
+                class="event-properties__toggle link"
                 data-property-value-target="toggle"
                 data-action="click->property-value#toggle"
               >
                 show more
               </button>
 
-              <div class="property-value__full hidden" data-property-value-target="full">
+              <span class="property-value__full hidden" data-property-value-target="full">
                 <%= property_full(value) %>
-              </div>
-            </div>
+              </span>
+            </span>
           <% else %>
             <%= property_full(value) %>
           <% end %>
-        </dd>
+        </span>
       </div>
     <% end %>
-  </dl>
+  </div>
 </div>

@@ -12,11 +12,13 @@ export default class extends Controller {
     "jumpBar",
     "list",
     "loadedCount",
+    "localClock",
     "newCount",
     "newestTime",
     "olderLoader",
     "positionStatus",
     "scroll",
+    "utcClock",
   ];
   static values = {
     seenCutoff: String,
@@ -33,6 +35,7 @@ export default class extends Controller {
     this.isFlushing = false;
     this.isLoadingOlder = false;
     this._viewTimer = null;
+    this._clockTimer = null;
 
     this.scrollHandler = this.#onScroll.bind(this);
     this.scrollTarget.addEventListener("scroll", this.scrollHandler, {
@@ -56,6 +59,7 @@ export default class extends Controller {
       this.#scrollToBottom();
       this.#scheduleMarkViewed();
       this.#updateFeedStatus();
+      this.#startClocks();
       setTimeout(() => {
         this.canLoadOlder = true;
         this.#ensureScrollable();
@@ -68,6 +72,7 @@ export default class extends Controller {
     document.removeEventListener("visibilitychange", this.visibilityHandler);
     this.observer?.disconnect();
     clearTimeout(this._viewTimer);
+    clearInterval(this._clockTimer);
 
     if (this.isAtBottom) this.#markViewed();
   }
@@ -258,10 +263,28 @@ export default class extends Controller {
   }
 
   #updateFeedStatus() {
+    this.#updateClocks();
     this.#updateJumpStatus();
     this.#updateLoadedCount();
     this.#updateNewestTime();
     this.#updatePositionStatus();
+  }
+
+  #startClocks() {
+    this.#updateClocks();
+    this._clockTimer = setInterval(() => this.#updateClocks(), 1000);
+  }
+
+  #updateClocks() {
+    const now = new Date();
+
+    if (this.hasLocalClockTarget) {
+      this.localClockTarget.textContent = this.#formatClock(now);
+    }
+
+    if (this.hasUtcClockTarget) {
+      this.utcClockTarget.textContent = this.#formatClock(now, { utc: true });
+    }
   }
 
   #updateJumpStatus() {
@@ -420,11 +443,15 @@ export default class extends Controller {
     return Array.from(this.listTarget.querySelectorAll(".event-feed__item"));
   }
 
-  #formatClock(date) {
+  #formatClock(date, { utc = false } = {}) {
+    const hours = utc ? date.getUTCHours() : date.getHours();
+    const minutes = utc ? date.getUTCMinutes() : date.getMinutes();
+    const seconds = utc ? date.getUTCSeconds() : date.getSeconds();
+
     return [
-      date.getHours(),
-      date.getMinutes(),
-      date.getSeconds(),
+      hours,
+      minutes,
+      seconds,
     ]
       .map((part) => String(part).padStart(2, "0"))
       .join(":");

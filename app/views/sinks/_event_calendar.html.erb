@@ -10,7 +10,6 @@
 %>
 
 <section class="event-calendar" aria-label="event calendar">
-  <pre class="event-calendar__clock"><%= Time.current.utc.strftime("%H:%M UTC") %></pre>
   <pre class="event-calendar__month"><%= link_to("<", sink_path(sink, event_type: current_event_type, date: previous_month.iso8601), class: "event-calendar__nav") %><span class="event-calendar__header"><%= calendar_month.strftime("%B %Y").center(18) %></span><%= link_to(">", sink_path(sink, event_type: current_event_type, date: next_month.iso8601), class: "event-calendar__nav") %>
 <span class="event-calendar__header">Su Mo Tu We Th Fr Sa</span>
 <% rows.each do |week| %><%= safe_join(week.map { |date|

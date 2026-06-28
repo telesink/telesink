@@ -84,10 +84,6 @@
   border-bottom: 1px solid var(--border-color);
 }
 
-.column__header--cast-shadow {
-  box-shadow: 0 3px 4px -4px light-dark(var(--color-gray-400), transparent);
-}
-
 .column__header--slim {
   padding: 0 1ch;
 }

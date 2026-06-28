@@ -9,6 +9,14 @@
       <%= live_feed ? "live" : "archive" %>
     </span>
 
+    <span class="event-status__item">
+      local <time data-event-feed-target="localClock"><%= Time.current.strftime("%H:%M:%S") %></time>
+    </span>
+
+    <span class="event-status__item">
+      utc <time data-event-feed-target="utcClock"><%= Time.current.utc.strftime("%H:%M:%S") %></time>
+    </span>
+
     <% if event_date.present? %>
       <span class="event-status__item"><%= event_date == Time.zone.today ? "today" : event_date.iso8601 %></span>
     <% end %>

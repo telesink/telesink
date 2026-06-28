@@ -1,10 +1,11 @@
+<% event_time = @event.occurred_at.in_time_zone %>
+
 <%= turbo_frame_tag dom_id(@event, :detail) do %>
   <div class="event-detail">
-    <div class="event-detail__header">
-      <h2 class="event-detail__title">
-        <span><%= @event.emoji %></span>
-        <span><%= @event.event_type %></span>
-      </h2>
+    <div class="event-detail__meta">
+      <time datetime="<%= @event.occurred_at.iso8601 %>" title="<%= @event.occurred_at.iso8601 %>">
+        <%= event_time.strftime("%Y-%m-%d %H:%M:%S %Z") %>
+      </time>
 
       <%= link_to(
         "##{@event.id}",
@@ -15,24 +16,10 @@
       ) %>
     </div>
 
-    <div class="event-detail__meta">
-      <time datetime="<%= @event.occurred_at.iso8601 %>">
-        <%= @event.occurred_at.strftime("%b %d, %Y at %H:%M:%S") %>
-      </time>
-
-      <% if @event.sdk_name.present? %>
-        <span><%= @event.sdk_name %><%= " #{@event.sdk_version}" if @event.sdk_version.present? %></span>
-      <% end %>
-    </div>
-
-    <p class="event-detail__body">
-      <%= @event.text %>
-    </p>
-
     <% if @event.properties.present? %>
-      <div class="event-detail__properties">
-        <%= render "events/properties", properties: @event.properties %>
-      </div>
+      <%= render "events/properties", properties: @event.properties %>
+    <% else %>
+      <p class="event-properties__empty">no properties</p>
     <% end %>
   </div>
 <% end %>

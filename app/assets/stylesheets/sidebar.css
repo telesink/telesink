@@ -9,10 +9,6 @@
   z-index: 1;
 }
 
-.sidebar--cast-shadow {
-  box-shadow: 0 0 4px light-dark(var(--color-gray-400), transparent);
-}
-
 .sidebar-account {
   display: flex;
   gap: 1ch;

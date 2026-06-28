@@ -35,21 +35,28 @@ module EventsHelper
   TOO_LONG = 120
 
   def long_property?(value)
-    str = value.to_s.strip
+    str = property_full(value).to_s.strip
     return false if str.blank?
 
     str.length > TOO_LONG
   end
 
   def property_teaser(value)
-    return unless value
+    return if value.nil?
 
-    str = value.to_s
+    str = property_full(value)
     str.length > TOO_LONG ? str[0...(TOO_LONG-1)] + "…" : str
   end
 
   def property_full(value)
-    value.nil? ? nil : value.to_s
+    return if value.nil?
+
+    case value
+    when Hash, Array
+      value.to_json
+    else
+      value.to_s
+    end
   end
 
   def event_property_summary(event, limit: PROPERTY_SUMMARY_LIMIT)
