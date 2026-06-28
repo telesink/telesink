@@ -35,7 +35,14 @@ class SinksController < ApplicationController
     @membership&.mark_sink_viewed!
     @event_type = params[:event_type].to_s.strip.presence
     @event_date = parsed_event_date
-    @events = Event.feed_batch(@sink, event_type: @event_type, date: @event_date)
+    set_property_filter
+    @events = Event.feed_batch(
+      @sink,
+      event_type: @event_type,
+      date: @event_date,
+      property_key: @property_key,
+      property_value: @property_value
+    )
     @event_type_counts = @sink.events.group(:event_type).order(:event_type).count
     set_event_calendar
   end
@@ -55,6 +62,8 @@ class SinksController < ApplicationController
       @membership&.mark_sink_viewed!
       @event_type = nil
       @event_date = nil
+      @property_key = nil
+      @property_value = nil
       @events = Event.feed_batch(@sink)
       @event_type_counts = @sink.events.group(:event_type).order(:event_type).count
       set_event_calendar
@@ -144,6 +153,12 @@ class SinksController < ApplicationController
     Date.iso8601(params[:date])
   rescue Date::Error
     nil
+  end
+
+  def set_property_filter
+    @property_key = params[:property_key].to_s.strip.presence
+    @property_value = params[:property_value].to_s if @property_key && params.key?(:property_value)
+    @property_key = nil if @property_value.nil?
   end
 
   def set_event_calendar

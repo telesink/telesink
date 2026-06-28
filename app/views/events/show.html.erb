@@ -17,7 +17,7 @@
     </div>
 
     <% if @event.properties.present? %>
-      <%= render "events/properties", properties: @event.properties %>
+      <%= render "events/properties", event: @event, properties: @event.properties %>
     <% else %>
       <p class="event-properties__empty">no properties</p>
     <% end %>

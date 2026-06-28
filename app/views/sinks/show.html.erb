@@ -1,6 +1,15 @@
 <% content_for(:title, sink_title(@sink)) %>
 
-<%= turbo_stream_from @sink, "events", Event.feed_stream_key(@event_type, date: @event_date) %>
+<%= turbo_stream_from(
+  @sink,
+  "events",
+  Event.feed_stream_key(
+    @event_type,
+    date: @event_date,
+    property_key: @property_key,
+    property_value: @property_value
+  )
+) %>
 <%= turbo_stream_from @sink, "event_type_counts" %>
 
 <div class="sink-feed-layout">
@@ -24,7 +33,13 @@
           <span class="event-feed__filter"><%= @event_date.iso8601 %></span>
         <% end %>
 
-        <% if @event_type.present? || @event_date.present? %>
+        <% if @property_key.present? && !@property_value.nil? %>
+          <span class="event-feed__filter" title="<%= @property_key %>=<%= @property_value %>">
+            <%= @property_key %>=<%= @property_value %>
+          </span>
+        <% end %>
+
+        <% if @event_type.present? || @event_date.present? || @property_key.present? %>
           <%= link_to(
             "clear",
             sink_path(@sink),
@@ -51,6 +66,8 @@
       event_type_counts: @event_type_counts,
       current_event_type: @event_type,
       event_date: @event_date,
+      property_key: @property_key,
+      property_value: @property_value,
       variant: "mobile"
     ) %>
 
@@ -61,6 +78,8 @@
         events: @events,
         event_type: @event_type,
         event_date: @event_date,
+        property_key: @property_key,
+        property_value: @property_value,
         initial: true
       ) %>
 
@@ -82,6 +101,8 @@
     event_type_counts: @event_type_counts,
     current_event_type: @event_type,
     event_date: @event_date,
+    property_key: @property_key,
+    property_value: @property_value,
     calendar_month: @calendar_month,
     event_dates: @event_dates
   ) %>

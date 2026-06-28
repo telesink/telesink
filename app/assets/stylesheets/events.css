@@ -140,6 +140,17 @@
   font-style: italic;
 }
 
+.event-properties__filter {
+  color: inherit;
+  text-decoration: none;
+}
+
+.event-properties__filter:hover,
+.event-properties__filter:focus {
+  color: light-dark(var(--color-blue-700), var(--color-blue-300));
+  text-decoration: underline;
+}
+
 .event-properties__toggle {
   display: inline;
   font: inherit;
@@ -288,6 +299,7 @@
 
 .event-feed__filter {
   flex: 0 1 auto;
+  min-width: 0;
   color: light-dark(var(--color-gray-600), var(--color-zinc-400));
   font-weight: 400;
 }

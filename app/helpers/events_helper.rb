@@ -59,6 +59,14 @@ module EventsHelper
     end
   end
 
+  def property_filterable?(value)
+    Event.property_filter_value(value).present? || value == false
+  end
+
+  def property_filter_value(value)
+    Event.property_filter_value(value)
+  end
+
   def event_property_summary(event, limit: PROPERTY_SUMMARY_LIMIT)
     return if event.properties.blank?
 

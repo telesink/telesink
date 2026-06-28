@@ -4,7 +4,15 @@
       <div class="event-properties__item">
         <span class="event-properties__item-key"><%= key %></span>
         <span class="event-properties__item-value">
-          <% if long_property?(value) %>
+          <% if property_filterable?(value) %>
+            <%= link_to(
+              property_teaser(value),
+              sink_path(event.sink, property_key: key, property_value: property_filter_value(value)),
+              class: "event-properties__filter",
+              title: "filter by #{key}=#{property_filter_value(value)}",
+              data: { turbo_frame: :main_content }
+            ) %>
+          <% elsif long_property?(value) %>
             <span class="property-value" data-controller="property-value">
               <span class="property-value__teaser" data-property-value-target="teaser">
                 <%= property_teaser(value) %>

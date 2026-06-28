@@ -7,10 +7,12 @@
   rows = cells.each_slice(7).to_a
   previous_month = month_start.prev_month
   next_month = month_start.next_month
+  property_key = local_assigns[:property_key]
+  property_value = local_assigns[:property_value]
 %>
 
 <section class="event-calendar" aria-label="event calendar">
-  <pre class="event-calendar__month"><%= link_to("<", sink_path(sink, event_type: current_event_type, date: previous_month.iso8601), class: "event-calendar__nav") %><span class="event-calendar__header"><%= calendar_month.strftime("%B %Y").center(18) %></span><%= link_to(">", sink_path(sink, event_type: current_event_type, date: next_month.iso8601), class: "event-calendar__nav") %>
+  <pre class="event-calendar__month"><%= link_to("<", sink_path(sink, event_type: current_event_type, date: previous_month.iso8601, property_key: property_key, property_value: property_value), class: "event-calendar__nav") %><span class="event-calendar__header"><%= calendar_month.strftime("%B %Y").center(18) %></span><%= link_to(">", sink_path(sink, event_type: current_event_type, date: next_month.iso8601, property_key: property_key, property_value: property_value), class: "event-calendar__nav") %>
 <span class="event-calendar__header">Su Mo Tu We Th Fr Sa</span>
 <% rows.each do |week| %><%= safe_join(week.map { |date|
   if date.nil?
@@ -18,7 +20,7 @@
   elsif event_dates.key?(date)
     link_to(
       date.day.to_s.rjust(2),
-      sink_path(sink, event_type: current_event_type, date: date.iso8601),
+      sink_path(sink, event_type: current_event_type, date: date.iso8601, property_key: property_key, property_value: property_value),
       class: class_names(
         "event-calendar__day",
         "event-calendar__day--selected" => selected_date == date

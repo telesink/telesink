@@ -1,9 +1,17 @@
 <% filter_date = local_assigns[:event_date] %>
+<% property_key = local_assigns[:property_key] %>
+<% property_value = local_assigns[:property_value] %>
 
 <li class="<%= class_names("event-filters__item", "event-filters__item--current" => current_event_type == event_type) %>">
   <%= link_to(
     event_type.presence || "all",
-    sink_path(sink, event_type: event_type, date: event_type.present? ? filter_date : nil),
+    sink_path(
+      sink,
+      event_type: event_type,
+      date: filter_date,
+      property_key: property_key,
+      property_value: property_value
+    ),
     class: class_names(
       "event-filters__link",
       event_type_color_class(event_type) => event_type.present?,

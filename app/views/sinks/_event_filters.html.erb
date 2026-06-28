@@ -11,6 +11,8 @@
       count: event_type_counts.values.sum,
       current_event_type: current_event_type,
       event_date: event_date,
+      property_key: local_assigns[:property_key],
+      property_value: local_assigns[:property_value],
       variant: variant
     ) %>
 
@@ -22,6 +24,8 @@
         count: count,
         current_event_type: current_event_type,
         event_date: event_date,
+        property_key: local_assigns[:property_key],
+        property_value: local_assigns[:property_value],
         variant: variant
       ) %>
     <% end %>

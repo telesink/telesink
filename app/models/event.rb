@@ -30,10 +30,21 @@ class Event < ApplicationRecord
     rel.order(occurred_at: :desc, id: :desc)
   }
 
-  def self.feed_batch(sink, limit: FEED_BATCH_SIZE, before_id: nil, event_type: nil, date: nil)
+  def self.feed_batch(
+    sink,
+    limit: FEED_BATCH_SIZE,
+    before_id: nil,
+    event_type: nil,
+    date: nil,
+    property_key: nil,
+    property_value: nil
+  )
     rel = where(sink_id: sink.id)
     rel = rel.where(event_type: event_type) if event_type.present?
     rel = rel.where(occurred_at: date.all_day) if date.present?
+    if property_key.present? && !property_value.nil?
+      rel = rel.where("properties ->> ? = ?", property_key, property_value.to_s)
+    end
 
     if before_id.present?
       before_event = rel.find_by(id: before_id)
@@ -49,11 +60,27 @@ class Event < ApplicationRecord
     rel.order(occurred_at: :desc, id: :desc).limit(limit).to_a.reverse
   end
 
-  def self.feed_stream_key(event_type, date: nil)
-    [
+  def self.feed_stream_key(event_type, date: nil, property_key: nil, property_value: nil)
+    parts = [
       event_type.presence || "all",
       date&.iso8601 || "live"
-    ].join(":")
+    ]
+
+    if property_key.present? && !property_value.nil?
+      parts << "property"
+      parts << event_type_dom_key("#{property_key}=#{property_value}")
+    end
+
+    parts.join(":")
+  end
+
+  def self.property_filter_value(value)
+    case value
+    when String
+      value.presence
+    when Numeric, TrueClass, FalseClass
+      value.to_s
+    end
   end
 
   def self.event_type_dom_key(event_type)
@@ -90,6 +117,29 @@ class Event < ApplicationRecord
           partial: "events/feed_row",
           locals: { event: self, new_event: true }
         )
+      end
+    end
+
+    properties.each do |key, value|
+      property_value = Event.property_filter_value(value)
+      next if property_value.nil?
+
+      [ nil, event_type ].each do |feed_event_type|
+        [ nil, event_date ].each do |feed_date|
+          Turbo::StreamsChannel.broadcast_append_to(
+            sink,
+            "events",
+            Event.feed_stream_key(
+              feed_event_type,
+              date: feed_date,
+              property_key: key,
+              property_value: property_value
+            ),
+            target: "events_feed",
+            partial: "events/feed_row",
+            locals: { event: self, new_event: true }
+          )
+        end
       end
     end
   end
