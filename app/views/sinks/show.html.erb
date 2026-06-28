@@ -18,6 +18,9 @@
     class="event-feed"
     data-controller="event-feed"
     data-event-feed-seen-cutoff-value="<%= @seen_cutoff&.iso8601 %>"
+    data-event-feed-property-key-value="<%= @property_key %>"
+    data-event-feed-property-op-value="<%= @property_op %>"
+    data-event-feed-property-value-value="<%= @property_value %>"
     data-event-feed-view-url-value="<%= sink_view_path(@sink) %>"
   >
     <header class="event-feed__header">

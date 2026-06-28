@@ -21,6 +21,9 @@ export default class extends Controller {
     "utcClock",
   ];
   static values = {
+    propertyKey: String,
+    propertyOp: String,
+    propertyValue: String,
     seenCutoff: String,
     viewUrl: String,
   };
@@ -112,13 +115,13 @@ export default class extends Controller {
         if (node.classList.contains("events__older-loader")) continue;
         if (node.classList.contains("unread-delimiter")) continue;
 
-        shouldRebuildDelimiters = true;
-
         if (insertedAtBottom) {
-          this.#handleAppend(node);
+          if (!this.#handleAppend(node)) continue;
         } else if (insertedAtTop) {
           prependedHeight += node.offsetHeight;
         }
+
+        shouldRebuildDelimiters = true;
       }
     }
 
@@ -135,7 +138,12 @@ export default class extends Controller {
   }
 
   #handleAppend(node) {
-    if (this.isFlushing) return;
+    if (!this.#matchesLiveFilter(node)) {
+      node.remove();
+      return false;
+    }
+
+    if (this.isFlushing) return true;
 
     if (this.isAtBottom) {
       this.#trimTop();
@@ -145,7 +153,7 @@ export default class extends Controller {
         this.#scheduleMarkViewed();
       }
 
-      return;
+      return true;
     }
 
     if (this.pendingEvents.length >= MAX_PENDING) {
@@ -156,6 +164,30 @@ export default class extends Controller {
     this.newEventCount += 1;
     node.remove();
     this.#updateFeedStatus();
+    return true;
+  }
+
+  #matchesLiveFilter(node) {
+    if (!["lt", "gt"].includes(this.propertyOpValue)) return true;
+    if (!this.hasPropertyKeyValue || !this.hasPropertyValueValue) return true;
+
+    const threshold = Number(this.propertyValueValue);
+    if (Number.isNaN(threshold)) return true;
+
+    let properties = {};
+
+    try {
+      properties = JSON.parse(node.dataset.filterProperties || "{}");
+    } catch {
+      return false;
+    }
+
+    const value = Number(properties[this.propertyKeyValue]);
+    if (Number.isNaN(value)) return false;
+
+    return this.propertyOpValue === "lt"
+      ? value < threshold
+      : value > threshold;
   }
 
   #flushPending() {

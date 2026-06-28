@@ -32,6 +32,34 @@
                   data: { turbo_frame: :main_content }
                 ) %>
 
+                <% if property_numeric_filterable?(value) %>
+                  <%= link_to(
+                    "below",
+                    sink_path(
+                      event.sink,
+                      property_key: key,
+                      property_op: "lt",
+                      property_value: property_numeric_filter_value(value)
+                    ),
+                    class: "property-filter-menu__item",
+                    title: "filter by #{key} < #{property_numeric_filter_value(value)}",
+                    data: { turbo_frame: :main_content }
+                  ) %>
+
+                  <%= link_to(
+                    "above",
+                    sink_path(
+                      event.sink,
+                      property_key: key,
+                      property_op: "gt",
+                      property_value: property_numeric_filter_value(value)
+                    ),
+                    class: "property-filter-menu__item",
+                    title: "filter by #{key} > #{property_numeric_filter_value(value)}",
+                    data: { turbo_frame: :main_content }
+                  ) %>
+                <% end %>
+
                 <button
                   type="button"
                   class="property-filter-menu__item"

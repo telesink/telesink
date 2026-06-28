@@ -9,6 +9,7 @@
     "event-feed__item",
     "event-feed__item--new" => local_assigns[:new_event]
   ) %>"
+  data-filter-properties="<%= event_filter_properties(event).to_json %>"
 >
   <%= link_to(
     event_path(event),

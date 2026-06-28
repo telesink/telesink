@@ -67,11 +67,23 @@ module EventsHelper
     Event.property_filter_value(value)
   end
 
+  def property_numeric_filterable?(value)
+    Event.property_numeric_filter_value(value).present?
+  end
+
+  def property_numeric_filter_value(value)
+    Event.property_numeric_filter_value(value)
+  end
+
   def property_filter_label(property_key, property_op, property_value)
     return unless property_key.present?
 
     if property_op == "exists"
       "#{property_key} exists"
+    elsif property_op == "lt" && !property_value.nil?
+      "#{property_key} < #{property_value}"
+    elsif property_op == "gt" && !property_value.nil?
+      "#{property_key} > #{property_value}"
     elsif !property_value.nil?
       "#{property_key}=#{property_value}"
     end
@@ -126,6 +138,15 @@ module EventsHelper
     else
       value.to_s
     end.squish
+  end
+
+  def event_filter_properties(event)
+    return {} if event.properties.blank?
+
+    event.properties.each_with_object({}) do |(key, value), result|
+      filter_value = property_numeric_filter_value(value)
+      result[key] = filter_value unless filter_value.nil?
+    end
   end
 
   def event_type_count_dom_id(event_type, variant:)

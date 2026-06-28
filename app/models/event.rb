@@ -2,6 +2,17 @@ require "digest"
 
 class Event < ApplicationRecord
   FEED_BATCH_SIZE = 60
+  PROPERTY_FILTER_OPS = %w[eq exists lt gt].freeze
+  NUMERIC_PROPERTY_FILTER_OPS = %w[lt gt].freeze
+  NUMERIC_PROPERTY_STREAM_OP = "number"
+  RUBY_NUMERIC_PATTERN = /
+    \A
+    [+-]?
+    (?:\d+(?:\.\d*)?|\.\d+)
+    (?:[eE][+-]?\d+)?
+    \z
+  /x
+  SQL_NUMERIC_PATTERN = "[+-]?([0-9]+([.][0-9]*)?|[.][0-9]+)([eE][+-]?[0-9]+)?"
 
   belongs_to :sink
 
@@ -44,8 +55,19 @@ class Event < ApplicationRecord
     rel = rel.where(event_type: event_type) if event_type.present?
     rel = rel.where(occurred_at: date.all_day) if date.present?
 
+    numeric_property_value = property_numeric_filter_value(property_value)
+
     if property_key.present? && property_op == "exists"
       rel = rel.where("properties ? :property_key", property_key: property_key)
+    elsif property_key.present? && numeric_property_filter_op?(property_op) && numeric_property_value
+      operator = property_op == "lt" ? "<" : ">"
+      rel = rel.where(
+        "(properties ->> :property_key) ~ :numeric_pattern AND " \
+          "(properties ->> :property_key)::numeric #{operator} :property_value",
+        property_key: property_key,
+        numeric_pattern: "^#{SQL_NUMERIC_PATTERN}$",
+        property_value: numeric_property_value
+      )
     elsif property_key.present? && !property_value.nil?
       rel = rel.where("properties ->> ? = ?", property_key, property_value.to_s)
     end
@@ -79,6 +101,9 @@ class Event < ApplicationRecord
     if property_key.present? && property_op == "exists"
       parts << "property"
       parts << event_type_dom_key("#{property_key}:exists")
+    elsif property_key.present? && numeric_property_stream_op?(property_op)
+      parts << "property"
+      parts << event_type_dom_key("#{property_key}:number")
     elsif property_key.present? && !property_value.nil?
       parts << "property"
       parts << event_type_dom_key("#{property_key}=#{property_value}")
@@ -94,6 +119,24 @@ class Event < ApplicationRecord
     when Numeric, TrueClass, FalseClass
       value.to_s
     end
+  end
+
+  def self.property_numeric_filter_value(value)
+    case value
+    when Numeric
+      value.to_s
+    when String
+      stripped = value.strip
+      stripped if stripped.match?(RUBY_NUMERIC_PATTERN)
+    end
+  end
+
+  def self.numeric_property_filter_op?(property_op)
+    NUMERIC_PROPERTY_FILTER_OPS.include?(property_op)
+  end
+
+  def self.numeric_property_stream_op?(property_op)
+    numeric_property_filter_op?(property_op) || property_op == NUMERIC_PROPERTY_STREAM_OP
   end
 
   def self.event_type_dom_key(event_type)
@@ -153,6 +196,28 @@ class Event < ApplicationRecord
       end
 
       property_value = Event.property_filter_value(value)
+      numeric_property_value = Event.property_numeric_filter_value(value)
+
+      if numeric_property_value.present?
+        [ nil, event_type ].each do |feed_event_type|
+          [ nil, event_date ].each do |feed_date|
+            Turbo::StreamsChannel.broadcast_append_to(
+              sink,
+              "events",
+              Event.feed_stream_key(
+                feed_event_type,
+                date: feed_date,
+                property_key: key,
+                property_op: NUMERIC_PROPERTY_STREAM_OP
+              ),
+              target: "events_feed",
+              partial: "events/feed_row",
+              locals: { event: self, new_event: true }
+            )
+          end
+        end
+      end
+
       next if property_value.nil?
 
       [ nil, event_type ].each do |feed_event_type|

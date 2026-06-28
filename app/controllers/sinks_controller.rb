@@ -162,7 +162,7 @@ class SinksController < ApplicationController
     @property_op = params[:property_op].to_s.strip.presence || "eq"
     @property_value = params[:property_value].to_s if @property_key && params.key?(:property_value)
 
-    unless @property_key && %w[eq exists].include?(@property_op)
+    unless @property_key && Event::PROPERTY_FILTER_OPS.include?(@property_op)
       @property_key = nil
       @property_op = nil
       @property_value = nil
@@ -172,6 +172,13 @@ class SinksController < ApplicationController
     if @property_op == "eq" && @property_value.nil?
       @property_key = nil
       @property_op = nil
+    elsif Event.numeric_property_filter_op?(@property_op)
+      @property_value = Event.property_numeric_filter_value(@property_value)
+
+      if @property_value.nil?
+        @property_key = nil
+        @property_op = nil
+      end
     elsif @property_op == "exists"
       @property_value = nil
     end
