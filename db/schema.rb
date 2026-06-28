@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_06_25_000000) do
+ActiveRecord::Schema[8.1].define(version: 2026_06_28_000000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pg_trgm"
@@ -60,6 +60,23 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_25_000000) do
     t.string "name"
     t.datetime "updated_at", null: false
     t.index ["account_id"], name: "index_folders_on_account_id"
+  end
+
+  create_table "saved_views", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.date "event_date"
+    t.string "event_type"
+    t.string "name", null: false
+    t.string "property_key"
+    t.string "property_op"
+    t.string "property_value"
+    t.bigint "sink_id", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
+    t.index ["sink_id", "user_id"], name: "index_saved_views_on_sink_id_and_user_id"
+    t.index ["sink_id"], name: "index_saved_views_on_sink_id"
+    t.index ["user_id", "sink_id", "name"], name: "index_saved_views_on_user_id_and_sink_id_and_name", unique: true
+    t.index ["user_id"], name: "index_saved_views_on_user_id"
   end
 
   create_table "sessions", force: :cascade do |t|
@@ -117,6 +134,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_25_000000) do
   add_foreign_key "columns", "sinks"
   add_foreign_key "events", "sinks"
   add_foreign_key "folders", "accounts"
+  add_foreign_key "saved_views", "sinks"
+  add_foreign_key "saved_views", "users"
   add_foreign_key "sessions", "users"
   add_foreign_key "sink_memberships", "sinks"
   add_foreign_key "sink_memberships", "users"

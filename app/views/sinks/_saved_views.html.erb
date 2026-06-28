@@ -1,0 +1,84 @@
+<%
+  active_filter = active_feed_filter?(
+    event_type: current_event_type,
+    event_date: event_date,
+    property_key: property_key
+  )
+
+  suggested_name = suggested_saved_view_name(
+    event_type: current_event_type,
+    event_date: event_date,
+    property_key: property_key,
+    property_op: property_op,
+    property_value: property_value
+  )
+%>
+
+<% if active_filter || saved_views.any? %>
+  <section class="saved-views saved-views--<%= variant %>">
+    <div class="saved-views__header">
+      <h3 class="saved-views__title">views</h3>
+    </div>
+
+    <% if active_filter %>
+      <%= form_with model: SavedView.new,
+        url: sink_saved_views_path(sink),
+        class: "saved-view-form",
+        data: { turbo_frame: :main_content } do |form| %>
+        <%= form.hidden_field :event_type, value: current_event_type %>
+        <%= form.hidden_field :event_date, value: event_date&.iso8601 %>
+        <%= form.hidden_field :property_key, value: property_key %>
+        <%= form.hidden_field :property_op, value: property_op %>
+        <%= form.hidden_field :property_value, value: property_value %>
+
+        <%= form.text_field(
+          :name,
+          value: suggested_name,
+          class: "saved-view-form__input",
+          maxlength: 80,
+          autocomplete: "off",
+          aria: { label: "view name" }
+        ) %>
+
+        <%= form.submit "save", class: "saved-view-form__submit" %>
+      <% end %>
+    <% end %>
+
+    <% if saved_views.any? %>
+      <ul class="list saved-views__list">
+        <% saved_views.each do |saved_view| %>
+          <li
+            class="<%= class_names(
+              "saved-views__item",
+              "saved-views__item--current" => saved_view_current?(
+                saved_view,
+                event_type: current_event_type,
+                event_date: event_date,
+                property_key: property_key,
+                property_op: property_op,
+                property_value: property_value
+              )
+            ) %>"
+          >
+            <%= link_to(
+              saved_view.name,
+              sink_path(sink, saved_view.filter_params),
+              class: "saved-views__link",
+              title: saved_view.name,
+              data: { turbo_frame: :main_content }
+            ) %>
+
+            <%= button_to(
+              "x",
+              sink_saved_view_path(sink, saved_view),
+              method: :delete,
+              class: "saved-views__delete",
+              title: "delete #{saved_view.name}",
+              form: { data: { turbo_frame: :main_content } }
+            ) %>
+          </li>
+        <% end %>
+      </ul>
+    <% end %>
+  </section>
+<% end %>

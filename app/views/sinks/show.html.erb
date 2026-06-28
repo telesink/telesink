@@ -103,6 +103,18 @@
       variant: "mobile"
     ) %>
 
+    <%= render(
+      "sinks/saved_views",
+      sink: @sink,
+      saved_views: @saved_views,
+      current_event_type: @event_type,
+      event_date: @event_date,
+      property_key: @property_key,
+      property_op: @property_op,
+      property_value: @property_value,
+      variant: "mobile"
+    ) %>
+
     <div class="event-feed__scroll" data-event-feed-target="scroll">
       <%= render(
         "events/older_loader",
@@ -137,6 +149,7 @@
     property_key: @property_key,
     property_op: @property_op,
     property_value: @property_value,
+    saved_views: @saved_views,
     calendar_month: @calendar_month,
     event_dates: @event_dates
   ) %>

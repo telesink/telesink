@@ -5,6 +5,7 @@ class Sink < ApplicationRecord
   belongs_to :folder, optional: true
 
   has_many :events, dependent: :destroy
+  has_many :saved_views, dependent: :destroy
 
   has_many :sink_memberships, dependent: :destroy
   has_many :users, through: :sink_memberships

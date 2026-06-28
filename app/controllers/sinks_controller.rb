@@ -45,6 +45,7 @@ class SinksController < ApplicationController
       property_value: @property_value
     )
     @event_type_counts = @sink.events.group(:event_type).order(:event_type).count
+    @saved_views = @sink.saved_views.where(user: Current.user).ordered
     set_event_calendar
   end
 
@@ -68,6 +69,7 @@ class SinksController < ApplicationController
       @property_value = nil
       @events = Event.feed_batch(@sink)
       @event_type_counts = @sink.events.group(:event_type).order(:event_type).count
+      @saved_views = @sink.saved_views.none
       set_event_calendar
 
       respond_to do |format|

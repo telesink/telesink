@@ -113,6 +113,44 @@ module EventsHelper
     end
   end
 
+  def active_feed_filter?(event_type:, event_date:, property_key:)
+    event_type.present? || event_date.present? || property_key.present?
+  end
+
+  def suggested_saved_view_name(
+    event_type:,
+    event_date:,
+    property_key:,
+    property_op:,
+    property_value:
+  )
+    parts = []
+    parts << event_type if event_type.present?
+    parts << event_date.iso8601 if event_date.present?
+
+    property_label = property_filter_label(property_key, property_op, property_value)
+    parts << property_label if property_label.present?
+
+    parts.join(" ")
+  end
+
+  def saved_view_current?(
+    saved_view,
+    event_type:,
+    event_date:,
+    property_key:,
+    property_op:,
+    property_value:
+  )
+    saved_view.matches_filters?(
+      event_type: event_type,
+      event_date: event_date,
+      property_key: property_key,
+      property_op: property_op,
+      property_value: property_value
+    )
+  end
+
   def event_property_summary(event, limit: PROPERTY_SUMMARY_LIMIT)
     return if event.properties.blank?
 
