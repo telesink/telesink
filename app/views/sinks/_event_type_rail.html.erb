@@ -12,6 +12,19 @@
     property_key: local_assigns[:property_key],
     property_op: local_assigns[:property_op],
     property_value: local_assigns[:property_value],
+    search_query: local_assigns[:search_query],
+    variant: "desktop"
+  ) %>
+
+  <%= render(
+    "sinks/event_search",
+    sink: sink,
+    current_event_type: current_event_type,
+    event_date: event_date,
+    property_key: local_assigns[:property_key],
+    property_op: local_assigns[:property_op],
+    property_value: local_assigns[:property_value],
+    search_query: local_assigns[:search_query],
     variant: "desktop"
   ) %>
 
@@ -24,6 +37,7 @@
     property_key: local_assigns[:property_key],
     property_op: local_assigns[:property_op],
     property_value: local_assigns[:property_value],
+    search_query: local_assigns[:search_query],
     variant: "desktop"
   ) %>
 
@@ -36,6 +50,7 @@
     selected_date: event_date,
     property_key: local_assigns[:property_key],
     property_op: local_assigns[:property_op],
-    property_value: local_assigns[:property_value]
+    property_value: local_assigns[:property_value],
+    search_query: local_assigns[:search_query]
   ) %>
 </aside>

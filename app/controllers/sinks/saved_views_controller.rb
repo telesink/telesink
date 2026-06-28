@@ -32,6 +32,7 @@ class Sinks::SavedViewsController < ApplicationController
         :name,
         :event_type,
         :event_date,
+        :search_query,
         :property_key,
         :property_op,
         :property_value
@@ -40,9 +41,17 @@ class Sinks::SavedViewsController < ApplicationController
 
   def current_filter_params
     saved_view_params
-      .slice(:event_type, :event_date, :property_key, :property_op, :property_value)
+      .slice(
+        :event_type,
+        :event_date,
+        :search_query,
+        :property_key,
+        :property_op,
+        :property_value
+      )
       .then do |filters|
         filters[:date] = filters.delete(:event_date)
+        filters[:q] = filters.delete(:search_query)
         filters
       end
   end

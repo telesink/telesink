@@ -21,6 +21,7 @@
     data-event-feed-property-key-value="<%= @property_key %>"
     data-event-feed-property-op-value="<%= @property_op %>"
     data-event-feed-property-value-value="<%= @property_value %>"
+    data-event-feed-search-query-value="<%= @search_query %>"
     data-event-feed-view-url-value="<%= sink_view_path(@sink) %>"
   >
     <header class="event-feed__header">
@@ -37,7 +38,8 @@
               date: @event_date,
               property_key: @property_key,
               property_op: @property_op,
-              property_value: @property_value
+              property_value: @property_value,
+              q: @search_query
             ),
             class: "event-feed__filter event-feed__filter--event #{event_type_color_class(@event_type)}",
             title: "remove event filter",
@@ -53,7 +55,8 @@
               event_type: @event_type,
               property_key: @property_key,
               property_op: @property_op,
-              property_value: @property_value
+              property_value: @property_value,
+              q: @search_query
             ),
             class: "event-feed__filter event-feed__filter--date",
             title: "remove date filter",
@@ -62,7 +65,7 @@
         <% end %>
 
         <% if (property_label = property_filter_label(@property_key, @property_op, @property_value)) %>
-          <%= link_to sink_path(@sink, event_type: @event_type, date: @event_date),
+          <%= link_to sink_path(@sink, event_type: @event_type, date: @event_date, q: @search_query),
             class: "event-feed__filter event-feed__filter--property",
             title: "remove property filter",
             data: { turbo_frame: :main_content } do %>
@@ -70,7 +73,24 @@
           <% end %>
         <% end %>
 
-        <% if @event_type.present? || @event_date.present? || @property_key.present? %>
+        <% if @search_query.present? %>
+          <%= link_to(
+            %("#{@search_query}"),
+            sink_path(
+              @sink,
+              event_type: @event_type,
+              date: @event_date,
+              property_key: @property_key,
+              property_op: @property_op,
+              property_value: @property_value
+            ),
+            class: "event-feed__filter event-feed__filter--search",
+            title: "remove search",
+            data: { turbo_frame: :main_content }
+          ) %>
+        <% end %>
+
+        <% if @event_type.present? || @event_date.present? || @property_key.present? || @search_query.present? %>
           <%= link_to(
             "clear",
             sink_path(@sink),
@@ -100,6 +120,19 @@
       property_key: @property_key,
       property_op: @property_op,
       property_value: @property_value,
+      search_query: @search_query,
+      variant: "mobile"
+    ) %>
+
+    <%= render(
+      "sinks/event_search",
+      sink: @sink,
+      current_event_type: @event_type,
+      event_date: @event_date,
+      property_key: @property_key,
+      property_op: @property_op,
+      property_value: @property_value,
+      search_query: @search_query,
       variant: "mobile"
     ) %>
 
@@ -112,6 +145,7 @@
       property_key: @property_key,
       property_op: @property_op,
       property_value: @property_value,
+      search_query: @search_query,
       variant: "mobile"
     ) %>
 
@@ -125,6 +159,7 @@
         property_key: @property_key,
         property_op: @property_op,
         property_value: @property_value,
+        search_query: @search_query,
         initial: true
       ) %>
 
@@ -149,6 +184,7 @@
     property_key: @property_key,
     property_op: @property_op,
     property_value: @property_value,
+    search_query: @search_query,
     saved_views: @saved_views,
     calendar_month: @calendar_month,
     event_dates: @event_dates

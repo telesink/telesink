@@ -49,11 +49,25 @@ class Event < ApplicationRecord
     date: nil,
     property_key: nil,
     property_op: nil,
-    property_value: nil
+    property_value: nil,
+    search_query: nil
   )
     rel = where(sink_id: sink.id)
     rel = rel.where(event_type: event_type) if event_type.present?
     rel = rel.where(occurred_at: date.all_day) if date.present?
+
+    if (normalized_search_query = normalize_search_query(search_query))
+      query = "%#{sanitize_sql_like(normalized_search_query)}%"
+      rel = rel.where(
+        "event_type ILIKE :query OR text ILIKE :query OR EXISTS (" \
+          "SELECT 1 FROM jsonb_each_text(events.properties) " \
+          "AS property_search(key, value) " \
+          "WHERE property_search.key ILIKE :query " \
+          "OR property_search.value ILIKE :query" \
+        ")",
+        query: query
+      )
+    end
 
     numeric_property_value = property_numeric_filter_value(property_value)
 
@@ -129,6 +143,10 @@ class Event < ApplicationRecord
       stripped = value.strip
       stripped if stripped.match?(RUBY_NUMERIC_PATTERN)
     end
+  end
+
+  def self.normalize_search_query(value)
+    value.to_s.strip.presence
   end
 
   def self.numeric_property_filter_op?(property_op)

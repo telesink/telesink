@@ -35,6 +35,7 @@ class SinksController < ApplicationController
     @membership&.mark_sink_viewed!
     @event_type = params[:event_type].to_s.strip.presence
     @event_date = parsed_event_date
+    @search_query = Event.normalize_search_query(params[:q])
     set_property_filter
     @events = Event.feed_batch(
       @sink,
@@ -42,7 +43,8 @@ class SinksController < ApplicationController
       date: @event_date,
       property_key: @property_key,
       property_op: @property_op,
-      property_value: @property_value
+      property_value: @property_value,
+      search_query: @search_query
     )
     @event_type_counts = @sink.events.group(:event_type).order(:event_type).count
     @saved_views = @sink.saved_views.where(user: Current.user).ordered
@@ -67,6 +69,7 @@ class SinksController < ApplicationController
       @property_key = nil
       @property_op = nil
       @property_value = nil
+      @search_query = nil
       @events = Event.feed_batch(@sink)
       @event_type_counts = @sink.events.group(:event_type).order(:event_type).count
       @saved_views = @sink.saved_views.none

@@ -4,6 +4,7 @@ class SavedView < ApplicationRecord
 
   validates :name, presence: true, length: { maximum: 80 }
   validates :event_type, length: { maximum: 255 }, allow_nil: true
+  validates :search_query, length: { maximum: 255 }, allow_nil: true
   validates :property_key, length: { maximum: 255 }, allow_nil: true
   validates :property_op,
             inclusion: { in: Event::PROPERTY_FILTER_OPS },
@@ -22,7 +23,8 @@ class SavedView < ApplicationRecord
       date: event_date&.iso8601,
       property_key: property_key,
       property_op: property_op,
-      property_value: property_value
+      property_value: property_value,
+      q: search_query
     }.compact
   end
 
@@ -31,13 +33,15 @@ class SavedView < ApplicationRecord
     event_date:,
     property_key:,
     property_op:,
-    property_value:
+    property_value:,
+    search_query:
   )
     self.event_type == event_type &&
       self.event_date == event_date &&
       self.property_key == property_key &&
       self.property_op == property_op &&
-      self.property_value == property_value
+      self.property_value == property_value &&
+      self.search_query == search_query
   end
 
   private
@@ -45,6 +49,7 @@ class SavedView < ApplicationRecord
   def normalize_fields
     self.name = name.to_s.strip
     self.event_type = event_type.to_s.strip.presence
+    self.search_query = Event.normalize_search_query(search_query)
     self.property_key = property_key.to_s.strip.presence
     self.property_op = property_op.to_s.strip.presence || "eq"
     self.property_value = property_value.to_s if property_key && !property_value.nil?
@@ -72,7 +77,7 @@ class SavedView < ApplicationRecord
   end
 
   def has_at_least_one_filter
-    return if event_type.present? || event_date.present? || property_key.present?
+    return if event_type.present? || event_date.present? || property_key.present? || search_query.present?
 
     errors.add(:base, "choose at least one filter")
   end

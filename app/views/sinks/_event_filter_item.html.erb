@@ -2,6 +2,7 @@
 <% property_key = local_assigns[:property_key] %>
 <% property_op = local_assigns[:property_op] %>
 <% property_value = local_assigns[:property_value] %>
+<% search_query = local_assigns[:search_query] %>
 
 <li class="<%= class_names("event-filters__item", "event-filters__item--current" => current_event_type == event_type) %>">
   <%= link_to(
@@ -12,7 +13,8 @@
       date: filter_date,
       property_key: property_key,
       property_op: property_op,
-      property_value: property_value
+      property_value: property_value,
+      q: search_query
     ),
     class: class_names(
       "event-filters__link",

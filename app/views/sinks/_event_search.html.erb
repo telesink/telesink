@@ -1,0 +1,25 @@
+<section class="event-search event-search--<%= variant %>" aria-label="event search">
+  <%= form_with(
+    url: sink_path(sink),
+    method: :get,
+    class: "event-search__form",
+    data: { turbo_frame: :main_content }
+  ) do |form| %>
+    <%= hidden_field_tag :event_type, current_event_type if current_event_type.present? %>
+    <%= hidden_field_tag :date, event_date.iso8601 if event_date.present? %>
+    <%= hidden_field_tag :property_key, property_key if property_key.present? %>
+    <%= hidden_field_tag :property_op, property_op if property_key.present? %>
+    <%= hidden_field_tag :property_value, property_value if property_key.present? && property_value.present? %>
+
+    <%= search_field_tag(
+      :q,
+      search_query,
+      class: "event-search__input",
+      placeholder: "search",
+      autocomplete: "off",
+      aria: { label: "search events" }
+    ) %>
+
+    <%= form.submit "go", class: "event-search__submit" %>
+  <% end %>
+</section>

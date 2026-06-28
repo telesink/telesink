@@ -5,6 +5,7 @@ class Sinks::EventsController < ApplicationController
   before_action :set_event_type
   before_action :set_event_date
   before_action :set_property_filter
+  before_action :set_search_query
 
   def index
     @events = Event.feed_batch(
@@ -14,7 +15,8 @@ class Sinks::EventsController < ApplicationController
       date: @event_date,
       property_key: @property_key,
       property_op: @property_op,
-      property_value: @property_value
+      property_value: @property_value,
+      search_query: @search_query
     )
 
     render formats: [ :turbo_stream ]
@@ -36,6 +38,10 @@ class Sinks::EventsController < ApplicationController
     @event_date = Date.iso8601(params[:date])
   rescue Date::Error
     @event_date = nil
+  end
+
+  def set_search_query
+    @search_query = Event.normalize_search_query(params[:q])
   end
 
   def set_property_filter

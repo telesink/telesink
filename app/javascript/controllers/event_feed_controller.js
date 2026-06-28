@@ -24,6 +24,7 @@ export default class extends Controller {
     propertyKey: String,
     propertyOp: String,
     propertyValue: String,
+    searchQuery: String,
     seenCutoff: String,
     viewUrl: String,
   };
@@ -168,6 +169,7 @@ export default class extends Controller {
   }
 
   #matchesLiveFilter(node) {
+    if (!this.#matchesSearchQuery(node)) return false;
     if (!["lt", "gt"].includes(this.propertyOpValue)) return true;
     if (!this.hasPropertyKeyValue || !this.hasPropertyValueValue) return true;
 
@@ -188,6 +190,17 @@ export default class extends Controller {
     return this.propertyOpValue === "lt"
       ? value < threshold
       : value > threshold;
+  }
+
+  #matchesSearchQuery(node) {
+    if (!this.hasSearchQueryValue) return true;
+
+    const query = this.searchQueryValue.trim().toLowerCase();
+    if (!query) return true;
+
+    const eventText = node.dataset.searchText || "";
+
+    return eventText.toLowerCase().includes(query);
   }
 
   #flushPending() {

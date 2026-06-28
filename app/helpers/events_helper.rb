@@ -94,11 +94,15 @@ module EventsHelper
     event_date:,
     property_key:,
     property_op:,
-    property_value:
+    property_value:,
+    search_query:
   )
     filters = []
     filters << event_type if event_type.present?
     filters << event_date.iso8601 if event_date.present?
+    if search_query.present?
+      filters << "\"#{truncate(search_query, length: 48, omission: "…")}\""
+    end
 
     property_label = property_filter_label(property_key, property_op, property_value)
 
@@ -113,8 +117,11 @@ module EventsHelper
     end
   end
 
-  def active_feed_filter?(event_type:, event_date:, property_key:)
-    event_type.present? || event_date.present? || property_key.present?
+  def active_feed_filter?(event_type:, event_date:, property_key:, search_query:)
+    event_type.present? ||
+      event_date.present? ||
+      property_key.present? ||
+      search_query.present?
   end
 
   def suggested_saved_view_name(
@@ -122,11 +129,13 @@ module EventsHelper
     event_date:,
     property_key:,
     property_op:,
-    property_value:
+    property_value:,
+    search_query:
   )
     parts = []
     parts << event_type if event_type.present?
     parts << event_date.iso8601 if event_date.present?
+    parts << "\"#{search_query}\"" if search_query.present?
 
     property_label = property_filter_label(property_key, property_op, property_value)
     parts << property_label if property_label.present?
@@ -140,14 +149,16 @@ module EventsHelper
     event_date:,
     property_key:,
     property_op:,
-    property_value:
+    property_value:,
+    search_query:
   )
     saved_view.matches_filters?(
       event_type: event_type,
       event_date: event_date,
       property_key: property_key,
       property_op: property_op,
-      property_value: property_value
+      property_value: property_value,
+      search_query: search_query
     )
   end
 
@@ -185,6 +196,17 @@ module EventsHelper
       filter_value = property_numeric_filter_value(value)
       result[key] = filter_value unless filter_value.nil?
     end
+  end
+
+  def event_search_text(event)
+    parts = [ event.event_type, event.text ]
+
+    event.properties.each do |key, value|
+      parts << key
+      parts << compact_property_value(value)
+    end
+
+    parts.join(" ").squish
   end
 
   def event_type_count_dom_id(event_type, variant:)

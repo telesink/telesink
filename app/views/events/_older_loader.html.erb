@@ -10,7 +10,8 @@
       date: event_date,
       property_key: local_assigns[:property_key],
       property_op: local_assigns[:property_op],
-      property_value: local_assigns[:property_value]
+      property_value: local_assigns[:property_value],
+      q: local_assigns[:search_query]
     ) %>"
   ></div>
 <% else %>
@@ -21,7 +22,8 @@
         event_date: event_date,
         property_key: local_assigns[:property_key],
         property_op: local_assigns[:property_op],
-        property_value: local_assigns[:property_value]
+        property_value: local_assigns[:property_value],
+        search_query: local_assigns[:search_query]
       ) %>
     <% end %>
   </div>

@@ -2,7 +2,8 @@
   active_filter = active_feed_filter?(
     event_type: current_event_type,
     event_date: event_date,
-    property_key: property_key
+    property_key: property_key,
+    search_query: search_query
   )
 
   suggested_name = suggested_saved_view_name(
@@ -10,7 +11,8 @@
     event_date: event_date,
     property_key: property_key,
     property_op: property_op,
-    property_value: property_value
+    property_value: property_value,
+    search_query: search_query
   )
 %>
 
@@ -27,6 +29,7 @@
         data: { turbo_frame: :main_content } do |form| %>
         <%= form.hidden_field :event_type, value: current_event_type %>
         <%= form.hidden_field :event_date, value: event_date&.iso8601 %>
+        <%= form.hidden_field :search_query, value: search_query %>
         <%= form.hidden_field :property_key, value: property_key %>
         <%= form.hidden_field :property_op, value: property_op %>
         <%= form.hidden_field :property_value, value: property_value %>
@@ -56,7 +59,8 @@
                 event_date: event_date,
                 property_key: property_key,
                 property_op: property_op,
-                property_value: property_value
+                property_value: property_value,
+                search_query: search_query
               )
             ) %>"
           >
