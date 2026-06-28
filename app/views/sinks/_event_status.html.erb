@@ -1,27 +1,41 @@
+<%
+  live_feed = event_date.blank? || event_date == Time.zone.today
+  newest_event = events.last
+%>
+
 <div class="event-status" aria-label="sink status">
   <div class="event-status__items">
-    <span class="event-status__channel">#<%= sink.name %></span>
-
-    <% if current_event_type.present? %>
-      <span class="event-status__filter <%= event_type_color_class(current_event_type) %>"><%= current_event_type %></span>
-    <% end %>
+    <span class="<%= class_names("event-status__mode", "event-status__mode--live" => live_feed) %>">
+      <%= live_feed ? "live" : "archive" %>
+    </span>
 
     <% if event_date.present? %>
-      <span class="event-status__filter"><%= event_date.iso8601 %></span>
+      <span class="event-status__item"><%= event_date == Time.zone.today ? "today" : event_date.iso8601 %></span>
     <% end %>
 
-    <% unless current_event_type.present? || event_date.present? %>
-      <span class="event-status__filter">all events</span>
-    <% end %>
+    <span class="event-status__item" data-event-feed-target="positionStatus">at bottom</span>
+
+    <button
+      type="button"
+      class="event-status__jump hidden"
+      data-event-feed-target="jumpBar"
+      data-action="click->event-feed#jumpToBottom"
+    >
+      <span data-event-feed-target="newCount"></span>
+    </button>
+
+    <span class="event-status__item">
+      newest
+      <time
+        data-controller="time-formatter"
+        data-time-formatter-mode-value="clock"
+        data-event-feed-target="newestTime"
+        datetime="<%= newest_event&.occurred_at&.iso8601 %>"
+      ><%= newest_event ? "" : "--:--:--" %></time>
+    </span>
+
+    <span class="event-status__item">
+      <span data-event-feed-target="loadedCount"><%= events.size %></span> loaded
+    </span>
   </div>
-
-  <% if current_event_type.present? || event_date.present? %>
-    <%= link_to(
-      "clear",
-      sink_path(sink),
-      class: "event-status__clear",
-      title: "clear filters",
-      data: { turbo_frame: :main_content }
-    ) %>
-  <% end %>
 </div>

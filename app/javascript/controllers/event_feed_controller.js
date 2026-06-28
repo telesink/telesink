@@ -11,8 +11,11 @@ export default class extends Controller {
     "detail",
     "jumpBar",
     "list",
+    "loadedCount",
     "newCount",
+    "newestTime",
     "olderLoader",
+    "positionStatus",
     "scroll",
   ];
   static values = {
@@ -52,7 +55,7 @@ export default class extends Controller {
       this.#rebuildUnreadDelimiter();
       this.#scrollToBottom();
       this.#scheduleMarkViewed();
-      this.#updateJumpBar();
+      this.#updateFeedStatus();
       setTimeout(() => {
         this.canLoadOlder = true;
         this.#ensureScrollable();
@@ -122,6 +125,7 @@ export default class extends Controller {
       this.#rebuildDayDelimiters();
       this.#rebuildUnreadDelimiter();
       this.#ensureScrollable();
+      this.#updateFeedStatus();
     }
   }
 
@@ -146,7 +150,7 @@ export default class extends Controller {
     this.pendingEvents.push(node);
     this.newEventCount += 1;
     node.remove();
-    this.#updateJumpBar();
+    this.#updateFeedStatus();
   }
 
   #flushPending() {
@@ -161,7 +165,7 @@ export default class extends Controller {
     this.#trimTop();
     this.#rebuildDayDelimiters();
     this.#rebuildUnreadDelimiter();
-    this.#updateJumpBar();
+    this.#updateFeedStatus();
   }
 
   #onScroll() {
@@ -173,7 +177,7 @@ export default class extends Controller {
       this.#scheduleMarkViewed();
     }
 
-    this.#updateJumpBar();
+    this.#updateFeedStatus();
 
     if (this.canLoadOlder) {
       this.#loadOlderIfNeeded();
@@ -201,7 +205,7 @@ export default class extends Controller {
       behavior: smooth ? "smooth" : "auto",
     });
     this.isAtBottom = true;
-    this.#updateJumpBar();
+    this.#updateFeedStatus();
   }
 
   #ensureScrollable() {
@@ -253,15 +257,55 @@ export default class extends Controller {
     }
   }
 
-  #updateJumpBar() {
+  #updateFeedStatus() {
+    this.#updateJumpStatus();
+    this.#updateLoadedCount();
+    this.#updateNewestTime();
+    this.#updatePositionStatus();
+  }
+
+  #updateJumpStatus() {
     if (!this.hasJumpBarTarget || !this.hasNewCountTarget) return;
 
     const show = !this.isAtBottom && this.newEventCount > 0;
     this.jumpBarTarget.classList.toggle("hidden", !show);
 
     if (show) {
-      this.newCountTarget.textContent = `${this.newEventCount} new event${this.newEventCount === 1 ? "" : "s"} ↓`;
+      this.newCountTarget.textContent = `${this.newEventCount} new`;
     }
+  }
+
+  #updateLoadedCount() {
+    if (!this.hasLoadedCountTarget) return;
+
+    this.loadedCountTarget.textContent = String(this.#eventItems().length);
+  }
+
+  #updateNewestTime() {
+    if (!this.hasNewestTimeTarget) return;
+
+    const newestTime = this.#eventItems().at(-1)?.querySelector("time");
+    const datetime = newestTime?.getAttribute("datetime");
+
+    if (!datetime) {
+      this.newestTimeTarget.removeAttribute("datetime");
+      this.newestTimeTarget.textContent = "--:--:--";
+      return;
+    }
+
+    const date = new Date(datetime);
+    if (isNaN(date.getTime())) return;
+
+    this.newestTimeTarget.setAttribute("datetime", datetime);
+    this.newestTimeTarget.textContent = this.#formatClock(date);
+  }
+
+  #updatePositionStatus() {
+    if (!this.hasPositionStatusTarget) return;
+
+    this.positionStatusTarget.textContent = this.isAtBottom
+      ? "at bottom"
+      : "viewing older";
   }
 
   #scheduleMarkViewed() {
@@ -300,9 +344,7 @@ export default class extends Controller {
       .querySelectorAll(".day-delimiter")
       .forEach((el) => el.remove());
 
-    const events = Array.from(
-      this.listTarget.querySelectorAll(".event-feed__item"),
-    );
+    const events = this.#eventItems();
 
     let lastDateKey = null;
 
@@ -327,9 +369,7 @@ export default class extends Controller {
 
     if (!this.seenCutoffTime) return;
 
-    const events = Array.from(
-      this.listTarget.querySelectorAll(".event-feed__item"),
-    );
+    const events = this.#eventItems();
 
     const firstUnread = events.find((eventEl) => {
       const timeEl = eventEl.querySelector("time");
@@ -374,6 +414,20 @@ export default class extends Controller {
     div.appendChild(span);
 
     return div;
+  }
+
+  #eventItems() {
+    return Array.from(this.listTarget.querySelectorAll(".event-feed__item"));
+  }
+
+  #formatClock(date) {
+    return [
+      date.getHours(),
+      date.getMinutes(),
+      date.getSeconds(),
+    ]
+      .map((part) => String(part).padStart(2, "0"))
+      .join(":");
   }
 
   #isSameDay(a, b) {
