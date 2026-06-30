@@ -1,0 +1,40 @@
+<nav
+  id="event_filters_<%= variant %>"
+  class="event-filters event-filters--<%= variant %>"
+  aria-label="event filters"
+>
+  <% event_type_icons = local_assigns[:event_type_icons] || {} %>
+
+  <ul id="event_type_filter_list_<%= variant %>" class="list event-filters__list">
+    <%= render(
+      "sinks/event_filter_item",
+      sink: sink,
+      event_type: nil,
+      count: event_type_counts.values.sum,
+      current_event_type: current_event_type,
+      event_date: event_date,
+      property_key: local_assigns[:property_key],
+      property_op: local_assigns[:property_op],
+      property_value: local_assigns[:property_value],
+      search_query: local_assigns[:search_query],
+      variant: variant
+    ) %>
+
+    <% event_type_counts.each do |event_type, count| %>
+      <%= render(
+        "sinks/event_filter_item",
+        sink: sink,
+        event_type: event_type,
+        event_icon: event_type_icons[event_type],
+        count: count,
+        current_event_type: current_event_type,
+        event_date: event_date,
+        property_key: local_assigns[:property_key],
+        property_op: local_assigns[:property_op],
+        property_value: local_assigns[:property_value],
+        search_query: local_assigns[:search_query],
+        variant: variant
+      ) %>
+    <% end %>
+  </ul>
+</nav>

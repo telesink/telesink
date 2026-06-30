@@ -289,8 +289,29 @@
   --column-width: 50ch;
   --narrow-column-width: 27ch;
   --footer-width: 22ch;
+  --event-rail-width: 27ch;
 
   --border-color: light-dark(var(--color-gray-300), var(--color-zinc-700));
+  --app-sidebar-bg: light-dark(var(--color-gray-100), var(--color-zinc-800));
+  --app-sidebar-stripe-bg: light-dark(var(--color-gray-50), var(--color-zinc-900));
+  --app-sidebar-hover-bg: light-dark(var(--color-blue-50), var(--color-blue-950));
+  --app-sidebar-current-bg: light-dark(var(--color-blue-100), var(--color-zinc-700));
+  --app-sidebar-text: light-dark(var(--color-gray-500), var(--color-zinc-400));
+  --app-sidebar-link: light-dark(var(--color-gray-700), var(--color-zinc-300));
+  --app-sidebar-muted: light-dark(var(--color-gray-400), var(--color-zinc-500));
+  --app-sidebar-current-text: light-dark(var(--color-black), var(--color-white));
+  --app-sidebar-current-link: light-dark(var(--color-blue-700), var(--color-blue-300));
+  --event-surface-bg: light-dark(var(--color-white), var(--color-black));
+  --event-surface-chrome-bg: light-dark(var(--color-gray-100), var(--color-zinc-900));
+  --event-surface-meta-bg: light-dark(var(--color-gray-50), var(--color-zinc-950));
+  --event-surface-stripe-bg: light-dark(var(--color-gray-50), var(--color-zinc-900));
+  --event-surface-hover-bg: light-dark(var(--color-blue-50), var(--color-blue-950));
+  --event-surface-active-bg: light-dark(var(--color-blue-100), var(--color-zinc-800));
+  --event-surface-text: light-dark(var(--color-gray-950), var(--color-zinc-100));
+  --event-surface-subtle: light-dark(var(--color-gray-600), var(--color-zinc-400));
+  --event-surface-muted: light-dark(var(--color-gray-500), var(--color-zinc-500));
+  --event-surface-divider: light-dark(var(--color-gray-200), var(--color-zinc-800));
+  --event-surface-link: light-dark(var(--color-blue-700), var(--color-blue-300));
 
   --logo-filter-default: none;
   --logo-filter-hover: saturate(2);

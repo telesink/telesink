@@ -1,6 +1,6 @@
 <div class="column__header">
   <h1 class="column__title">
-    create what?
+    create
   </h1>
 
   <%= link_to root_path, class: "link link--subtle", title: "back" do %>
@@ -12,13 +12,6 @@
 
 <nav>
   <ul class="list sidebar-list">
-    <li class="<%= class_names(
-      "sidebar-list__item",
-      "sidebar-list__item--current" => current_page?(new_folder_path)
-    ) %>">
-      <%= link_to_unless_current "folder", new_folder_path, class: "link" %>
-    </li>
-
     <li class="<%= class_names(
       "sidebar-list__item",
       "sidebar-list__item--current" => current_page?(new_sink_path)

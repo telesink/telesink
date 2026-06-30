@@ -1,42 +1,106 @@
-<%= turbo_frame_tag dom_id(@column) do %>
-  <div class="column__header column__header--cast-shadow">
-    <h2 class="column__title">
-      <span><%= @event.emoji %></span>
-      <span><%= @event.event_type %></span>
-    </h2>
-
-    <%= link_to(
-      sink_column_path(@column.sink, @column),
-      data: {
-        turbo_frame: dom_id(@column),
-        turbo_prefetch: false,
-      },
-      class: "link link--subtle",
-      title: "close",
-    ) do %>
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="icon">
-        <path d="M5.28 4.22a.75.75 0 0 0-1.06 1.06L6.94 8l-2.72 2.72a.75.75 0 1 0 1.06 1.06L8 9.06l2.72 2.72a.75.75 0 1 0 1.06-1.06L9.06 8l2.72-2.72a.75.75 0 0 0-1.06-1.06L8 6.94 5.28 4.22Z" />
-      </svg>
-    <% end %>
-  </div>
-
+<%
+  event_time = @event.occurred_at.in_time_zone(browser_time_zone)
+  utc_time = @event.occurred_at.utc
+  property_summary = event_property_summary(@event)
+  detail_content = capture do
+%>
   <div class="event-detail">
     <div class="event-detail__meta">
-      <time datetime="<%= @event.occurred_at.iso8601 %>">
-        <%= @event.occurred_at.strftime("%b %d, %Y at %I:%M %p") %>
-      </time>
+      <span class="event-detail__timestamps">
+        <span class="event-detail__timestamp">
+          local
+          <time
+            data-controller="time-formatter"
+            data-time-formatter-mode-value="datetime"
+            datetime="<%= @event.occurred_at.iso8601 %>"
+            title="<%= @event.occurred_at.iso8601 %>"
+          ><%= event_time.strftime("%Y-%m-%d %H:%M:%S") %></time>
+        </span>
 
-      #<%= @event.id %>
+        <span class="event-detail__timestamp">
+          utc
+          <time
+            data-controller="time-formatter"
+            data-time-formatter-mode-value="utc-datetime"
+            datetime="<%= @event.occurred_at.iso8601 %>"
+            title="<%= @event.occurred_at.iso8601 %>"
+          ><%= utc_time.strftime("%Y-%m-%d %H:%M:%S") %></time>
+        </span>
+      </span>
+
+      <% if turbo_frame_request? %>
+        <%= link_to(
+          "##{@event.id}",
+          event_path(@event),
+          data: { turbo_frame: "_top" },
+          class: "event-detail__permalink link link--subtle",
+          title: "permalink"
+        ) %>
+      <% else %>
+        <span class="event-detail__permalink">#<%= @event.id %></span>
+      <% end %>
     </div>
 
-    <p class="event-detail__body">
-      <%= @event.text %>
-    </p>
-
     <% if @event.properties.present? %>
-      <div class="event-detail__properties">
-        <%= render "events/properties", properties: @event.properties %>
-      </div>
+      <%= render(
+        "events/properties",
+        event: @event,
+        properties: @event.properties,
+        event_type: @event_type,
+        event_date: @event_date,
+        property_key: @property_key,
+        property_op: @property_op,
+        property_value: @property_value,
+        search_query: @search_query
+      ) %>
+    <% else %>
+      <p class="event-properties__empty">no properties</p>
     <% end %>
   </div>
+<% end %>
+
+<% if turbo_frame_request? %>
+  <%= turbo_frame_tag dom_id(@event, :detail) do %>
+    <%= detail_content %>
+  <% end %>
+<% else %>
+  <% content_for(:title, "##{@event.id}") %>
+
+  <section class="event-permalink">
+    <header class="event-feed__header">
+      <h1 class="event-feed__title">
+        <% if @sink.folder.present? %>
+          <span class="event-feed__folder"><%= @sink.folder.name %></span>
+          <span class="event-feed__separator">/</span>
+        <% end %>
+
+        <%= link_to "##{@sink.name}", sink_path(@sink), class: "event-feed__channel link" %>
+      </h1>
+
+      <span class="event-permalink__id">#<%= @event.id %></span>
+    </header>
+
+    <div class="event-row event-row--static">
+      <time
+        data-controller="time-formatter"
+        data-time-formatter-mode-value="clock"
+        class="event-row__time"
+        datetime="<%= @event.occurred_at.iso8601 %>"
+        title="<%= @event.occurred_at.iso8601 %>"
+      ></time>
+
+      <span class="event-row__emoji"><%= @event.emoji %></span>
+      <span
+        class="event-row__type <%= event_type_color_class(@event.event_type) %>"
+        style="<%= event_type_color_style(@event.event_type) %>"
+      ><%= event_type_label(@event.event_type) %></span>
+      <span class="event-row__text"><%= @event.text %></span>
+
+      <% if property_summary.present? %>
+        <span class="event-row__properties"><%= property_summary %></span>
+      <% end %>
+    </div>
+
+    <%= detail_content %>
+  </section>
 <% end %>

@@ -1,24 +1,36 @@
 .sidebar {
+  display: flex;
+  flex-direction: column;
   flex: 0 0 var(--sidebar-width);
   width: var(--sidebar-width);
   min-width: var(--sidebar-width);
   max-width: var(--sidebar-width);
 
-  background-color: light-dark(var(--color-gray-100), var(--color-zinc-800));
+  background-color: var(--app-sidebar-bg);
   border-right: 1px solid var(--border-color);
+  overflow: hidden;
   z-index: 1;
-}
-
-.sidebar--cast-shadow {
-  box-shadow: 0 0 4px light-dark(var(--color-gray-400), transparent);
 }
 
 .sidebar-account {
   display: flex;
+  align-items: center;
   gap: 1ch;
   justify-content: space-between;
-  padding: 1ch;
-  border-bottom: 1px solid var(--border-color);
+  min-height: 3ch;
+  padding: 0 1ch;
+  border-top: 1px solid var(--border-color);
+}
+
+.sidebar-account form {
+  margin: 0;
+}
+
+.sidebar__content {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  scrollbar-width: thin;
 }
 
 .sidebar__section-title {
@@ -35,22 +47,91 @@
 
 .sidebar-list__item {
   display: flex;
-  padding: 0 1ch;
-  color: light-dark(var(--color-gray-500), var(--color-zinc-400));
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0 0.5rem;
+  color: var(--app-sidebar-text);
 }
 
-.sidebar-list__item--in-folder {
-  padding-left: 2ch;
+.sidebar-list__item--linkable {
+  padding: 0;
 }
 
-.sidebar-list__name {
+.sidebar-list__row-link,
+.sidebar-list__row-current {
   display: flex;
   align-items: center;
-  gap: 0.5ch;
+  gap: 0.25rem;
+  flex: 1 1 auto;
+  min-width: 0;
+  width: 100%;
+  padding: 0 0.5rem;
+}
+
+.sidebar-list__row-link:hover,
+.sidebar-list__row-link:focus,
+.sidebar-list__row-link.link:hover {
+  background-color: var(--app-sidebar-hover-bg);
+  text-decoration: none;
+}
+
+.sidebar-list__item--in-folder .sidebar-list__row-link,
+.sidebar-list__item--in-folder .sidebar-list__row-current {
+  padding-left: 1.4rem;
+}
+
+.sidebar-list__folder {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0 0.5rem;
+  color: var(--app-sidebar-text);
+}
+
+.sidebar-list__folder-icon {
+  display: flex;
+  flex: 0 0 1ch;
+  align-items: center;
+  line-height: 1;
+  color: var(--app-sidebar-muted);
+}
+
+.sidebar-list__folder-icon .icon {
+  width: 1em;
+  height: 1em;
+}
+
+.sidebar-list__folder-name {
+  flex: 1 1 auto;
   min-width: 0;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+.sidebar-list__folder-action {
+  flex: 0 0 auto;
+  opacity: 0;
+}
+
+.sidebar-list__folder:hover .sidebar-list__folder-action,
+.sidebar-list__folder:focus-within .sidebar-list__folder-action {
+  opacity: 1;
+}
+
+.sidebar-list__name {
+  display: block;
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.sidebar-list__prefix {
+  flex: 0 0 0.75rem;
+  color: var(--app-sidebar-muted);
+  text-align: center;
 }
 
 .sidebar-list__icon {
@@ -63,28 +144,54 @@
   white-space: nowrap;
 }
 
-.sidebar-list__item--has-new-events .link {
+.sidebar-list__item--has-new-events .sidebar-list__row-link {
   font-weight: 700;
 }
 
+.sidebar-list__unread {
+  flex: 0 0 auto;
+  min-width: 1.5rem;
+  color: inherit;
+  font-weight: inherit;
+  text-align: right;
+}
+
 .sidebar-list__item--current {
-  color: light-dark(var(--color-black), var(--color-white));
-  background-color: light-dark(
-    var(--color-blue-100),
-    var(--color-zinc-700)
-  ) !important;
+  color: var(--app-sidebar-current-text);
+  background-color: var(--app-sidebar-current-bg) !important;
 }
 
 .sidebar-list__item--current .link {
   font-weight: 400;
-  color: light-dark(var(--color-slate-400), var(--color-blue-400));
+  color: var(--app-sidebar-current-link);
 }
 
-.sidebar-list--striped .sidebar-list__item:nth-child(odd) {
-  background-color: light-dark(var(--color-gray-50), var(--color-zinc-900));
+.sidebar-list--striped > .sidebar-list__item:nth-child(odd),
+.sidebar-list--striped > .sidebar-list__folder:nth-child(odd) {
+  background-color: var(--app-sidebar-stripe-bg);
+}
+
+.sidebar-list__item:not(.sidebar-list__item--current):hover,
+.sidebar-list__item:not(.sidebar-list__item--current):focus-within {
+  background-color: var(--app-sidebar-hover-bg);
 }
 
 .sink-actions {
   display: flex;
   gap: 1ch;
+}
+
+@media (max-width: 760px) {
+  .sidebar,
+  .column.sidebar {
+    flex: none;
+    width: 100%;
+    min-width: 0;
+    max-width: none;
+    height: auto;
+    max-height: 30vh;
+    overflow: hidden;
+    border-right: 0;
+    border-bottom: 1px solid var(--border-color);
+  }
 }

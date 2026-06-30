@@ -5,6 +5,7 @@ class SinksController < ApplicationController
   skip_demo_restrictions only: %i[index show]
   before_action :ensure_can_administer, only: %i[new create edit update destroy]
   before_action :set_sink_memberships, only: %i[index show new edit create update destroy]
+  before_action :set_folders, only: %i[new edit create update]
   before_action :set_sink, only: %i[show edit update destroy]
   before_action :set_current_context, only: %i[show edit]
 
@@ -30,21 +31,25 @@ class SinksController < ApplicationController
       return
     end
 
-    membership = @sink.sink_memberships.find_by(user: Current.user)
-    @membership = membership
-
-    if membership
-      @seen_cutoffs = {}
-
-      if membership.column_last_viewed_at.present?
-        membership.column_last_viewed_at.each do |col_id, ts|
-          @seen_cutoffs[col_id.to_i] = Time.zone.parse(ts) if ts.present?
-        end
-      end
-
-      membership.update!(has_unread_events: false)
-      membership.mark_all_columns_viewed
-    end
+    @membership = @sink.sink_memberships.find_by(user: Current.user)
+    @seen_cutoff = @membership&.last_viewed_at
+    set_feed_filters
+    @feed_can_mark_viewed = Event.feed_can_mark_viewed?(params)
+    @membership&.mark_sink_viewed! if @feed_can_mark_viewed
+    @events = Event.feed_batch(
+      @sink,
+      event_type: @event_type,
+      date: @event_date,
+      property_key: @property_key,
+      property_op: @property_op,
+      property_value: @property_value,
+      search_query: @search_query,
+      time_zone: browser_time_zone
+    )
+    set_event_type_counts
+    set_event_type_icons
+    @saved_views = @sink.saved_views.where(user: Current.user).ordered
+    set_event_calendar
   end
 
   def new
@@ -56,6 +61,22 @@ class SinksController < ApplicationController
 
     if @sink.save
       @sink.users << Current.user unless @sink.users.include?(Current.user)
+      set_current_context
+      set_sink_memberships
+      @membership = @sink.sink_memberships.find_by(user: Current.user)
+      @membership&.mark_sink_viewed!
+      @event_type = nil
+      @event_date = nil
+      @property_key = nil
+      @property_op = nil
+      @property_value = nil
+      @search_query = nil
+      @feed_can_mark_viewed = true
+      @events = Event.feed_batch(@sink)
+      set_event_type_counts
+      set_event_type_icons
+      @saved_views = @sink.saved_views.none
+      set_event_calendar
 
       respond_to do |format|
         format.turbo_stream do
@@ -102,8 +123,9 @@ class SinksController < ApplicationController
       Current
         .user
         .sink_memberships
+        .joins(:sink)
         .includes(sink: :folder)
-        .order("folders.name ASC NULLS LAST, sinks.name ASC")
+        .order("sinks.name ASC")
   end
 
   def set_sink
@@ -111,7 +133,18 @@ class SinksController < ApplicationController
   end
 
   def sink_params
-    params.require(:sink).permit(:name, :folder_id)
+    attributes = params.require(:sink).permit(:name, :folder_id)
+    attributes[:folder_id] = nil if attributes[:folder_id].blank?
+
+    if attributes[:folder_id].present? && !Current.account.folders.exists?(attributes[:folder_id])
+      attributes.delete(:folder_id)
+    end
+
+    attributes
+  end
+
+  def set_folders
+    @folders = Current.account.folders.ordered
   end
 
   def set_layout
@@ -133,5 +166,99 @@ class SinksController < ApplicationController
       current_sink_id: @sink.id,
       current_folder_id: nil
     )
+  end
+
+  def set_feed_filters
+    filters = Event.normalize_feed_filters(params)
+
+    @event_type = filters[:event_type]
+    @event_date = filters[:event_date]
+    @search_query = filters[:search_query]
+    @property_key = filters[:property_key]
+    @property_op = filters[:property_op]
+    @property_value = filters[:property_value]
+  end
+
+  def set_event_type_counts
+    @event_type_counts = Event
+      .feed_scope(
+        @sink,
+        date: @event_date,
+        property_key: @property_key,
+        property_op: @property_op,
+        property_value: @property_value,
+        search_query: @search_query,
+        time_zone: browser_time_zone
+      )
+      .group(:event_type)
+      .order(:event_type)
+      .count
+
+    @event_type_counts_can_stream = event_type_counts_can_stream?
+  end
+
+  def set_event_type_icons
+    event_types = @event_type_counts.keys.compact
+    @event_type_icons = {}
+    return if event_types.empty?
+
+    Event
+      .where(sink: @sink, event_type: event_types)
+      .where.not(emoji: [ nil, "" ])
+      .order(id: :desc)
+      .pluck(:event_type, :emoji)
+      .each do |event_type, emoji|
+        @event_type_icons[event_type] ||= emoji
+      end
+  end
+
+  def event_type_counts_can_stream?
+    Event.normalize_event_date(params[:month]).blank? &&
+      @event_date.blank? &&
+      @search_query.blank? &&
+      @property_key.blank?
+  end
+
+  def set_event_calendar
+    calendar_month = Event.normalize_event_date(params[:month])
+    @calendar_month = (
+      calendar_month ||
+      @event_date ||
+      newest_event_date_for_calendar ||
+      browser_time_zone.today
+    ).beginning_of_month
+    month_range = Event.month_range_for(@calendar_month, time_zone: browser_time_zone)
+    local_date_sql = Event.local_date_sql(time_zone: browser_time_zone)
+
+    @event_dates = Event
+      .feed_scope(
+        @sink,
+        event_type: @event_type,
+        property_key: @property_key,
+        property_op: @property_op,
+        property_value: @property_value,
+        search_query: @search_query,
+        time_zone: browser_time_zone
+      )
+      .where(occurred_at: month_range)
+      .group(Arel.sql(local_date_sql))
+      .count
+      .transform_keys { |date| Date.parse(date.to_s) }
+  end
+
+  def newest_event_date_for_calendar
+    Event
+      .feed_scope(
+        @sink,
+        event_type: @event_type,
+        property_key: @property_key,
+        property_op: @property_op,
+        property_value: @property_value,
+        search_query: @search_query,
+        time_zone: browser_time_zone
+      )
+      .maximum(:occurred_at)
+      &.in_time_zone(browser_time_zone)
+      &.to_date
   end
 end

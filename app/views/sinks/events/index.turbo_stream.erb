@@ -1,0 +1,27 @@
+<%= turbo_stream.prepend "events_feed" do %>
+  <%= render(
+    "events/feed_batch",
+    events: @events,
+    event_type: @event_type,
+    event_date: @event_date,
+    property_key: @property_key,
+    property_op: @property_op,
+    property_value: @property_value,
+    search_query: @search_query
+  ) %>
+<% end %>
+
+<%= turbo_stream.replace "events_older_boundary" do %>
+  <%= render(
+    "events/older_loader",
+    sink: @sink,
+    events: @events,
+    event_type: @event_type,
+    event_date: @event_date,
+    property_key: @property_key,
+    property_op: @property_op,
+    property_value: @property_value,
+    search_query: @search_query,
+    initial: false
+  ) %>
+<% end %>

@@ -19,6 +19,10 @@ Rails.application.routes.draw do
   resource :new, only: :show
 
   resources :sinks do
+    resources :events, only: %i[index], controller: "sinks/events"
+    resources :saved_views, only: %i[create destroy], controller: "sinks/saved_views"
+    resource :view, only: %i[create], controller: "sinks/views"
+
     resources :columns, only: %i[create show edit update destroy], controller: "sinks/columns" do
       resources :events, only: %i[index], controller: "sinks/columns/events"
       resources :views, only: %i[create], controller: "sinks/columns/views"

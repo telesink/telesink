@@ -23,7 +23,10 @@
             <%= highlighted_event_body(event, column) %>
           </div>
         <% else %>
-          <strong class="event-preview__title"><%= event.event_type %></strong>
+          <span
+            class="event-preview__title <%= event_type_color_class(event.event_type) %>"
+            style="<%= event_type_color_style(event.event_type) %>"
+          ><%= event_type_label(event.event_type) %></span>
         <% end %>
 
         <time

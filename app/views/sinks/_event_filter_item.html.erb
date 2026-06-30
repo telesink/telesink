@@ -1,0 +1,46 @@
+<% filter_date = local_assigns[:event_date] %>
+<% property_key = local_assigns[:property_key] %>
+<% property_op = local_assigns[:property_op] %>
+<% property_value = local_assigns[:property_value] %>
+<% search_query = local_assigns[:search_query] %>
+<% filter_params = feed_filter_params(
+  event_type: event_type,
+  event_date: filter_date,
+  property_key: property_key,
+  property_op: property_op,
+  property_value: property_value,
+  search_query: search_query
+) %>
+<% event_icon = local_assigns[:event_icon].presence || "•" %>
+
+<li class="<%= class_names("event-filters__item", "event-filters__item--current" => current_event_type == event_type) %>">
+  <%= link_to(
+    sink_path(sink, filter_params),
+    class: class_names(
+      "event-filters__link",
+      event_type_color_class(event_type) => event_type.present?,
+      "event-filters__link--current" => current_event_type == event_type
+    ),
+    style: event_type_color_style(event_type),
+    title: event_type.present? ? event_type_label(event_type) : "all events",
+    aria: { current: current_event_type == event_type ? "page" : nil },
+    data: { turbo_frame: :main_content, turbo_action: "advance" }
+  ) do %>
+    <span class="event-filters__icon">
+      <% if event_type.present? %>
+        <%= event_icon %>
+      <% else %>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="icon">
+          <path d="M5 3.5A1.5 1.5 0 0 1 6.5 2h3A1.5 1.5 0 0 1 11 3.5H5ZM4.5 5A1.5 1.5 0 0 0 3 6.5v.041a3.02 3.02 0 0 1 .5-.041h9c.17 0 .337.014.5.041V6.5A1.5 1.5 0 0 0 11.5 5h-7ZM12.5 8h-9A1.5 1.5 0 0 0 2 9.5v3A1.5 1.5 0 0 0 3.5 14h9a1.5 1.5 0 0 0 1.5-1.5v-3A1.5 1.5 0 0 0 12.5 8Z" />
+        </svg>
+      <% end %>
+    </span>
+    <span class="event-filters__label"><%= event_type.present? ? event_type_label(event_type) : "all" %></span>
+    <%= render(
+      "sinks/event_filter_count",
+      event_type: event_type,
+      count: count,
+      variant: variant
+    ) %>
+  <% end %>
+</li>

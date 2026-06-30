@@ -1,5 +1,5 @@
 <%
-  memberships_by_folder = @sink_memberships.group_by { |m| m.sink.folder_id }
+  membership_groups = grouped_sink_memberships(@sink_memberships)
 %>
 
 <div class="column__header">
@@ -15,40 +15,33 @@
 </div>
 
 <ul class="list sidebar-list sidebar-list--striped">
-  <% Current.account.folders.ordered.each do |folder| %>
-    <% folder_memberships = memberships_by_folder[folder.id] || [] %>
+  <% membership_groups[:folders].each do |folder, folder_memberships| %>
+    <%= render "sinks/folder_list_item", folder: folder, can_administer: true %>
 
-    <li class="<%= class_names(
-      "sidebar-list__item",
-      "italic",
-      "sidebar-list__item--current" => current_page?(edit_folder_path(folder)),
-    ) %>">
-      <span class="sidebar-list__name">
-        <%= link_to_unless_current(
-          "#{folder.name}/",
-          edit_folder_path(folder),
-          class: "link sidebar-list__action",
-        ) %>
-      </span>
-    </li>
-
-    <% folder_memberships.each do |membership| %>
+    <% folder_memberships.sort_by { |membership| membership.sink.name.downcase }.each do |membership| %>
       <%= render(
         "sinks/editable_sink",
         sink: membership.sink,
         current_sink_id: Current.user.current_sink_id,
         membership: membership,
+        in_folder: true
       ) %>
     <% end %>
   <% end %>
 
-  <% ungrouped = memberships_by_folder[nil] || [] %>
-  <% ungrouped.each do |membership| %>
-    <%= render(
-      "sinks/editable_sink",
-      sink: membership.sink,
-      current_sink_id: Current.user.current_sink_id,
-      membership: membership,
-    ) %>
+  <% if membership_groups[:unfiled].any? %>
+    <% membership_groups[:unfiled].each do |membership| %>
+      <%= render(
+        "sinks/editable_sink",
+        sink: membership.sink,
+        current_sink_id: Current.user.current_sink_id,
+        membership: membership,
+        in_folder: false
+      ) %>
+    <% end %>
+  <% end %>
+
+  <% if @sink_memberships.empty? %>
+    <li class="sidebar-list__item">no sinks yet</li>
   <% end %>
 </ul>

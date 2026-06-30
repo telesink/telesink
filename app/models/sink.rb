@@ -5,6 +5,7 @@ class Sink < ApplicationRecord
   belongs_to :folder, optional: true
 
   has_many :events, dependent: :destroy
+  has_many :saved_views, dependent: :destroy
 
   has_many :sink_memberships, dependent: :destroy
   has_many :users, through: :sink_memberships
@@ -12,14 +13,4 @@ class Sink < ApplicationRecord
   has_many :columns, -> { order(:position) }, dependent: :destroy
 
   validates :name, presence: true
-
-  before_validation :build_default_column, on: :create
-
-  private
-
-  def build_default_column
-    return if columns.any?
-
-    columns.build(name: "all events")
-  end
 end

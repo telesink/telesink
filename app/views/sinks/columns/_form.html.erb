@@ -1,4 +1,4 @@
-<div class="column__header column__header--cast-shadow">
+<div class="column__header">
   <h2 class="column__title">
     edit column "<%= column.name %>"
   </h2>
@@ -33,7 +33,7 @@
       <%= form.label :event_types, "filter by event", class: "form-field__label" %>
       <%= form.select(
         :event_types,
-        options_for_select(@available_event_types.map { |t| [t, t] }, column.event_types),
+        options_for_select(@available_event_types.map { |t| [event_type_label(t), t] }, column.event_types),
         {
           include_blank: "(show all events)"
         },

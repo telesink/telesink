@@ -41,8 +41,9 @@ class Sinks::EventTypesController < ApplicationController
       Current
         .user
         .sink_memberships
+        .joins(:sink)
         .includes(sink: :folder)
-        .order("folders.name ASC NULLS LAST, sinks.name ASC")
+        .order("sinks.name ASC")
   end
 
   def set_event_type

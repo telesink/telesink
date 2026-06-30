@@ -1,0 +1,64 @@
+<%
+  detail_frame_id = dom_id(event, :detail)
+  property_summary = event_property_summary(event)
+  feed_params = feed_filter_params(
+    event_type: local_assigns[:event_type],
+    event_date: local_assigns[:event_date],
+    property_key: local_assigns[:property_key],
+    property_op: local_assigns[:property_op],
+    property_value: local_assigns[:property_value],
+    search_query: local_assigns[:search_query]
+  )
+%>
+
+<div
+  id="<%= dom_id(event, :feed_item) %>"
+  class="<%= class_names(
+    "event-feed__item",
+    "event-feed__item--new" => local_assigns[:new_event]
+  ) %>"
+  data-event-id="<%= event.id %>"
+  data-filter-properties="<%= event_filter_properties(event).to_json %>"
+  data-search-text="<%= event_search_text(event) %>"
+>
+  <%= link_to(
+    event_path(event, feed_params),
+    data: {
+      turbo_frame: detail_frame_id,
+      turbo_prefetch: false,
+      action: "click->event-feed#openDetail",
+      event_feed_detail_frame_param: detail_frame_id
+    },
+    aria: {
+      controls: detail_frame_id,
+      expanded: false
+    },
+    class: "event-row",
+    title: event.text
+  ) do %>
+    <time
+      data-controller="time-formatter"
+      data-time-formatter-mode-value="clock"
+      class="event-row__time"
+      datetime="<%= event.occurred_at.iso8601 %>"
+      title="<%= event.occurred_at.iso8601 %>"
+    ></time>
+
+    <span class="event-row__emoji"><%= event.emoji %></span>
+    <span
+      class="event-row__type <%= event_type_color_class(event.event_type) %>"
+      style="<%= event_type_color_style(event.event_type) %>"
+    ><%= event_type_label(event.event_type) %></span>
+    <span class="event-row__text"><%= event.text %></span>
+
+    <% if property_summary.present? %>
+      <span class="event-row__properties"><%= property_summary %></span>
+    <% end %>
+  <% end %>
+
+  <%= turbo_frame_tag(
+    detail_frame_id,
+    class: "event-detail-frame",
+    data: { event_feed_target: "detail" }
+  ) %>
+</div>

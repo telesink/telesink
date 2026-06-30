@@ -1,34 +1,205 @@
 <% content_for(:title, sink_title(@sink)) %>
 
-<%= turbo_stream_from @sink %>
+<%
+  current_filter_params = feed_filter_params(
+    event_type: @event_type,
+    event_date: @event_date,
+    property_key: @property_key,
+    property_op: @property_op,
+    property_value: @property_value,
+    search_query: @search_query
+  )
+  active_filter = active_feed_filter?(
+    event_type: @event_type,
+    event_date: @event_date,
+    property_key: @property_key,
+    search_query: @search_query
+  )
+  view_url = "#{request.base_url}#{sink_path(@sink, current_filter_params)}"
+%>
 
-<div id="columns-container">
-  <div
-    id="columns"
-    class="columns"
-    data-controller="sortable-columns"
-    data-sortable-columns-url-value="<%= sink_column_order_path(@sink) %>"
+<%= turbo_stream_from(
+  @sink,
+  "events",
+  Event.feed_stream_key(
+    @event_type,
+    date: @event_date,
+    property_key: @property_key,
+    property_op: @property_op,
+    property_value: @property_value
+  )
+) %>
+<%= turbo_stream_from @sink, "event_type_counts" if @event_type_counts_can_stream %>
+
+<div class="sink-feed-layout">
+  <section
+    class="event-feed"
+    data-controller="event-feed"
+    data-event-feed-calendar-month-value="<%= @calendar_month.iso8601 %>"
+    data-event-feed-can-mark-viewed-value="<%= @feed_can_mark_viewed %>"
+    data-event-feed-event-type-value="<%= @event_type %>"
+    data-event-feed-event-date-value="<%= @event_date&.iso8601 %>"
+    data-event-feed-seen-cutoff-value="<%= @seen_cutoff&.iso8601 %>"
+    data-event-feed-property-key-value="<%= @property_key %>"
+    data-event-feed-property-op-value="<%= @property_op %>"
+    data-event-feed-property-value-value="<%= @property_value %>"
+    data-event-feed-search-query-value="<%= @search_query %>"
+    data-event-feed-view-url-value="<%= sink_view_path(@sink) %>"
   >
-    <% @sink.columns.each do |column| %>
-      <%= render(
-        partial: column.has_events? ? "sinks/columns/column" : "sinks/columns/config_column",
-        locals: {
-          column: column,
-          membership: @membership,
-          seen_cutoffs: @seen_cutoffs
-        }
-      ) %>
-    <% end %>
-  </div>
+    <header class="event-feed__header">
+      <h1 class="event-feed__title">
+        <% if @sink.folder.present? %>
+          <span class="event-feed__folder"><%= @sink.folder.name %></span>
+          <span class="event-feed__separator">/</span>
+        <% end %>
 
-  <div id="add-column-column" class="add-column-column">
-    <% if Current.user.can_administer? %>
-      <%= button_to(
-        "add column",
-        sink_columns_path(@sink),
-        method: :post,
-        class: "btn btn--secondary btn--before-content whitespace-nowrap"
+        <span class="event-feed__channel">#<%= @sink.name %></span>
+      </h1>
+
+      <div class="event-feed__context">
+        <button
+          type="button"
+          class="event-feed__action"
+          title="copy permalink"
+          data-controller="copy-to-clipboard"
+          data-action="copy-to-clipboard#copy"
+          data-copy-to-clipboard-content-value="<%= view_url %>"
+        >
+          permalink
+        </button>
+
+        <% if Current.user.can_administer? %>
+          <%= link_to edit_sink_path(@sink), title: "edit sink", class: "link link--subtle" do %>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="icon">
+              <path d="M13.488 2.513a1.75 1.75 0 0 0-2.475 0L6.75 6.774a2.75 2.75 0 0 0-.596.892l-.848 2.047a.75.75 0 0 0 .98.98l2.047-.848a2.75 2.75 0 0 0 .892-.596l4.261-4.262a1.75 1.75 0 0 0 0-2.474Z" />
+              <path d="M4.75 3.5c-.69 0-1.25.56-1.25 1.25v6.5c0 .69.56 1.25 1.25 1.25h6.5c.69 0 1.25-.56 1.25-1.25V9A.75.75 0 0 1 14 9v2.25A2.75 2.75 0 0 1 11.25 14h-6.5A2.75 2.75 0 0 1 2 11.25v-6.5A2.75 2.75 0 0 1 4.75 2H7a.75.75 0 0 1 0 1.5H4.75Z" />
+            </svg>
+          <% end %>
+        <% end %>
+
+        <% if active_filter %>
+          <%= link_to(
+            sink_path(@sink),
+            class: "event-feed__action event-feed__action--clear",
+            title: "clear filters",
+            data: { turbo_frame: :main_content, turbo_action: "advance" }
+          ) do %>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="icon">
+              <path fill-rule="evenodd" d="M8 15A7 7 0 1 0 8 1a7 7 0 0 0 0 14Zm2.78-4.22a.75.75 0 0 1-1.06 0L8 9.06l-1.72 1.72a.75.75 0 1 1-1.06-1.06L6.94 8 5.22 6.28a.75.75 0 0 1 1.06-1.06L8 6.94l1.72-1.72a.75.75 0 1 1 1.06 1.06L9.06 8l1.72 1.72a.75.75 0 0 1 0 1.06Z" clip-rule="evenodd" />
+            </svg>
+          <% end %>
+        <% end %>
+      </div>
+    </header>
+
+    <%= render(
+      "sinks/event_filters",
+      sink: @sink,
+      event_type_counts: @event_type_counts,
+      event_type_icons: @event_type_icons,
+      current_event_type: @event_type,
+      event_date: @event_date,
+      property_key: @property_key,
+      property_op: @property_op,
+      property_value: @property_value,
+      search_query: @search_query,
+      variant: "mobile"
+    ) %>
+
+    <%= render(
+      "sinks/event_search",
+      sink: @sink,
+      current_event_type: @event_type,
+      event_date: @event_date,
+      property_key: @property_key,
+      property_op: @property_op,
+      property_value: @property_value,
+      search_query: @search_query,
+      variant: "mobile"
+    ) %>
+
+    <%= render(
+      "sinks/saved_views",
+      sink: @sink,
+      saved_views: @saved_views,
+      current_event_type: @event_type,
+      event_date: @event_date,
+      property_key: @property_key,
+      property_op: @property_op,
+      property_value: @property_value,
+      search_query: @search_query,
+      variant: "mobile"
+    ) %>
+
+    <%= render(
+      "sinks/event_calendar",
+      sink: @sink,
+      calendar_month: @calendar_month,
+      event_dates: @event_dates,
+      current_event_type: @event_type,
+      selected_date: @event_date,
+      property_key: @property_key,
+      property_op: @property_op,
+      property_value: @property_value,
+      search_query: @search_query,
+      variant: "mobile"
+    ) %>
+
+    <div class="event-feed__scroll" data-event-feed-target="scroll">
+      <%= render(
+        "events/older_loader",
+        sink: @sink,
+        events: @events,
+        event_type: @event_type,
+        event_date: @event_date,
+        property_key: @property_key,
+        property_op: @property_op,
+        property_value: @property_value,
+        search_query: @search_query,
+        initial: true
       ) %>
-    <% end %>
-  </div>
+
+      <div id="events_feed" class="event-feed__list" data-event-feed-target="list">
+        <%= render(
+          "events/feed_batch",
+          events: @events,
+          event_type: @event_type,
+          event_date: @event_date,
+          property_key: @property_key,
+          property_op: @property_op,
+          property_value: @property_value,
+          search_query: @search_query
+        ) %>
+      </div>
+    </div>
+
+    <%= render(
+      "sinks/event_status",
+      sink: @sink,
+      event_type: @event_type,
+      event_date: @event_date,
+      property_key: @property_key,
+      property_op: @property_op,
+      property_value: @property_value,
+      search_query: @search_query,
+      saved_views: @saved_views,
+      events: @events
+    ) %>
+  </section>
+
+  <%= render(
+    "sinks/event_type_rail",
+    sink: @sink,
+    event_type_counts: @event_type_counts,
+    event_type_icons: @event_type_icons,
+    current_event_type: @event_type,
+    event_date: @event_date,
+    property_key: @property_key,
+    property_op: @property_op,
+    property_value: @property_value,
+    search_query: @search_query,
+    saved_views: @saved_views,
+    calendar_month: @calendar_month,
+    event_dates: @event_dates
+  ) %>
 </div>

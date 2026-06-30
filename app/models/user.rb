@@ -8,6 +8,7 @@ class User < ApplicationRecord
 
   has_many :sink_memberships, dependent: :destroy
   has_many :sinks, -> { order(created_at: :asc) }, through: :sink_memberships
+  has_many :saved_views, dependent: :destroy
 
   validates :email_address, format: { with: URI::MailTo::EMAIL_REGEXP }
   normalizes :email_address, with: ->(e) { e.strip.downcase }

@@ -1,0 +1,12 @@
+<% events.each do |event| %>
+  <%= render(
+    "events/feed_row",
+    event: event,
+    event_type: local_assigns[:event_type],
+    event_date: local_assigns[:event_date],
+    property_key: local_assigns[:property_key],
+    property_op: local_assigns[:property_op],
+    property_value: local_assigns[:property_value],
+    search_query: local_assigns[:search_query]
+  ) %>
+<% end %>

@@ -62,11 +62,23 @@ class Sinks::ColumnsController < ApplicationController
   end
 
   def show
-    render turbo_stream: turbo_stream.replace(
-      @column,
-      partial: "sinks/columns/column",
-      locals: { column: @column }
-    )
+    respond_to do |format|
+      format.turbo_stream do
+        render turbo_stream: turbo_stream.replace(
+          @column,
+          partial: "sinks/columns/column",
+          locals: { column: @column }
+        )
+      end
+
+      format.html do
+        if turbo_frame_request?
+          render partial: "sinks/columns/column", locals: { column: @column }
+        else
+          redirect_to @sink, status: :see_other
+        end
+      end
+    end
   end
 
   def destroy

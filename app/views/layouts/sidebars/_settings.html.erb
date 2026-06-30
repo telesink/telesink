@@ -1,5 +1,9 @@
 <aside class="column sidebar">
-   <div class="sidebar-account">
+  <div class="sidebar__content">
+    <%= render "settings/settings" %>
+  </div>
+
+  <div class="sidebar-account">
     <span class="truncate">
       <%= display_name(Current.user) %>
     </span>
@@ -12,6 +16,4 @@
       class: "link link--subtle whitespace-nowrap text-base",
     ) %>
   </div>
-
-  <%= render "settings/settings" %>
 </aside>

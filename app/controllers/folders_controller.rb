@@ -6,22 +6,14 @@ class FoldersController < ApplicationController
   before_action :ensure_can_administer, only: %i[new create edit update destroy]
   before_action :set_folder, only: %i[show edit update destroy]
   before_action :set_sink_memberships, only: %i[new edit create update destroy show]
-  before_action :set_current_context, only: %i[show edit]
 
   def show
-    @sinks = @folder.sinks
+    sink = @folder.sinks.joins(:sink_memberships)
+      .where(sink_memberships: { user_id: Current.user.id })
       .order(:name)
-      .includes(:columns)
+      .first
 
-    @sinks.each do |sink|
-      membership = sink.sink_memberships.find_by(user: Current.user)
-      next unless membership
-
-      membership.update!(has_unread_events: false)
-      membership.mark_all_columns_viewed
-    end
-
-    @highlight_current_sink = false
+    redirect_to(sink || sinks_path, status: :see_other)
   end
 
   def new
@@ -75,7 +67,7 @@ class FoldersController < ApplicationController
       Current
         .user
         .sink_memberships
-        .includes(:sink)
+        .includes(sink: :folder)
         .order(sinks: { name: :asc })
   end
 
@@ -90,13 +82,4 @@ class FoldersController < ApplicationController
     end
   end
 
-  def set_current_context
-    Current.folder = @folder
-    Current.sink = nil
-
-    Current.user.update_columns(
-      current_sink_id: nil,
-      current_folder_id: @folder.id
-    )
-  end
 end

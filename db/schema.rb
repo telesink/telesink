@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_04_25_044225) do
+ActiveRecord::Schema[8.1].define(version: 2026_06_29_010000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pg_trgm"
@@ -43,11 +43,13 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_25_044225) do
     t.jsonb "properties", default: {}, null: false
     t.string "sdk_name"
     t.string "sdk_version"
+    t.text "search_text", null: false
     t.bigint "sink_id", null: false
     t.text "text", null: false
     t.datetime "updated_at", null: false
     t.index ["event_type"], name: "index_events_on_event_type"
     t.index ["properties"], name: "index_events_on_properties", using: :gin
+    t.index ["search_text"], name: "index_events_on_search_text_trgm", opclass: :gin_trgm_ops, using: :gin
     t.index ["sink_id", "idempotency_key"], name: "index_events_on_sink_id_and_idempotency_key", unique: true
     t.index ["sink_id", "occurred_at"], name: "index_events_on_sink_id_and_occurred_at", order: { occurred_at: :desc }
     t.index ["sink_id"], name: "index_events_on_sink_id"
@@ -60,6 +62,24 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_25_044225) do
     t.string "name"
     t.datetime "updated_at", null: false
     t.index ["account_id"], name: "index_folders_on_account_id"
+  end
+
+  create_table "saved_views", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.date "event_date"
+    t.string "event_type"
+    t.string "name", null: false
+    t.string "property_key"
+    t.string "property_op"
+    t.string "property_value"
+    t.string "search_query"
+    t.bigint "sink_id", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
+    t.index ["sink_id", "user_id"], name: "index_saved_views_on_sink_id_and_user_id"
+    t.index ["sink_id"], name: "index_saved_views_on_sink_id"
+    t.index ["user_id", "sink_id", "name"], name: "index_saved_views_on_user_id_and_sink_id_and_name", unique: true
+    t.index ["user_id"], name: "index_saved_views_on_user_id"
   end
 
   create_table "sessions", force: :cascade do |t|
@@ -75,7 +95,9 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_25_044225) do
     t.jsonb "column_last_viewed_at", default: {}, null: false
     t.datetime "created_at", null: false
     t.boolean "has_unread_events", default: false, null: false
+    t.datetime "last_viewed_at"
     t.bigint "sink_id", null: false
+    t.integer "unread_count", default: 0, null: false
     t.datetime "updated_at", null: false
     t.bigint "user_id", null: false
     t.index ["sink_id"], name: "index_sink_memberships_on_sink_id"
@@ -115,6 +137,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_25_044225) do
   add_foreign_key "columns", "sinks"
   add_foreign_key "events", "sinks"
   add_foreign_key "folders", "accounts"
+  add_foreign_key "saved_views", "sinks"
+  add_foreign_key "saved_views", "users"
   add_foreign_key "sessions", "users"
   add_foreign_key "sink_memberships", "sinks"
   add_foreign_key "sink_memberships", "users"

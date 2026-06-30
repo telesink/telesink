@@ -9,5 +9,7 @@ class ProcessEventJob < ApplicationJob
     end
 
     EventProcessing.process_event(sink, event)
+  rescue ActiveRecord::RecordNotUnique
+    raise unless event&.idempotency_key
   end
 end

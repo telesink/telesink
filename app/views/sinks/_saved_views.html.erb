@@ -1,0 +1,127 @@
+<%
+  active_filter = active_feed_filter?(
+    event_type: current_event_type,
+    event_date: event_date,
+    property_key: property_key,
+    search_query: search_query
+  )
+
+  suggested_name = suggested_saved_view_name(
+    event_type: current_event_type,
+    event_date: event_date,
+    property_key: property_key,
+    property_op: property_op,
+    property_value: property_value,
+    search_query: search_query
+  )
+
+  current_saved_view = current_saved_view_for(
+    saved_views,
+    event_type: current_event_type,
+    event_date: event_date,
+    property_key: property_key,
+    property_op: property_op,
+    property_value: property_value,
+    search_query: search_query
+  )
+
+  unsaved_filter = active_filter && current_saved_view.nil?
+  saved_views_for_display = saved_views
+  current_filter_params = feed_filter_params(
+    event_type: current_event_type,
+    event_date: event_date,
+    property_key: property_key,
+    property_op: property_op,
+    property_value: property_value,
+    search_query: search_query
+  )
+%>
+
+<% if active_filter || saved_views.any? || variant == "desktop" %>
+  <section class="saved-views saved-views--<%= variant %>">
+    <div class="saved-views__header">
+      <h3 class="saved-views__title">views</h3>
+    </div>
+
+    <% if unsaved_filter %>
+      <%= form_with model: SavedView.new,
+        url: sink_saved_views_path(sink),
+        class: "saved-view-form",
+        data: { turbo_frame: :main_content } do |form| %>
+        <%= form.hidden_field :event_type, value: current_event_type %>
+        <%= form.hidden_field :event_date, value: event_date&.iso8601 %>
+        <%= form.hidden_field :search_query, value: search_query %>
+        <%= form.hidden_field :property_key, value: property_key %>
+        <%= form.hidden_field :property_op, value: property_op %>
+        <%= form.hidden_field :property_value, value: property_value %>
+        <% if current_filter_params[:month].present? %>
+          <%= hidden_field_tag :month, current_filter_params[:month] %>
+        <% end %>
+
+        <%= form.text_field(
+          :name,
+          value: suggested_name,
+          class: "text-field saved-view-form__input",
+          maxlength: 80,
+          autocomplete: "off",
+          aria: { label: "view name" }
+        ) %>
+
+        <%= form.submit "save", class: "saved-view-form__submit" %>
+      <% end %>
+    <% end %>
+
+    <% if saved_views_for_display.any? %>
+      <ul class="list saved-views__list">
+        <% saved_views_for_display.each do |saved_view| %>
+          <% filter_summary = saved_view_filter_summary(saved_view) %>
+          <% saved_view_params = feed_filter_params(
+            event_type: saved_view.event_type,
+            event_date: saved_view.event_date,
+            property_key: saved_view.property_key,
+            property_op: saved_view.property_op,
+            property_value: saved_view.property_value,
+            search_query: saved_view.search_query,
+            month: saved_view.event_date
+          ) %>
+
+          <li
+            class="<%= class_names(
+              "saved-views__item",
+              "saved-views__item--current" => saved_view == current_saved_view
+            ) %>"
+          >
+            <%= link_to sink_path(sink, saved_view_params),
+              class: "saved-views__link",
+              title: [ saved_view.name, filter_summary.presence ].compact.join(" - "),
+              aria: { current: saved_view == current_saved_view ? "page" : nil },
+              data: { turbo_frame: :main_content, turbo_action: "advance" } do %>
+              <span class="saved-views__icon">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="icon">
+                  <path d="M6 7.5a1.5 1.5 0 1 1 3 0 1.5 1.5 0 0 1-3 0Z" />
+                  <path fill-rule="evenodd" d="M4 2a1.5 1.5 0 0 0-1.5 1.5v9A1.5 1.5 0 0 0 4 14h8a1.5 1.5 0 0 0 1.5-1.5V6.621a1.5 1.5 0 0 0-.44-1.06L9.94 2.439A1.5 1.5 0 0 0 8.878 2H4Zm3.5 2.5a3 3 0 1 0 1.524 5.585l1.196 1.195a.75.75 0 1 0 1.06-1.06l-1.195-1.196A3 3 0 0 0 7.5 4.5Z" clip-rule="evenodd" />
+                </svg>
+              </span>
+              <span class="saved-views__name"><%= saved_view.name %></span>
+            <% end %>
+
+            <%= button_to(
+              sink_saved_view_path(sink, saved_view, current_filter_params),
+              method: :delete,
+              class: "saved-views__delete",
+              aria: { label: "delete #{saved_view.name}" },
+              title: "delete #{saved_view.name}",
+              form: { data: { turbo_frame: :main_content } }
+            ) do %>
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="icon">
+                <path fill-rule="evenodd" d="M5 3.25V4H2.75a.75.75 0 0 0 0 1.5h.3l.815 8.15A1.5 1.5 0 0 0 5.357 15h5.285a1.5 1.5 0 0 0 1.493-1.35l.815-8.15h.3a.75.75 0 0 0 0-1.5H11v-.75A2.25 2.25 0 0 0 8.75 1h-1.5A2.25 2.25 0 0 0 5 3.25Zm2.25-.75a.75.75 0 0 0-.75.75V4h3v-.75a.75.75 0 0 0-.75-.75h-1.5ZM6.05 6a.75.75 0 0 1 .787.713l.275 5.5a.75.75 0 0 1-1.498.075l-.275-5.5A.75.75 0 0 1 6.05 6Zm3.9 0a.75.75 0 0 1 .712.787l-.275 5.5a.75.75 0 0 1-1.498-.075l.275-5.5a.75.75 0 0 1 .786-.711Z" clip-rule="evenodd" />
+              </svg>
+            <% end %>
+          </li>
+        <% end %>
+      </ul>
+    <% elsif variant == "desktop" %>
+      <p class="saved-views__empty">none</p>
+    <% end %>
+  </section>
+<% end %>

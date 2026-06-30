@@ -76,7 +76,7 @@
   position: sticky;
   top: 0;
   z-index: 10;
-  background-color: light-dark(var(--color-gray-100), var(--color-zinc-800));
+  background-color: var(--app-sidebar-bg);
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -84,11 +84,8 @@
   border-bottom: 1px solid var(--border-color);
 }
 
-.column__header--cast-shadow {
-  box-shadow: 0 3px 4px -4px light-dark(var(--color-gray-400), transparent);
-}
-
 .column__header--slim {
+  min-height: 3ch;
   padding: 0 1ch;
 }
 
@@ -122,7 +119,7 @@
   flex-direction: column;
   gap: var(--space-xs);
   padding: 1ch;
-  background-color: light-dark(var(--color-gray-100), var(--color-zinc-800));
+  background-color: var(--app-sidebar-bg);
 }
 
 .column-data__text {

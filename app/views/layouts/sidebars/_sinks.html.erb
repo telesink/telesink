@@ -1,5 +1,9 @@
-<aside class="column sidebar sidebar--cast-shadow">
+<aside class="column sidebar">
   <%= turbo_stream_from "user_#{Current.user.id}_sinks" %>
+
+  <div id="sinks" class="sidebar__content" data-controller="sink-sidebar">
+    <%= render "sinks/sinks" %>
+  </div>
 
   <div class="sidebar-account">
     <span class="truncate">
@@ -13,9 +17,5 @@
       data: { turbo_confirm: "log out?" },
       class: "link link--subtle whitespace-nowrap text-base",
     ) %>
-  </div>
-
-  <div id="sinks">
-    <%= render "sinks/sinks" %>
   </div>
 </aside>

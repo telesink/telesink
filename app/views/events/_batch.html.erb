@@ -1,7 +1,7 @@
 <% last_date_key = nil %>
 
 <% events.each do |event| %>
-  <% date_key = event.occurred_at.strftime("%Y-%m-%d") %>
+  <% date_key = event.occurred_at.in_time_zone.strftime("%Y-%m-%d") %>
 
   <% if date_key != last_date_key %>
     <%= render "events/day_delimiter", event: event %>

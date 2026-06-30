@@ -1,0 +1,91 @@
+<%
+  status_time = Time.current.in_time_zone(browser_time_zone)
+  newest_event = events.last
+  status_filter_links = event_status_filter_links(
+    event_type: event_type,
+    event_date: event_date,
+    property_key: property_key,
+    property_op: property_op,
+    property_value: property_value,
+    search_query: search_query
+  )
+  active_filter = status_filter_links.any?
+  current_saved_view = current_saved_view_for(
+    saved_views,
+    event_type: event_type,
+    event_date: event_date,
+    property_key: property_key,
+    property_op: property_op,
+    property_value: property_value,
+    search_query: search_query
+  )
+  view_label = current_saved_view&.name || (active_filter ? status_filter_links.pluck(:label).join(" ") : "all events")
+%>
+
+<div class="event-status" aria-label="sink status">
+  <div class="event-status__items">
+    <span class="event-status__connection" data-event-feed-target="connectionStatus">
+      online
+    </span>
+
+    <span class="event-status__view" title="<%= view_label %>">
+      <span class="event-status__view-prefix">view</span>
+
+      <% if active_filter %>
+        <% if current_saved_view.present? %>
+          <span class="event-status__view-name"><%= current_saved_view.name %></span>
+        <% end %>
+
+        <span class="event-status__filters">
+          <% status_filter_links.each do |filter_link| %>
+            <%= link_to(
+              filter_link[:label],
+              sink_path(sink, filter_link[:params]),
+              class: class_names("event-status__filter", filter_link[:class_name]),
+              style: filter_link[:style],
+              title: filter_link[:title],
+              data: { turbo_frame: :main_content, turbo_action: "advance" }
+            ) %>
+          <% end %>
+        </span>
+      <% else %>
+        <span class="event-status__view-label">all events</span>
+      <% end %>
+    </span>
+
+    <span class="event-status__item event-status__item--local-time">
+      local <time data-event-feed-target="localClock" datetime="<%= status_time.iso8601 %>"><%= status_time.strftime("%H:%M:%S") %></time>
+    </span>
+
+    <span class="event-status__item event-status__item--utc-time">
+      utc <time data-event-feed-target="utcClock" datetime="<%= status_time.utc.iso8601 %>"><%= status_time.utc.strftime("%H:%M:%S") %></time>
+    </span>
+
+    <span class="event-status__item event-status__item--position" data-event-feed-target="positionStatus">at bottom</span>
+
+    <button
+      type="button"
+      class="event-status__jump hidden"
+      aria-live="polite"
+      aria-atomic="true"
+      data-event-feed-target="jumpBar"
+      data-action="click->event-feed#jumpToBottom"
+    >
+      <span data-event-feed-target="newCount"></span>
+    </button>
+
+    <span class="event-status__item event-status__item--newest">
+      newest
+      <time
+        data-controller="time-formatter"
+        data-time-formatter-mode-value="clock"
+        data-event-feed-target="newestTime"
+        datetime="<%= newest_event&.occurred_at&.iso8601 %>"
+      ><%= newest_event ? "" : "--:--:--" %></time>
+    </span>
+
+    <span class="event-status__item event-status__item--loaded">
+      <span data-event-feed-target="loadedCount"><%= events.size %></span> loaded
+    </span>
+  </div>
+</div>

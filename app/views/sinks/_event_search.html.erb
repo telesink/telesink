@@ -1,0 +1,40 @@
+<%
+  preserved_filter_params = feed_filter_params(
+    event_type: current_event_type,
+    event_date: event_date,
+    property_key: property_key,
+    property_op: property_op,
+    property_value: property_value,
+    search_query: nil
+  )
+%>
+
+<section class="event-search event-search--<%= variant %>" aria-label="event search">
+  <% if variant == "desktop" %>
+    <div class="event-search__header">
+      <h3 class="event-search__title">search</h3>
+    </div>
+  <% end %>
+
+  <%= form_with(
+    url: sink_path(sink),
+    method: :get,
+    class: "event-search__form",
+    data: { turbo_frame: :main_content, turbo_action: "advance" }
+  ) do |form| %>
+    <% preserved_filter_params.each do |key, value| %>
+      <%= hidden_field_tag key, value %>
+    <% end %>
+
+    <%= search_field_tag(
+      :q,
+      search_query,
+      class: "event-search__input",
+      placeholder: "search",
+      autocomplete: "off",
+      aria: { label: "search events" }
+    ) %>
+
+    <%= form.submit "go", class: "event-search__submit" %>
+  <% end %>
+</section>

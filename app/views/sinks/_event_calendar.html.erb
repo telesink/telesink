@@ -1,0 +1,93 @@
+<%
+  month_start = calendar_month.beginning_of_month
+  month_end = calendar_month.end_of_month
+  first_day_offset = month_start.wday
+  days = (month_start..month_end).to_a
+  rows = (Array.new(first_day_offset) + days).each_slice(7).to_a
+  previous_month = month_start.prev_month
+  next_month = month_start.next_month
+  property_key = local_assigns[:property_key]
+  property_op = local_assigns[:property_op]
+  property_value = local_assigns[:property_value]
+  search_query = local_assigns[:search_query]
+  variant = local_assigns.fetch(:variant, "desktop")
+  calendar_params = lambda do |date|
+    feed_filter_params(
+      event_type: current_event_type,
+      event_date: date,
+      property_key: property_key,
+      property_op: property_op,
+      property_value: property_value,
+      search_query: search_query
+    )
+  end
+  month_params = lambda do |month|
+    calendar_params.call(nil).merge(month: month.iso8601)
+  end
+%>
+
+<section class="event-calendar event-calendar--<%= variant %>" aria-label="event calendar">
+  <div class="event-calendar__header">
+    <h3 class="event-calendar__title">calendar</h3>
+  </div>
+
+  <div class="event-calendar__body">
+    <div class="event-calendar__month">
+      <%= link_to(
+        sink_path(sink, month_params.call(previous_month)),
+        class: "event-calendar__nav",
+        data: { turbo_frame: :main_content, turbo_action: "advance" }
+      ) do %>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="icon">
+          <path fill-rule="evenodd" d="M14 8a.75.75 0 0 1-.75.75H4.56l1.22 1.22a.75.75 0 1 1-1.06 1.06l-2.5-2.5a.75.75 0 0 1 0-1.06l2.5-2.5a.75.75 0 0 1 1.06 1.06L4.56 7.25h8.69A.75.75 0 0 1 14 8Z" clip-rule="evenodd" />
+        </svg>
+      <% end %>
+
+      <span class="event-calendar__month-label"><%= calendar_month.strftime("%B %Y") %></span>
+
+      <%= link_to(
+        sink_path(sink, month_params.call(next_month)),
+        class: "event-calendar__nav",
+        data: { turbo_frame: :main_content, turbo_action: "advance" }
+      ) do %>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="icon">
+          <path fill-rule="evenodd" d="M2 8c0 .414.336.75.75.75h8.69l-1.22 1.22a.75.75 0 1 0 1.06 1.06l2.5-2.5a.75.75 0 0 0 0-1.06l-2.5-2.5a.75.75 0 1 0-1.06 1.06l1.22 1.22H2.75A.75.75 0 0 0 2 8Z" clip-rule="evenodd" />
+        </svg>
+      <% end %>
+    </div>
+
+    <div class="event-calendar__grid">
+      <% %w[Su Mo Tu We Th Fr Sa].each do |day_name| %>
+        <span class="event-calendar__weekday"><%= day_name %></span>
+      <% end %>
+
+      <% rows.flatten.each do |date| %>
+        <% if date.nil? %>
+          <span class="event-calendar__cell"></span>
+        <% elsif event_dates.key?(date) %>
+          <% count = event_dates[date] %>
+          <%= link_to(
+            date.day,
+            sink_path(sink, calendar_params.call(date)),
+            class: class_names(
+              "event-calendar__day",
+              "event-calendar__day--selected" => selected_date == date
+            ),
+            title: "#{pluralize(count, "event")} on #{date.iso8601}",
+            aria: { current: selected_date == date ? "date" : nil },
+            data: { turbo_frame: :main_content, turbo_action: "advance" }
+          ) %>
+        <% else %>
+          <span
+            class="<%= class_names(
+              "event-calendar__day",
+              "event-calendar__day--muted",
+              "event-calendar__day--selected" => selected_date == date
+            ) %>"
+            title="no events on <%= date.iso8601 %>"
+          ><%= date.day %></span>
+        <% end %>
+      <% end %>
+    </div>
+  </div>
+</section>

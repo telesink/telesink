@@ -1,35 +1,147 @@
 <div class="event-properties">
-  <h3 class="event-properties__title">properties</h3>
-  <dl class="event-properties__list">
+  <div class="event-properties__list">
     <% properties.each do |key, value| %>
-      <div class="event-properties__item">
-        <dt class="event-properties__item-key">
-          <%= key %>
-        </dt>
-        <dd class="event-properties__item-value">
-          <% if long_property?(value) %>
-            <div class="property-value" data-controller="property-value">
-              <div class="property-value__teaser" data-property-value-target="teaser">
-                <%= property_teaser(value) %>
-              </div>
+      <%
+        feed_context = {
+          event_type: local_assigns[:event_type],
+          event_date: local_assigns[:event_date],
+          search_query: local_assigns[:search_query]
+        }
+
+        active_property_filter = active_property_filter_row?(
+          key,
+          value,
+          property_key: local_assigns[:property_key],
+          property_op: local_assigns[:property_op],
+          property_value: local_assigns[:property_value]
+        )
+      %>
+
+      <div class="<%= class_names(
+        "event-properties__item",
+        "event-properties__item--current" => active_property_filter
+      ) %>">
+        <%= link_to(
+          key,
+          sink_path(
+            event.sink,
+            feed_filter_params(
+              **feed_context,
+              property_key: key,
+              property_op: "exists"
+            )
+          ),
+          class: "event-properties__item-key",
+          title: "filter by events with #{key}",
+          data: { turbo_frame: :main_content, turbo_action: "advance" }
+        ) %>
+        <span class="event-properties__item-value">
+          <% if property_filterable?(value) %>
+            <% filter_value = property_filter_value(value) %>
+
+            <span class="event-properties__value-actions">
+              <%= link_to(
+                property_action_label(value),
+                sink_path(
+                  event.sink,
+                  feed_filter_params(
+                    **feed_context,
+                    property_key: key,
+                    property_op: "eq",
+                    property_value: filter_value
+                  )
+                ),
+                class: "event-properties__value-link",
+                title: "filter by #{property_filter_label(key, "eq", filter_value)}",
+                data: { turbo_frame: :main_content, turbo_action: "advance" }
+              ) %>
+
+              <% if property_numeric_filterable?(value) %>
+                <% numeric_filter_value = property_numeric_filter_value(value) %>
+
+                <span class="event-properties__operators">
+                  <%= link_to(
+                    "below",
+                    sink_path(
+                      event.sink,
+                      feed_filter_params(
+                        **feed_context,
+                        property_key: key,
+                        property_op: "lt",
+                        property_value: numeric_filter_value
+                      )
+                    ),
+                    class: "event-properties__operator",
+                    title: "filter by #{key} < #{numeric_filter_value}",
+                    data: { turbo_frame: :main_content, turbo_action: "advance" }
+                  ) %>
+
+                  <%= link_to(
+                    "above",
+                    sink_path(
+                      event.sink,
+                      feed_filter_params(
+                        **feed_context,
+                        property_key: key,
+                        property_op: "gt",
+                        property_value: numeric_filter_value
+                      )
+                    ),
+                    class: "event-properties__operator",
+                    title: "filter by #{key} > #{numeric_filter_value}",
+                    data: { turbo_frame: :main_content, turbo_action: "advance" }
+                  ) %>
+                </span>
+              <% end %>
 
               <button
-                class="link"
+                type="button"
+                class="event-properties__copy"
+                title="copy value"
+                data-controller="copy-to-clipboard"
+                data-action="copy-to-clipboard#copy"
+                data-copy-to-clipboard-content-value="<%= filter_value %>"
+              >
+                copy
+              </button>
+            </span>
+
+            <% if long_property?(value) %>
+              <span class="event-properties__full-value"><%= property_full(value) %></span>
+            <% end %>
+          <% elsif long_property?(value) %>
+            <span class="property-value" data-controller="property-value">
+              <span
+                class="property-value__teaser"
+                aria-hidden="false"
+                data-property-value-target="teaser"
+              >
+                <%= property_teaser(value) %>
+              </span>
+
+              <button
+                type="button"
+                class="event-properties__toggle link"
+                aria-expanded="false"
                 data-property-value-target="toggle"
                 data-action="click->property-value#toggle"
               >
                 show more
               </button>
 
-              <div class="property-value__full hidden" data-property-value-target="full">
+              <span
+                class="property-value__full hidden"
+                aria-hidden="true"
+                data-property-value-target="full"
+              >
                 <%= property_full(value) %>
-              </div>
-            </div>
+              </span>
+            </span>
           <% else %>
             <%= property_full(value) %>
           <% end %>
-        </dd>
+        </span>
       </div>
     <% end %>
-  </dl>
+  </div>
 </div>

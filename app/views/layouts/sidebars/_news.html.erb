@@ -1,5 +1,9 @@
 <aside class="column sidebar">
-   <div class="sidebar-account">
+  <div class="sidebar__content">
+    <%= render partial: "news/new" %>
+  </div>
+
+  <div class="sidebar-account">
     <span class="truncate">
       <%= link_to_unless_current display_name(Current.user), edit_settings_nickname_path, class: "link" %>
     </span>
@@ -12,6 +16,4 @@
       class: "link link--subtle whitespace-nowrap text-base",
     ) %>
   </div>
-
-  <%= render partial: "news/new" %>
 </aside>

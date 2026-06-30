@@ -1,7 +1,7 @@
 <%= turbo_frame_tag "event_types" do %>
   <div class="column">
-    <div class="column__header column__header--cast-shadow">
-      <h1 class="column__title">events in this sink</h1>
+    <div class="column__header">
+      <h1 class="column__title">event types in this sink</h1>
     </div>
 
     <div class="column-data">
@@ -10,7 +10,7 @@
           <% @event_types.each do |event_type| %>
             <li>
               <%= link_to(
-                event_type,
+                event_type_label(event_type),
                 sink_event_type_path(sink, event_type),
                 data: { turbo_frame: "event_types" },
                 class: "link"

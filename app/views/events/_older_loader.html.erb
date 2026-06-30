@@ -1,0 +1,36 @@
+<%
+  loader_params = feed_filter_params(
+    event_type: event_type,
+    event_date: event_date,
+    property_key: local_assigns[:property_key],
+    property_op: local_assigns[:property_op],
+    property_value: local_assigns[:property_value],
+    search_query: local_assigns[:search_query]
+  )
+%>
+
+<% if events.size == Event::FEED_BATCH_SIZE && events.first %>
+  <button
+    id="events_older_boundary"
+    type="button"
+    class="events__older-loader"
+    aria-label="load older events"
+    disabled
+    data-action="click->event-feed#loadOlder"
+    data-event-feed-target="olderLoader"
+    data-url="<%= sink_events_path(sink, loader_params.merge(before_id: events.first.id)) %>"
+  ></button>
+<% else %>
+  <div id="events_older_boundary" class="events__older-loader events__older-loader--empty">
+    <% if initial && events.empty? %>
+      <%= event_feed_empty_label(
+        event_type: event_type,
+        event_date: event_date,
+        property_key: local_assigns[:property_key],
+        property_op: local_assigns[:property_op],
+        property_value: local_assigns[:property_value],
+        search_query: local_assigns[:search_query]
+      ) %>
+    <% end %>
+  </div>
+<% end %>

@@ -1,5 +1,7 @@
-<div class="day-delimiter">
+<% label = day_delimiter_label(event.occurred_at) %>
+
+<div class="day-delimiter" role="separator" aria-label="<%= label %>">
   <span class="day-delimiter__label">
-    <%= day_delimiter_label(event.occurred_at) %>
+    <%= label %>
   </span>
 </div>
