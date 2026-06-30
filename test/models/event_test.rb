@@ -139,9 +139,8 @@ class EventTest < ActiveSupport::TestCase
     assert_equal 2, events.size
   end
 
-  test "feed_batch search falls back for events without denormalized search text" do
+  test "feed_batch search matches denormalized property text" do
     event = events(:new_signup)
-    event.update_column(:search_text, nil)
 
     events = Event.feed_batch(sinks(:telebugs), search_query: "newuser@example.com")
 

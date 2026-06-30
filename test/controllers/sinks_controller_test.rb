@@ -51,6 +51,20 @@ class SinksControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
   end
 
+  test "demo environment renders account footer without profile or logout links" do
+    sign_in_as(@owner)
+
+    with_rails_env("demo") do
+      get sink_path(sinks(:telebugs))
+    end
+
+    assert_response :success
+    assert_select ".sidebar-account", /~#{@owner.nickname}/
+    assert_select ".sidebar-account a", count: 0
+    assert_select ".sidebar-account form", count: 0
+    assert_no_match "log out", response.body
+  end
+
   test "show marks the sink as read for the current user" do
     sign_in_as(@member)
     sink = @member.sinks.create!(name: "Unread Test Sink", account: @account)

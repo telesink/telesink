@@ -2,6 +2,7 @@ new_signup:
   event_type: user.signup
   sink: telebugs
   text: A new user has signed up.
+  search_text: user.signup A new user has signed up. user_email newuser@example.com
   occurred_at: <%= 2.hours.ago %>
   properties:
     user_email: newuser@example.com
@@ -10,28 +11,33 @@ premium_signup:
   event_type: user.signup
   sink: telebugs
   text: A new premium user has signed up successfully with plan upgrade
+  search_text: user.signup A new premium user has signed up successfully with plan upgrade
   occurred_at: <%= 1.hour.ago %>
 
 regular_signup:
   event_type: user.signup
   sink: telebugs
   text: Regular user signed up via email
+  search_text: user.signup Regular user signed up via email
   occurred_at: <%= 90.minutes.ago %>
 
 payment_success:
   event_type: payment.succeeded
   sink: telebugs
   text: Payment processed for premium monthly plan
+  search_text: payment.succeeded Payment processed for premium monthly plan
   occurred_at: <%= 45.minutes.ago %>
 
 checkout_error:
   event_type: error.occurred
   sink: telebugs
   text: Error during checkout process for premium user
+  search_text: error.occurred Error during checkout process for premium user
   occurred_at: <%= 30.minutes.ago %>
 
 login_event:
   event_type: user.logged_in
   sink: telebugs
   text: User logged in from mobile device
+  search_text: user.logged_in User logged in from mobile device
   occurred_at: <%= 15.minutes.ago %>

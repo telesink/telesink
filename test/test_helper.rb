@@ -12,5 +12,14 @@ module ActiveSupport
     fixtures :all
 
     # Add more helper methods to be used by all tests here...
+    def with_rails_env(name)
+      original_env = Rails.env
+      env = ActiveSupport::StringInquirer.new(name)
+
+      Rails.singleton_class.define_method(:env) { env }
+      yield
+    ensure
+      Rails.singleton_class.define_method(:env) { original_env }
+    end
   end
 end

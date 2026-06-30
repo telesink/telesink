@@ -1,4 +1,6 @@
 class Sinks::SavedViewsController < ApplicationController
+  skip_demo_restrictions only: %i[create]
+
   before_action :set_sink
 
   def create

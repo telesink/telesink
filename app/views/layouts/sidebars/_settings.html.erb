@@ -3,17 +3,5 @@
     <%= render "settings/settings" %>
   </div>
 
-  <div class="sidebar-account">
-    <span class="truncate">
-      <%= display_name(Current.user) %>
-    </span>
-
-    <%= button_to(
-      "log out",
-      session_path,
-      method: :delete,
-      data: { turbo_confirm: "log out?" },
-      class: "link link--subtle whitespace-nowrap text-base",
-    ) %>
-  </div>
+  <%= render "layouts/sidebars/account", link_name: false %>
 </aside>

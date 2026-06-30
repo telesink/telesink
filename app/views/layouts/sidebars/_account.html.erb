@@ -1,0 +1,21 @@
+<% link_name = local_assigns.fetch(:link_name, true) %>
+
+<div class="sidebar-account">
+  <span class="truncate">
+    <% if link_name && !Rails.env.demo? %>
+      <%= link_to_unless_current display_name(Current.user), edit_settings_nickname_path, class: "link" %>
+    <% else %>
+      <%= display_name(Current.user) %>
+    <% end %>
+  </span>
+
+  <% unless Rails.env.demo? %>
+    <%= button_to(
+      "log out",
+      session_path,
+      method: :delete,
+      data: { turbo_confirm: "log out?" },
+      class: "link link--subtle whitespace-nowrap text-base",
+    ) %>
+  <% end %>
+</div>
