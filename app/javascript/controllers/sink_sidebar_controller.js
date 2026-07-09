@@ -1,18 +1,25 @@
 import { Controller } from "@hotwired/stimulus";
 
+const MOBILE_DRAWER_QUERY = "(max-width: 760px)";
+
 export default class extends Controller {
   connect() {
     this.pendingRefresh = false;
     this.clickHandler = this.#onClick.bind(this);
     this.frameLoadHandler = this.#onFrameLoad.bind(this);
+    this.drawerQuery = window.matchMedia(MOBILE_DRAWER_QUERY);
+    this.drawerQueryHandler = this.#syncDrawerForViewport.bind(this);
 
     this.element.addEventListener("click", this.clickHandler);
     document.addEventListener("turbo:frame-load", this.frameLoadHandler);
+    this.#addDrawerQueryListener();
+    this.#syncDrawerForViewport();
   }
 
   disconnect() {
     this.element.removeEventListener("click", this.clickHandler);
     document.removeEventListener("turbo:frame-load", this.frameLoadHandler);
+    this.#removeDrawerQueryListener();
   }
 
   #onClick(event) {
@@ -36,11 +43,40 @@ export default class extends Controller {
   }
 
   #collapseMobileDrawer() {
-    const drawer = this.element.closest(".sidebar__drawer");
+    const drawer = this.#drawer();
     if (!drawer) return;
-    if (!window.matchMedia("(max-width: 760px)").matches) return;
+    if (!this.drawerQuery.matches) return;
 
     drawer.open = false;
+  }
+
+  #syncDrawerForViewport() {
+    const drawer = this.#drawer();
+    if (!drawer) return;
+
+    drawer.open = !this.drawerQuery.matches;
+  }
+
+  #drawer() {
+    if (this.element.matches(".sidebar__drawer")) return this.element;
+
+    return this.element.closest(".sidebar__drawer");
+  }
+
+  #addDrawerQueryListener() {
+    if (this.drawerQuery.addEventListener) {
+      this.drawerQuery.addEventListener("change", this.drawerQueryHandler);
+    } else {
+      this.drawerQuery.addListener(this.drawerQueryHandler);
+    }
+  }
+
+  #removeDrawerQueryListener() {
+    if (this.drawerQuery.addEventListener) {
+      this.drawerQuery.removeEventListener("change", this.drawerQueryHandler);
+    } else {
+      this.drawerQuery.removeListener(this.drawerQueryHandler);
+    }
   }
 
   #refresh() {

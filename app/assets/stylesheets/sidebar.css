@@ -24,14 +24,6 @@
   display: none;
 }
 
-.sidebar__drawer:not([open]) > .sidebar__content {
-  display: block;
-}
-
-.sidebar__drawer:not([open]) > .sidebar-account {
-  display: flex;
-}
-
 .sidebar-account {
   display: flex;
   align-items: center;
@@ -259,11 +251,6 @@
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-  }
-
-  .sidebar__drawer:not([open]) > .sidebar__content,
-  .sidebar__drawer:not([open]) > .sidebar-account {
-    display: none;
   }
 
   .sidebar__drawer[open] > .sidebar__content {
