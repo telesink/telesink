@@ -92,58 +92,67 @@
       </div>
     </header>
 
-    <%= render(
-      "sinks/event_filters",
-      sink: @sink,
-      event_type_counts: @event_type_counts,
-      event_type_icons: @event_type_icons,
-      current_event_type: @event_type,
-      event_date: @event_date,
-      property_key: @property_key,
-      property_op: @property_op,
-      property_value: @property_value,
-      search_query: @search_query,
-      variant: "mobile"
-    ) %>
+    <details class="event-feed__mobile-tools">
+      <summary class="event-feed__mobile-tools-summary">
+        <span class="event-feed__mobile-tools-label">filters</span>
+        <span class="event-feed__mobile-tools-state"><%= active_filter ? "active" : "all events" %></span>
+      </summary>
 
-    <%= render(
-      "sinks/event_search",
-      sink: @sink,
-      current_event_type: @event_type,
-      event_date: @event_date,
-      property_key: @property_key,
-      property_op: @property_op,
-      property_value: @property_value,
-      search_query: @search_query,
-      variant: "mobile"
-    ) %>
+      <div class="event-feed__mobile-tools-panel">
+        <%= render(
+          "sinks/event_filters",
+          sink: @sink,
+          event_type_counts: @event_type_counts,
+          event_type_icons: @event_type_icons,
+          current_event_type: @event_type,
+          event_date: @event_date,
+          property_key: @property_key,
+          property_op: @property_op,
+          property_value: @property_value,
+          search_query: @search_query,
+          variant: "mobile"
+        ) %>
 
-    <%= render(
-      "sinks/saved_views",
-      sink: @sink,
-      saved_views: @saved_views,
-      current_event_type: @event_type,
-      event_date: @event_date,
-      property_key: @property_key,
-      property_op: @property_op,
-      property_value: @property_value,
-      search_query: @search_query,
-      variant: "mobile"
-    ) %>
+        <%= render(
+          "sinks/event_search",
+          sink: @sink,
+          current_event_type: @event_type,
+          event_date: @event_date,
+          property_key: @property_key,
+          property_op: @property_op,
+          property_value: @property_value,
+          search_query: @search_query,
+          variant: "mobile"
+        ) %>
 
-    <%= render(
-      "sinks/event_calendar",
-      sink: @sink,
-      calendar_month: @calendar_month,
-      event_dates: @event_dates,
-      current_event_type: @event_type,
-      selected_date: @event_date,
-      property_key: @property_key,
-      property_op: @property_op,
-      property_value: @property_value,
-      search_query: @search_query,
-      variant: "mobile"
-    ) %>
+        <%= render(
+          "sinks/saved_views",
+          sink: @sink,
+          saved_views: @saved_views,
+          current_event_type: @event_type,
+          event_date: @event_date,
+          property_key: @property_key,
+          property_op: @property_op,
+          property_value: @property_value,
+          search_query: @search_query,
+          variant: "mobile"
+        ) %>
+
+        <%= render(
+          "sinks/event_calendar",
+          sink: @sink,
+          calendar_month: @calendar_month,
+          event_dates: @event_dates,
+          current_event_type: @event_type,
+          selected_date: @event_date,
+          property_key: @property_key,
+          property_op: @property_op,
+          property_value: @property_value,
+          search_query: @search_query,
+          variant: "mobile"
+        ) %>
+      </div>
+    </details>
 
     <div class="event-feed__scroll" data-event-feed-target="scroll">
       <%= render(

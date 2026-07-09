@@ -404,6 +404,66 @@
   height: 1em;
 }
 
+.event-feed__mobile-tools {
+  display: none;
+}
+
+.event-feed__mobile-tools-summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 2.75rem;
+  box-sizing: border-box;
+  padding: 0 1ch;
+  border-bottom: 1px solid var(--border-color);
+  color: var(--app-sidebar-current-text);
+  background-color: var(--app-sidebar-bg);
+  cursor: pointer;
+  list-style: none;
+}
+
+.event-feed__mobile-tools-summary::-webkit-details-marker {
+  display: none;
+}
+
+.event-feed__mobile-tools-summary::after {
+  content: "";
+  flex: 0 0 auto;
+  width: 0.55em;
+  height: 0.55em;
+  margin-left: 1ch;
+  border-right: 1px solid currentColor;
+  border-bottom: 1px solid currentColor;
+  transform: translateY(-0.15em) rotate(45deg);
+}
+
+.event-feed__mobile-tools[open] .event-feed__mobile-tools-summary::after {
+  transform: translateY(0.15em) rotate(225deg);
+}
+
+.event-feed__mobile-tools-label,
+.event-feed__mobile-tools-state {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.event-feed__mobile-tools-state {
+  margin-left: auto;
+  color: var(--app-sidebar-muted);
+}
+
+.event-feed__mobile-tools-panel {
+  max-height: 32rem;
+  max-height: min(54vh, 32rem);
+  max-height: min(54dvh, 32rem);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  border-bottom: 1px solid var(--border-color);
+  background-color: var(--app-sidebar-bg);
+}
+
 .event-feed__scroll {
   display: flex;
   flex: 1;
@@ -1046,6 +1106,11 @@
     display: none;
   }
 
+  .event-feed__mobile-tools {
+    display: block;
+    flex: 0 0 auto;
+  }
+
   .event-filters--mobile {
     display: block;
     overflow-x: auto;
@@ -1139,7 +1204,7 @@
   }
 
   .event-feed__header {
-    min-height: 2.5ch;
+    min-height: 2.75rem;
   }
 
   .event-feed__context {
@@ -1166,7 +1231,9 @@
   }
 
   .event-row {
-    padding: 0 0.5ch;
+    min-height: 2.75rem;
+    box-sizing: border-box;
+    padding: 0.35rem 0.75rem;
   }
 
   .event-row__time {
@@ -1209,5 +1276,20 @@
   .event-status__jump {
     margin-left: 0.5ch;
     padding-left: 0.5ch;
+  }
+
+  .event-feed__scroll {
+    padding-bottom: 0.75rem;
+    padding-bottom: calc(0.75rem + env(safe-area-inset-bottom));
+    scroll-padding-bottom: 4rem;
+    scroll-padding-bottom: calc(4rem + env(safe-area-inset-bottom));
+  }
+
+  .event-status {
+    min-height: 2.75rem;
+    min-height: calc(2.75rem + env(safe-area-inset-bottom));
+    box-sizing: border-box;
+    padding-bottom: 0;
+    padding-bottom: env(safe-area-inset-bottom);
   }
 }

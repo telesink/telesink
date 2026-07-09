@@ -12,6 +12,26 @@
   z-index: 1;
 }
 
+.sidebar__drawer {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+}
+
+.sidebar__drawer-summary {
+  display: none;
+}
+
+.sidebar__drawer:not([open]) > .sidebar__content {
+  display: block;
+}
+
+.sidebar__drawer:not([open]) > .sidebar-account {
+  display: flex;
+}
+
 .sidebar-account {
   display: flex;
   align-items: center;
@@ -189,9 +209,75 @@
     min-width: 0;
     max-width: none;
     height: auto;
-    max-height: 30vh;
-    overflow: hidden;
+    max-height: none;
+    overflow: visible;
     border-right: 0;
     border-bottom: 1px solid var(--border-color);
+  }
+
+  .sidebar__drawer {
+    height: auto;
+    max-height: 32rem;
+    max-height: min(62vh, 32rem);
+    max-height: min(62dvh, 32rem);
+    overflow: hidden;
+  }
+
+  .sidebar__drawer-summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    min-height: 2.75rem;
+    box-sizing: border-box;
+    padding: 0 1ch;
+    color: var(--app-sidebar-current-text);
+    background-color: var(--app-sidebar-bg);
+    cursor: pointer;
+    list-style: none;
+  }
+
+  .sidebar__drawer-summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .sidebar__drawer-summary::after {
+    content: "";
+    width: 0.55em;
+    height: 0.55em;
+    margin-left: 1ch;
+    border-right: 1px solid currentColor;
+    border-bottom: 1px solid currentColor;
+    transform: translateY(-0.15em) rotate(45deg);
+  }
+
+  .sidebar__drawer[open] .sidebar__drawer-summary::after {
+    transform: translateY(0.15em) rotate(225deg);
+  }
+
+  .sidebar__drawer-label {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .sidebar__drawer:not([open]) > .sidebar__content,
+  .sidebar__drawer:not([open]) > .sidebar-account {
+    display: none;
+  }
+
+  .sidebar__drawer[open] > .sidebar__content {
+    display: block;
+    flex: 1 1 auto;
+    min-height: 0;
+    max-height: 24rem;
+    max-height: min(46vh, 24rem);
+    max-height: min(46dvh, 24rem);
+    overflow-y: auto;
+  }
+
+  .sidebar__drawer[open] > .sidebar-account {
+    display: flex;
+    flex: 0 0 auto;
   }
 }

@@ -1,9 +1,15 @@
-<aside class="column sidebar">
+<aside class="column sidebar sidebar--sinks">
   <%= turbo_stream_from "user_#{Current.user.id}_sinks" %>
 
-  <div id="sinks" class="sidebar__content" data-controller="sink-sidebar">
-    <%= render "sinks/sinks" %>
-  </div>
+  <details class="sidebar__drawer">
+    <summary class="sidebar__drawer-summary">
+      <span class="sidebar__drawer-label">channels</span>
+    </summary>
 
-  <%= render "layouts/sidebars/account" %>
+    <div id="sinks" class="sidebar__content" data-controller="sink-sidebar">
+      <%= render "sinks/sinks" %>
+    </div>
+
+    <%= render "layouts/sidebars/account" %>
+  </details>
 </aside>

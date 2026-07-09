@@ -31,7 +31,16 @@ export default class extends Controller {
     if (event.target.id !== "main_content") return;
 
     this.pendingRefresh = false;
+    this.#collapseMobileDrawer();
     this.#refresh();
+  }
+
+  #collapseMobileDrawer() {
+    const drawer = this.element.closest(".sidebar__drawer");
+    if (!drawer) return;
+    if (!window.matchMedia("(max-width: 760px)").matches) return;
+
+    drawer.open = false;
   }
 
   #refresh() {
