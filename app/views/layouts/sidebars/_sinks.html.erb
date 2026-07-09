@@ -1,15 +1,19 @@
-<aside class="column sidebar sidebar--sinks">
+<aside class="column sidebar sidebar--sinks" data-controller="sink-sidebar">
   <%= turbo_stream_from "user_#{Current.user.id}_sinks" %>
 
-  <details class="sidebar__drawer" open data-controller="sink-sidebar">
-    <summary class="sidebar__drawer-summary">
-      <span class="sidebar__drawer-label">sinks</span>
-    </summary>
+  <button
+    type="button"
+    class="sidebar__drawer-toggle"
+    aria-controls="sinks"
+    aria-expanded="false"
+    data-action="sink-sidebar#toggleMobileDrawer"
+  >
+    <span class="sidebar__drawer-label">sinks</span>
+  </button>
 
-    <div id="sinks" class="sidebar__content">
-      <%= render "sinks/sinks" %>
-    </div>
+  <div id="sinks" class="sidebar__content">
+    <%= render "sinks/sinks" %>
+  </div>
 
-    <%= render "layouts/sidebars/account" %>
-  </details>
+  <%= render "layouts/sidebars/account" %>
 </aside>

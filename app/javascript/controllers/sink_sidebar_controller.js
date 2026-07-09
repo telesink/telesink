@@ -22,6 +22,12 @@ export default class extends Controller {
     this.#removeDrawerQueryListener();
   }
 
+  toggleMobileDrawer() {
+    if (!this.drawerQuery.matches) return;
+
+    this.#setMobileOpen(!this.element.classList.contains("sidebar--mobile-open"));
+  }
+
   #onClick(event) {
     const link = event.target.closest("[data-sink-sidebar-link]");
 
@@ -43,24 +49,20 @@ export default class extends Controller {
   }
 
   #collapseMobileDrawer() {
-    const drawer = this.#drawer();
-    if (!drawer) return;
     if (!this.drawerQuery.matches) return;
 
-    drawer.open = false;
+    this.#setMobileOpen(false);
   }
 
   #syncDrawerForViewport() {
-    const drawer = this.#drawer();
-    if (!drawer) return;
-
-    drawer.open = !this.drawerQuery.matches;
+    this.#setMobileOpen(!this.drawerQuery.matches);
   }
 
-  #drawer() {
-    if (this.element.matches(".sidebar__drawer")) return this.element;
+  #setMobileOpen(open) {
+    this.element.classList.toggle("sidebar--mobile-open", open);
 
-    return this.element.closest(".sidebar__drawer");
+    const toggle = this.element.querySelector(".sidebar__drawer-toggle");
+    if (toggle) toggle.setAttribute("aria-expanded", String(open));
   }
 
   #addDrawerQueryListener() {
