@@ -2,7 +2,7 @@ source "https://rubygems.org"
 
 ruby file: ".ruby-version"
 
-gem "rails", "~> 8.1.2"
+gem "rails", "~> 8.1.3"
 
 # Drivers
 gem "pg", "~> 1.1"
